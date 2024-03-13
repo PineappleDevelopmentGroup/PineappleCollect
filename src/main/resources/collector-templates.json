@@ -1,0 +1,20 @@
+[
+  {
+    "id": "standard",
+    "block_entity": "lectern",
+    "title": "<color:blue>Standard Collector",
+    "item": {
+      "item_type": "lectern",
+      "name": "<color:blue>Standard Collector",
+      "lore": [
+        "<color:gray>Place to start collecting in the chunk you placed it in"
+      ],
+      "enchantment": {
+        "unbreaking": 1
+      },
+      "hide_tool_tip": [
+        "hide_enchantments"
+      ]
+    }
+  }
+]

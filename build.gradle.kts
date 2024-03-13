@@ -25,7 +25,7 @@ dependencies {
     implementation("sh.miles:Pineapple:1.0.0-SNAPSHOT") {
         isChanging = true
     }
-    implementation(kotlin("stdlib"))
+    bukkitLibrary(kotlin("stdlib"))
 }
 
 tasks.compileKotlin {
@@ -38,7 +38,6 @@ tasks.shadowJar {
     archiveFileName = "${project.name}-${project.version}.jar"
 
     val packageName = "${project.group}.${project.name.lowercase()}"
-    this.relocate("kotlin", "$packageName.shaded.kotlin")
     this.relocate("sh.miles.pineapple", "$packageName.libs.pineapple")
 }
 
