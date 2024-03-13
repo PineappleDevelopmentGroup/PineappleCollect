@@ -3,7 +3,8 @@ package sh.miles.collect.pdc
 import org.bukkit.persistence.PersistentDataAdapterContext
 import org.bukkit.persistence.PersistentDataType
 import sh.miles.collect.data.Position
-import java.util.*
+import java.util.StringJoiner
+import java.util.UUID
 
 class PositionDataType: PersistentDataType<String, Position> {
 

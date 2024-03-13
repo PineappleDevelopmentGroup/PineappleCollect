@@ -4,14 +4,13 @@ import org.bukkit.Chunk
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.block.TileState
-import org.bukkit.entity.Item
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import sh.miles.collect.data.Position
 import sh.miles.collect.pdc.PDCConstants
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.collection.NonNullList
-import sh.miles.pineapple.pdc.PineappleDataType
+import sh.miles.pineapple.function.Option
 
 class Collector(val templateKey: String, val size: Int, val position: Position) {
 
@@ -39,9 +38,9 @@ class Collector(val templateKey: String, val size: Int, val position: Position) 
         private val SIZE_KEY = NamespacedKey.fromString("collector:size")!!
         private val CONTENT_KEY = NamespacedKey.fromString("collector:content")!!
 
-        fun load(chunk: Chunk): Collector? {
+        fun load(chunk: Chunk): Option<Collector> {
             val pdc = chunk.persistentDataContainer
-            val position = pdc.get(POSITION_KEY, PDCConstants.POSITION_DATA_TYPE) ?: return null
+            val position = pdc.get(POSITION_KEY, PDCConstants.POSITION_DATA_TYPE) ?: return Option.none()
 
             val tileState = chunk.world.getBlockState(position.toLocation()) as TileState
             val blockPdc = tileState.persistentDataContainer
@@ -53,7 +52,7 @@ class Collector(val templateKey: String, val size: Int, val position: Position) 
 
             val collector = Collector(templateKey, sizeKey, position)
             collector.addContentsList(contents)
-            return collector
+            return Option.some(collector)
         }
 
         fun save(chunk: Chunk, collector: Collector) {
