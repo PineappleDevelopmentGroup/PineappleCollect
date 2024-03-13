@@ -35,6 +35,6 @@ class CollectorTemplate(
 
 
     override fun getKey(): String {
-        return this.key;
+        return this.key
     }
 }
