@@ -1,6 +1,8 @@
 package sh.miles.collect
 
 import org.bukkit.plugin.java.JavaPlugin
+import sh.miles.collect.listeners.ChunkStateListener
+import sh.miles.collect.listeners.CollectorInteractListener
 import sh.miles.collect.registry.CollectorTemplateRegistry
 import sh.miles.collect.registry.json.CollectorTemplateAdapter
 import sh.miles.collect.registry.json.PineappleComponentAdapter
@@ -19,14 +21,22 @@ class CollectPlugin : JavaPlugin() {
     )
 
     override fun onEnable() {
+        saveResources()
         plugin = this
         PineappleLib.initialize(this)
 
         CollectorTemplateRegistry.run { }
+
+        server.pluginManager.registerEvents(ChunkStateListener, this)
+        server.pluginManager.registerEvents(CollectorInteractListener, this)
     }
 
     override fun onDisable() {
         PineappleLib.cleanup()
+    }
+
+    fun saveResources() {
+        saveResource("collector-templates.json", false)
     }
 
 }

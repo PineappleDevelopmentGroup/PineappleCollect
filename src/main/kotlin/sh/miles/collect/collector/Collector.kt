@@ -3,10 +3,11 @@ package sh.miles.collect.collector
 import org.bukkit.Chunk
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.block.BlockState
 import org.bukkit.block.TileState
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import sh.miles.collect.data.Position
+import sh.miles.collect.util.Position
 import sh.miles.collect.pdc.PDCConstants
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.collection.NonNullList
@@ -37,6 +38,11 @@ class Collector(val templateKey: String, val size: Int, val position: Position) 
         private val TEMPLATE_KEY = NamespacedKey.fromString("collector:template_key")!!
         private val SIZE_KEY = NamespacedKey.fromString("collector:size")!!
         private val CONTENT_KEY = NamespacedKey.fromString("collector:content")!!
+
+        fun isCollector(blockState: BlockState): Boolean {
+            if (blockState !is TileState) return false
+            return blockState.persistentDataContainer.has(TEMPLATE_KEY)
+        }
 
         fun load(chunk: Chunk): Option<Collector> {
             val pdc = chunk.persistentDataContainer
