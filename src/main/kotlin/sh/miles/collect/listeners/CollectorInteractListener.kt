@@ -15,7 +15,7 @@ object CollectorInteractListener : Listener {
     fun onPlayerInteract(event: PlayerInteractEvent) {
         if (event.action != Action.LEFT_CLICK_BLOCK) return
         val clickedBlock = event.clickedBlock ?: return
-        if (Collector.isCollector(clickedBlock.state)) return
+        if (!Collector.isCollector(clickedBlock.state)) return
 
         val collector =
             CollectorManager.obtain(clickedBlock.chunk).orThrow() // we should guarantee its a collector above

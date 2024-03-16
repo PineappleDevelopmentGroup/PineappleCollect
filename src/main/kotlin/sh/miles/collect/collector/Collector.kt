@@ -7,8 +7,8 @@ import org.bukkit.block.BlockState
 import org.bukkit.block.TileState
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import sh.miles.collect.util.Position
 import sh.miles.collect.pdc.PDCConstants
+import sh.miles.collect.util.Position
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.collection.NonNullList
 import sh.miles.pineapple.function.Option
@@ -42,6 +42,11 @@ class Collector(val templateKey: String, val size: Int, val position: Position) 
         fun isCollector(blockState: BlockState): Boolean {
             if (blockState !is TileState) return false
             return blockState.persistentDataContainer.has(TEMPLATE_KEY)
+        }
+
+        fun hasCollector(chunk: Chunk): Boolean {
+            val pdc = chunk.persistentDataContainer
+            return pdc.has(POSITION_KEY)
         }
 
         fun load(chunk: Chunk): Option<Collector> {
