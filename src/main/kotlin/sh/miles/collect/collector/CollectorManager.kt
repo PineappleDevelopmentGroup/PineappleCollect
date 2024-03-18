@@ -9,9 +9,7 @@ object CollectorManager {
     private val loadedCollectors = mutableMapOf<ChunkPosition, Collector>()
 
     fun load(collector: Collector) {
-        println("here")
         loadedCollectors[collector.position.chunkpos()] = collector
-        println("here!!!!")
     }
 
     fun unload(chunk: Chunk): Option<Collector> {
@@ -23,6 +21,8 @@ object CollectorManager {
     }
 
     fun obtain(chunk: Chunk): Option<Collector> {
+        println(loadedCollectors)
+        println(chunk)
         return obtain(ChunkPosition(chunk.world.uid, chunk.x, chunk.z))
     }
 

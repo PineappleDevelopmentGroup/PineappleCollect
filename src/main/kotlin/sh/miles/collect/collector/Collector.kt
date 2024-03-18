@@ -7,7 +7,11 @@ import org.bukkit.block.BlockState
 import org.bukkit.block.TileState
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import sh.miles.collect.pdc.PDCConstants
+import sh.miles.collect.util.PDC_CONTENT_KEY
+import sh.miles.collect.util.PDC_POSITION_DATA_TYPE
+import sh.miles.collect.util.PDC_POSITION_KEY
+import sh.miles.collect.util.PDC_SIZE_KEY
+import sh.miles.collect.util.PDC_TEMPLATE_KEY
 import sh.miles.collect.util.Position
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.collection.NonNullList
@@ -34,32 +38,27 @@ class Collector(val templateKey: String, val size: Int, val position: Position) 
     }
 
     companion object {
-        private val POSITION_KEY = NamespacedKey.fromString("collector:position")!!
-        private val TEMPLATE_KEY = NamespacedKey.fromString("collector:template_key")!!
-        private val SIZE_KEY = NamespacedKey.fromString("collector:size")!!
-        private val CONTENT_KEY = NamespacedKey.fromString("collector:content")!!
-
         fun isCollector(blockState: BlockState): Boolean {
             if (blockState !is TileState) return false
-            return blockState.persistentDataContainer.has(TEMPLATE_KEY)
+            return blockState.persistentDataContainer.has(PDC_TEMPLATE_KEY)
         }
 
         fun hasCollector(chunk: Chunk): Boolean {
             val pdc = chunk.persistentDataContainer
-            return pdc.has(POSITION_KEY)
+            return pdc.has(PDC_POSITION_KEY)
         }
 
         fun load(chunk: Chunk): Option<Collector> {
             val pdc = chunk.persistentDataContainer
-            val position = pdc.get(POSITION_KEY, PDCConstants.POSITION_DATA_TYPE) ?: return Option.none()
+            val position = pdc.get(PDC_POSITION_KEY, PDC_POSITION_DATA_TYPE) ?: return Option.none()
 
             val tileState = chunk.world.getBlockState(position.toLocation()) as TileState
             val blockPdc = tileState.persistentDataContainer
-            val contents = blockPdc.get(CONTENT_KEY, PersistentDataType.LIST.byteArrays())!!
+            val contents = blockPdc.get(PDC_CONTENT_KEY, PersistentDataType.LIST.byteArrays())!!
                 .map { PineappleLib.getNmsProvider().itemFromBytes(it) }
                 .toList()
-            val templateKey = blockPdc.get(TEMPLATE_KEY, PersistentDataType.STRING)!!
-            val sizeKey = blockPdc.get(SIZE_KEY, PersistentDataType.INTEGER)!!
+            val templateKey = blockPdc.get(PDC_TEMPLATE_KEY, PersistentDataType.STRING)!!
+            val sizeKey = blockPdc.get(PDC_SIZE_KEY, PersistentDataType.INTEGER)!!
 
             val collector = Collector(templateKey, sizeKey, position)
             collector.addContentsList(contents)
@@ -68,29 +67,29 @@ class Collector(val templateKey: String, val size: Int, val position: Position) 
 
         fun save(chunk: Chunk, collector: Collector) {
             val chunkPdc = chunk.persistentDataContainer
-            val hasPosition = chunkPdc.has(POSITION_KEY, PDCConstants.POSITION_DATA_TYPE)
+            val hasPosition = chunkPdc.has(PDC_POSITION_KEY, PDC_POSITION_DATA_TYPE)
             val position = collector.position
 
             if (!hasPosition) {
-                chunkPdc.set(POSITION_KEY, PDCConstants.POSITION_DATA_TYPE, position)
+                chunkPdc.set(PDC_POSITION_KEY, PDC_POSITION_DATA_TYPE, position)
             }
 
             val tileState = chunk.world.getBlockState(position.toLocation()) as TileState
             val blockPdc = tileState.persistentDataContainer
             blockPdc.set(
-                CONTENT_KEY,
+                PDC_CONTENT_KEY,
                 PersistentDataType.LIST.byteArrays(),
                 collector.getContentsCopy().map { PineappleLib.getNmsProvider().itemToBytes(it) }.toList()
             )
-            blockPdc.set(TEMPLATE_KEY, PersistentDataType.STRING, collector.templateKey)
-            blockPdc.set(SIZE_KEY, PersistentDataType.INTEGER, collector.size)
+            blockPdc.set(PDC_TEMPLATE_KEY, PersistentDataType.STRING, collector.templateKey)
+            blockPdc.set(PDC_SIZE_KEY, PersistentDataType.INTEGER, collector.size)
             tileState.update()
         }
 
         fun delete(chunk: Chunk) {
             val pdc = chunk.persistentDataContainer
-            if (!pdc.has(POSITION_KEY)) return
-            pdc.remove(POSITION_KEY)
+            if (!pdc.has(PDC_POSITION_KEY)) return
+            pdc.remove(PDC_POSITION_KEY)
         }
     }
 

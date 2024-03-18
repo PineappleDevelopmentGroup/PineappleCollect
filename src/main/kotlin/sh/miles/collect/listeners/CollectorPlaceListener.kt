@@ -47,9 +47,7 @@ object CollectorPlaceListener : Listener {
                     return
                 }
 
-                Bukkit.getScheduler().runTask(CollectPlugin.plugin, Runnable {
-                    placeTemplate(event.blockPlaced, template.some())
-                })
+                placeTemplate(event.blockPlaced, template.some())
             }
 
             is None -> {
@@ -59,6 +57,7 @@ object CollectorPlaceListener : Listener {
     }
 
     private fun placeTemplate(block: Block, template: CollectorTemplate) {
+        println("placeTemplate running")
         val state = block.state
 
         if (state !is TileState) {
@@ -68,8 +67,6 @@ object CollectorPlaceListener : Listener {
         val collector = Collector(template.key, 7, Position.fromLocation(block.location))
         CollectorManager.load(collector)
         Collector.save(block.chunk, collector)
-
-        state.update(true)
     }
 
 }

@@ -5,6 +5,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
+import sh.miles.collect.util.PDC_TEMPLATE_KEY
 import sh.miles.pineapple.chat.PineappleComponent
 import sh.miles.pineapple.collection.registry.RegistryKey
 import sh.miles.pineapple.function.Option
@@ -17,16 +18,15 @@ class CollectorTemplate(
 ) : RegistryKey<String> {
 
     companion object {
-        private val COLLECTOR_KEY = NamespacedKey.fromString("collector:template_key")!!
 
         fun template(itemMeta: ItemMeta): Option<String> {
             return Option.some(
-                itemMeta.persistentDataContainer.get(COLLECTOR_KEY, PersistentDataType.STRING) ?: return Option.none()
+                itemMeta.persistentDataContainer.get(PDC_TEMPLATE_KEY, PersistentDataType.STRING) ?: return Option.none()
             )
         }
 
         fun hasTemplate(itemMeta: ItemMeta): Boolean {
-            return itemMeta.persistentDataContainer.has(COLLECTOR_KEY)
+            return itemMeta.persistentDataContainer.has(PDC_TEMPLATE_KEY)
         }
     }
 
@@ -35,7 +35,7 @@ class CollectorTemplate(
     init {
         val temp = source.clone()
         val meta = temp.itemMeta!!
-        meta.run { persistentDataContainer.set(COLLECTOR_KEY, PersistentDataType.STRING, key) }
+        meta.run { persistentDataContainer.set(PDC_TEMPLATE_KEY, PersistentDataType.STRING, key) }
         temp.itemMeta = meta
 
         item = temp.clone()

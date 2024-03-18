@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.inventory.EquipmentSlot
 import sh.miles.collect.collector.Collector
 import sh.miles.collect.collector.CollectorManager
 
@@ -13,6 +14,7 @@ object CollectorInteractListener : Listener {
 
     @EventHandler
     fun onPlayerInteract(event: PlayerInteractEvent) {
+        if (event.hand != EquipmentSlot.HAND) return
         if (event.action != Action.RIGHT_CLICK_BLOCK) return
         val clickedBlock = event.clickedBlock ?: return
         if (!Collector.isCollector(clickedBlock.state)) return

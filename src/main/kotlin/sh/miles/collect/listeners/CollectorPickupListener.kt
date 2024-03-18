@@ -1,5 +1,6 @@
 package sh.miles.collect.listeners
 
+import org.bukkit.block.TileState
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
@@ -21,6 +22,7 @@ object CollectorPickupListener : Listener {
             is Some -> {
                 CollectorManager.unload(block.chunk)
                 Collector.delete(block.chunk)
+                println("attempted")
             }
 
             is None -> return

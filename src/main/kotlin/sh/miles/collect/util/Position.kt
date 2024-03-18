@@ -10,7 +10,7 @@ data class Position(val uuid: UUID, val x: Int, val y: Int, val z: Int) {
     }
 
     fun chunkpos(): ChunkPosition {
-        return ChunkPosition(uuid, x shl 4, z shl 4);
+        return ChunkPosition(uuid, x shr 4, z shr 4);
     }
 
     override fun equals(other: Any?): Boolean {
