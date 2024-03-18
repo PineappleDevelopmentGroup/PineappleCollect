@@ -13,7 +13,7 @@ object CollectorInteractListener : Listener {
 
     @EventHandler
     fun onPlayerInteract(event: PlayerInteractEvent) {
-        if (event.action != Action.LEFT_CLICK_BLOCK) return
+        if (event.action != Action.RIGHT_CLICK_BLOCK) return
         val clickedBlock = event.clickedBlock ?: return
         if (!Collector.isCollector(clickedBlock.state)) return
 

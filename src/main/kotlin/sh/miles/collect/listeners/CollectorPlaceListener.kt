@@ -1,11 +1,13 @@
 package sh.miles.collect.listeners
 
+import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.block.TileState
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
+import sh.miles.collect.CollectPlugin
 import sh.miles.collect.collector.Collector
 import sh.miles.collect.collector.CollectorManager
 import sh.miles.collect.collector.CollectorTemplate
@@ -41,11 +43,13 @@ object CollectorPlaceListener : Listener {
                 if (Collector.hasCollector(event.blockPlaced.chunk)) {
                     // TODO: send message Collector placed at [position]
                     event.player.sendMessage("Collector already placed in this chunk")
+                    event.isCancelled = true
                     return
                 }
 
-                placeTemplate(event.blockPlaced, template.some())
-                event.isCancelled = true
+                Bukkit.getScheduler().runTask(CollectPlugin.plugin, Runnable {
+                    placeTemplate(event.blockPlaced, template.some())
+                })
             }
 
             is None -> {
@@ -55,8 +59,6 @@ object CollectorPlaceListener : Listener {
     }
 
     private fun placeTemplate(block: Block, template: CollectorTemplate) {
-        val data = template.blockEntity.createBlockData()
-        block.setBlockData(data, true)
         val state = block.state
 
         if (state !is TileState) {

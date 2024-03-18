@@ -13,6 +13,26 @@ data class Position(val uuid: UUID, val x: Int, val y: Int, val z: Int) {
         return ChunkPosition(uuid, x shl 4, z shl 4);
     }
 
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is Position) return false
+
+        if (uuid != other.uuid) return false
+        if (x != other.x) return false
+        if (y != other.y) return false
+        if (z != other.z) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = uuid.hashCode()
+        result = 31 * result + x
+        result = 31 * result + y
+        result = 31 * result + z
+        return result
+    }
+
     companion object {
         fun fromLocation(location: Location): Position {
             return Position(location.world!!.uid, location.blockX, location.blockY, location.blockZ)

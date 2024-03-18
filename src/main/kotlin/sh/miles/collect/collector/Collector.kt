@@ -86,6 +86,12 @@ class Collector(val templateKey: String, val size: Int, val position: Position) 
             blockPdc.set(SIZE_KEY, PersistentDataType.INTEGER, collector.size)
             tileState.update()
         }
+
+        fun delete(chunk: Chunk) {
+            val pdc = chunk.persistentDataContainer
+            if (!pdc.has(POSITION_KEY)) return
+            pdc.remove(POSITION_KEY)
+        }
     }
 
 }

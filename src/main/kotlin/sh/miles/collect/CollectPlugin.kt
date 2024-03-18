@@ -4,6 +4,8 @@ import org.bukkit.plugin.java.JavaPlugin
 import sh.miles.collect.command.CollectorCommand
 import sh.miles.collect.listeners.ChunkStateListener
 import sh.miles.collect.listeners.CollectorInteractListener
+import sh.miles.collect.listeners.CollectorPickupListener
+import sh.miles.collect.listeners.CollectorPlaceListener
 import sh.miles.collect.registry.CollectorTemplateRegistry
 import sh.miles.collect.registry.json.CollectorTemplateAdapter
 import sh.miles.collect.registry.json.PineappleComponentAdapter
@@ -32,6 +34,8 @@ class CollectPlugin : JavaPlugin() {
 
         server.pluginManager.registerEvents(ChunkStateListener, this)
         server.pluginManager.registerEvents(CollectorInteractListener, this)
+        server.pluginManager.registerEvents(CollectorPlaceListener, this)
+        server.pluginManager.registerEvents(CollectorPickupListener, this)
     }
 
     override fun onDisable() {
