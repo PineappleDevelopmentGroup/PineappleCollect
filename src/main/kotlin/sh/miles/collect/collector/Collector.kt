@@ -7,6 +7,7 @@ import org.bukkit.block.BlockState
 import org.bukkit.block.TileState
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
+import sh.miles.collect.collector.inventory.CollectorInventory
 import sh.miles.collect.util.PDC_CONTENT_KEY
 import sh.miles.collect.util.PDC_POSITION_DATA_TYPE
 import sh.miles.collect.util.PDC_POSITION_KEY
@@ -19,23 +20,7 @@ import sh.miles.pineapple.function.Option
 
 class Collector(val templateKey: String, val size: Int, val position: Position) {
 
-    private val contents = NonNullList { ItemStack(Material.AIR) }
-
-    fun getItemAt(index: Int): ItemStack {
-        return contents[index]
-    }
-
-    fun removeItemAt(index: Int): ItemStack {
-        return contents.removeAt(index)
-    }
-
-    fun getContentsCopy(): List<ItemStack> {
-        return contents.stream().toList()
-    }
-
-    fun addContentsList(toAdd: List<ItemStack>) {
-        this.contents.addAll(toAdd)
-    }
+    val inventory: CollectorInventory = CollectorInventory(size)
 
     companion object {
         fun isCollector(blockState: BlockState): Boolean {
@@ -61,7 +46,7 @@ class Collector(val templateKey: String, val size: Int, val position: Position) 
             val sizeKey = blockPdc.get(PDC_SIZE_KEY, PersistentDataType.INTEGER)!!
 
             val collector = Collector(templateKey, sizeKey, position)
-            collector.addContentsList(contents)
+            collector.inventory.addContentsList(contents)
             return Option.some(collector)
         }
 
@@ -79,7 +64,7 @@ class Collector(val templateKey: String, val size: Int, val position: Position) 
             blockPdc.set(
                 PDC_CONTENT_KEY,
                 PersistentDataType.LIST.byteArrays(),
-                collector.getContentsCopy().map { PineappleLib.getNmsProvider().itemToBytes(it) }.toList()
+                collector.inventory.getItems().map { PineappleLib.getNmsProvider().itemToBytes(it) }.toList()
             )
             blockPdc.set(PDC_TEMPLATE_KEY, PersistentDataType.STRING, collector.templateKey)
             blockPdc.set(PDC_SIZE_KEY, PersistentDataType.INTEGER, collector.size)
