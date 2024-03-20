@@ -1,6 +1,8 @@
 package sh.miles.collect
 
 import org.bukkit.plugin.java.JavaPlugin
+import sh.miles.collect.collector.Collector
+import sh.miles.collect.collector.CollectorManager
 import sh.miles.collect.command.CollectorCommand
 import sh.miles.collect.listeners.ChunkStateListener
 import sh.miles.collect.listeners.CollectorInteractListener
@@ -40,6 +42,7 @@ class CollectPlugin : JavaPlugin() {
 
     override fun onDisable() {
         PineappleLib.cleanup()
+        CollectorManager.obtainAll().forEach { Collector.save(it.position.toLocation().chunk, it) }
     }
 
     fun saveResources() {

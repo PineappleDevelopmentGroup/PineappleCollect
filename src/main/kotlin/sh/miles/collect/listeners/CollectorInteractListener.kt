@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import sh.miles.collect.collector.Collector
 import sh.miles.collect.collector.CollectorManager
+import sh.miles.collect.collector.view.CollectorView
 
 object CollectorInteractListener : Listener {
 
@@ -31,6 +32,10 @@ object CollectorInteractListener : Listener {
         """.trimIndent()
         )
 
+        val menu = CollectorView(player, collector.inventory)
+        menu.open()
+
+        event.setUseInteractedBlock(Event.Result.DENY)
         event.setUseItemInHand(Event.Result.DENY)
         event.isCancelled = true
     }

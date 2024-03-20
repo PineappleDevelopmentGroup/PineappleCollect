@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.22"
+    id("idea")
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.3"
 }
@@ -22,10 +23,15 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.1")
 
     compileOnly("org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT") { isChanging = true }
-    implementation("sh.miles:Pineapple:1.0.0-SNAPSHOT") {
-        isChanging = true
-    }
+    implementation("sh.miles:Pineapple:1.0.0-SNAPSHOT") { isChanging = true }
     bukkitLibrary(kotlin("stdlib"))
+}
+
+idea {
+    module {
+        isDownloadJavadoc = true
+        isDownloadSources = true
+    }
 }
 
 tasks.compileKotlin {

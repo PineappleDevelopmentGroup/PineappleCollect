@@ -29,4 +29,8 @@ object CollectorManager {
     fun obtain(chunkPosition: ChunkPosition): Option<Collector> {
         return Option.some(loadedCollectors[chunkPosition] ?: return Option.none())
     }
+
+    fun obtainAll(): Collection<Collector> {
+        return loadedCollectors.values
+    }
 }

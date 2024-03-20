@@ -13,16 +13,32 @@ object ChunkStateListener : Listener {
 
     @EventHandler
     fun onChunkLoad(event: ChunkLoadEvent) {
+        if (!Collector.hasCollector(event.chunk)) {
+            return
+        }
+
         when (val collector = Collector.load(event.chunk)) {
-            is Some<Collector> -> CollectorManager.load(collector.some())
+            is Some<Collector> -> {
+                println("Load collector at ${collector.some().position}")
+                CollectorManager.load(collector.some())
+            }
+
             is None<Collector> -> return
         }
     }
 
     @EventHandler
     fun onChunkUnload(event: ChunkUnloadEvent) {
+        if (!Collector.hasCollector(event.chunk)) {
+            return
+        }
+
         when (val collector = CollectorManager.unload(event.chunk)) {
-            is Some<Collector> -> Collector.save(event.chunk, collector.some())
+            is Some<Collector> -> {
+                println("Saving collector at ${collector.some().position}")
+                Collector.save(event.chunk, collector.some())
+            }
+
             is None<Collector> -> return
         }
     }
