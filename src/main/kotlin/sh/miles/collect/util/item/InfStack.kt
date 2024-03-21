@@ -96,7 +96,10 @@ class InfStack {
     private fun setChanged() {
         val meta = this.source.itemMeta!!
         meta.persistentDataContainer.set(PDC_SIZE_KEY, PersistentDataType.LONG, size)
-        meta.lore = listOf("Amount: $size")
+        val lore = if (meta.hasLore()) meta.lore!! else ArrayList()
+        if (lore.size >= 1 && lore[lore.size - 1].startsWith("Amount:")) lore.removeAt(lore.size - 1)
+        lore.add("Amount: $size")
+        meta.lore = lore
         source.itemMeta = meta
     }
 
