@@ -67,9 +67,9 @@ class InfStack {
         }
 
         val endStackSize: Int
-        if (this.size > 64) {
-            this.size -= 64
-            endStackSize = 64
+        if (this.size > amount) {
+            this.size -= amount
+            endStackSize = amount
         } else {
             endStackSize = this.size.toInt()
             this.size = 0
