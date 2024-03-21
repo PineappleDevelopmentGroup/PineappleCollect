@@ -1,13 +1,9 @@
 package sh.miles.collect.collector
 
 import org.bukkit.Chunk
-import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.block.BlockState
 import org.bukkit.block.TileState
-import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
-import sh.miles.collect.collector.inventory.CollectorInventory
 import sh.miles.collect.util.PDC_CONTENT_KEY
 import sh.miles.collect.util.PDC_POSITION_DATA_TYPE
 import sh.miles.collect.util.PDC_POSITION_KEY
@@ -15,12 +11,13 @@ import sh.miles.collect.util.PDC_SIZE_KEY
 import sh.miles.collect.util.PDC_TEMPLATE_KEY
 import sh.miles.collect.util.Position
 import sh.miles.pineapple.PineappleLib
-import sh.miles.pineapple.collection.NonNullList
+import sh.miles.pineapple.container.Container
+import sh.miles.pineapple.container.SimpleContainer
 import sh.miles.pineapple.function.Option
 
 class Collector(val templateKey: String, val size: Int, val position: Position) {
 
-    val inventory: CollectorInventory = CollectorInventory(size)
+    val inventory: Container = SimpleContainer(size)
 
     companion object {
         fun isCollector(blockState: BlockState): Boolean {
@@ -39,14 +36,15 @@ class Collector(val templateKey: String, val size: Int, val position: Position) 
 
             val tileState = chunk.world.getBlockState(position.toLocation()) as TileState
             val blockPdc = tileState.persistentDataContainer
-            val contents = blockPdc.get(PDC_CONTENT_KEY, PersistentDataType.LIST.byteArrays())!!
-                .map { PineappleLib.getNmsProvider().itemFromBytes(it) }
-                .toList()
             val templateKey = blockPdc.get(PDC_TEMPLATE_KEY, PersistentDataType.STRING)!!
             val sizeKey = blockPdc.get(PDC_SIZE_KEY, PersistentDataType.INTEGER)!!
+            val contents = PineappleLib.getNmsProvider()
+                .itemsFromBytes(blockPdc.get(PDC_CONTENT_KEY, PersistentDataType.BYTE_ARRAY)!!, sizeKey)
 
             val collector = Collector(templateKey, sizeKey, position)
-            collector.inventory.addContentsList(contents)
+            for ((index, itemStack) in contents.withIndex()) {
+                collector.inventory.setItemAt(index, itemStack)
+            }
             return Option.some(collector)
         }
 
@@ -63,8 +61,8 @@ class Collector(val templateKey: String, val size: Int, val position: Position) 
             val blockPdc = tileState.persistentDataContainer
             blockPdc.set(
                 PDC_CONTENT_KEY,
-                PersistentDataType.LIST.byteArrays(),
-                collector.inventory.getItems().map { PineappleLib.getNmsProvider().itemToBytes(it) }.toList()
+                PersistentDataType.BYTE_ARRAY,
+                PineappleLib.getNmsProvider().itemsToBytes(collector.inventory.contents)
             )
             blockPdc.set(PDC_TEMPLATE_KEY, PersistentDataType.STRING, collector.templateKey)
             blockPdc.set(PDC_SIZE_KEY, PersistentDataType.INTEGER, collector.size)

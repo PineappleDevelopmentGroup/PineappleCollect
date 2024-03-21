@@ -64,9 +64,9 @@ object CollectorPlaceListener : Listener {
             throw IllegalStateException("The template ${template.key}'s field \"block_entity\" is not a block entity instead found ${template.blockEntity} which is not a block entity")
         }
 
-        val collector = Collector(template.key, 7, Position.fromLocation(block.location))
-        CollectorManager.load(collector)
+        val collector = Collector(template.key, 27, Position.fromLocation(block.location))
         Collector.save(block.chunk, collector)
+        CollectorManager.load(collector)
     }
 
 }

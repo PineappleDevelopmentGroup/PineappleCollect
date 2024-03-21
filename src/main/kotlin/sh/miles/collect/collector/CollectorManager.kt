@@ -6,10 +6,11 @@ import sh.miles.pineapple.function.Option
 
 object CollectorManager {
 
-    private val loadedCollectors = mutableMapOf<ChunkPosition, Collector>()
+    private val loadedCollectors = HashMap<ChunkPosition, Collector>()
 
     fun load(collector: Collector) {
         loadedCollectors[collector.position.chunkpos()] = collector
+        println(loadedCollectors.values.map { it.position.chunkpos() }.toList())
     }
 
     fun unload(chunk: Chunk): Option<Collector> {
@@ -17,6 +18,7 @@ object CollectorManager {
     }
 
     fun unload(chunkPosition: ChunkPosition): Option<Collector> {
+        println("$chunkPosition | ${loadedCollectors.values.map { it.position.chunkpos() }.toList()}")
         return Option.some(loadedCollectors.remove(chunkPosition) ?: return Option.none())
     }
 

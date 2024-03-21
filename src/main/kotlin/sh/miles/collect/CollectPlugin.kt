@@ -38,11 +38,12 @@ class CollectPlugin : JavaPlugin() {
         server.pluginManager.registerEvents(CollectorInteractListener, this)
         server.pluginManager.registerEvents(CollectorPlaceListener, this)
         server.pluginManager.registerEvents(CollectorPickupListener, this)
+
     }
 
     override fun onDisable() {
-        PineappleLib.cleanup()
         CollectorManager.obtainAll().forEach { Collector.save(it.position.toLocation().chunk, it) }
+        PineappleLib.cleanup() // This must be last!
     }
 
     fun saveResources() {
