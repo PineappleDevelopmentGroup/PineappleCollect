@@ -4,20 +4,21 @@ import org.bukkit.Chunk
 import org.bukkit.block.BlockState
 import org.bukkit.block.TileState
 import org.bukkit.persistence.PersistentDataType
+import sh.miles.collect.collector.container.InfStackContainer
 import sh.miles.collect.util.PDC_CONTENT_KEY
 import sh.miles.collect.util.PDC_POSITION_DATA_TYPE
 import sh.miles.collect.util.PDC_POSITION_KEY
 import sh.miles.collect.util.PDC_SIZE_KEY
 import sh.miles.collect.util.PDC_TEMPLATE_KEY
 import sh.miles.collect.util.Position
+import sh.miles.collect.util.item.InfStack
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.container.Container
-import sh.miles.pineapple.container.SimpleContainer
 import sh.miles.pineapple.function.Option
 
 class Collector(val templateKey: String, val size: Int, val position: Position) {
 
-    val inventory: Container = SimpleContainer(size)
+    val inventory: InfStackContainer = InfStackContainer(size)
 
     companion object {
         fun isCollector(blockState: BlockState): Boolean {
@@ -68,6 +69,7 @@ class Collector(val templateKey: String, val size: Int, val position: Position) 
             blockPdc.set(PDC_SIZE_KEY, PersistentDataType.INTEGER, collector.size)
             tileState.update()
         }
+
 
         fun delete(chunk: Chunk) {
             val pdc = chunk.persistentDataContainer

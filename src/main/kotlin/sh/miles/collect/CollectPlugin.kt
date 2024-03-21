@@ -5,6 +5,7 @@ import sh.miles.collect.collector.Collector
 import sh.miles.collect.collector.CollectorManager
 import sh.miles.collect.command.CollectorCommand
 import sh.miles.collect.listeners.ChunkStateListener
+import sh.miles.collect.listeners.CollectorCollectListener
 import sh.miles.collect.listeners.CollectorInteractListener
 import sh.miles.collect.listeners.CollectorPickupListener
 import sh.miles.collect.listeners.CollectorPlaceListener
@@ -38,7 +39,7 @@ class CollectPlugin : JavaPlugin() {
         server.pluginManager.registerEvents(CollectorInteractListener, this)
         server.pluginManager.registerEvents(CollectorPlaceListener, this)
         server.pluginManager.registerEvents(CollectorPickupListener, this)
-
+        server.pluginManager.registerEvents(CollectorCollectListener, this)
     }
 
     override fun onDisable() {
