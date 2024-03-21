@@ -5,6 +5,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.entity.Item
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
+import sh.miles.collect.util.PDC_SIZE_KEY
 import java.lang.IllegalStateException
 
 /**
@@ -34,7 +35,7 @@ class InfStack {
             } else {
                 this.source = setupFromNonInfStack(insert)
             }
-            setupLore()
+            setChanged()
         }
     }
 
@@ -52,7 +53,7 @@ class InfStack {
         if (comparator.type == Material.AIR) return false
         if (this.comparator.isSimilar(itemStack)) {
             this.size += itemStack.amount
-            setupLore()
+            setChanged()
             return true
         }
         return false
@@ -76,7 +77,7 @@ class InfStack {
 
         val result = source.clone()
         result.amount = endStackSize
-        setupLore()
+        setChanged()
         return result
     }
 
@@ -92,14 +93,16 @@ class InfStack {
         return this.comparator.isSimilar(itemStack)
     }
 
-    private fun setupLore() {
+    private fun setChanged() {
         val meta = this.source.itemMeta!!
+        meta.persistentDataContainer.set(PDC_SIZE_KEY, PersistentDataType.LONG, size)
         meta.lore = listOf("Amount: $size")
         source.itemMeta = meta
     }
 
     private fun setupComparator(insert: ItemStack): ItemStack {
         insert.amount = 1
+        // Strip All Extra Data Away
         return insert
     }
 
