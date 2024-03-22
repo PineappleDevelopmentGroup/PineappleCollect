@@ -27,29 +27,6 @@ class CollectorMenuListener(private val container: InfStackContainer, size: Int)
     override fun quickMoveItem(
         context: CustomMenuContext, player: HumanEntity, rawSlot: Int
     ): QuickMoveResult {
-        var result = ItemStack(Material.AIR)
-        val slot = context.getMenuSlot(rawSlot)
-        if (slot != null && slot.hasBukkitItem()) {
-            var slotItem = slot.bukkitItem
-            result = slotItem.clone()
-            if (rawSlot < context.rowAmount * 9) {
-                val mergeResult =
-                    context.mergeItemStackBetween(slotItem, context.rowAmount * 9, context.slotAmount, true)
-                if (!mergeResult.result()) {
-                    return QuickMoveResult.cancel()
-                }
-
-                slotItem = mergeResult.item()
-            } else {
-                return QuickMoveResult.cancel()
-            }
-
-            if (!slotItem.type.isAir && slotItem.amount != 0) {
-                slot.setSlotChanged()
-            } else {
-                slot.setItemByPlayer(ItemStack(Material.AIR))
-            }
-        }
         return QuickMoveResult.cancel()
     }
 
