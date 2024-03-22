@@ -14,12 +14,40 @@ import java.lang.IllegalStateException
 class InfStack {
 
     companion object {
-        val AMOUNT_KEY = NamespacedKey.fromString("collect:stack_size")!!
+        val AMOUNT_KEY = NamespacedKey.fromString("collector:stack_size")!!
+
+        /**
+         * @param stack The data stack that DOES have the modified data, stack size and size pdc keys
+         *
+         */
+        fun createStack(stack: ItemStack): InfStack {
+            val comparator = stack.clone()
+            val source = stack.clone()
+
+            if (comparator.type.isAir) return InfStack()
+
+            val comparatorMeta = comparator.itemMeta!!
+            val comparatorLore = comparatorMeta.lore!!
+            comparatorLore.removeAt(comparatorLore.size - 1)
+            comparatorMeta.lore = comparatorLore
+            val comparatorPdc = comparatorMeta.persistentDataContainer
+            comparatorPdc.remove(AMOUNT_KEY)
+            comparatorPdc.remove(PDC_SIZE_KEY)
+            comparator.itemMeta = comparatorMeta
+
+            return InfStack(source, comparator)
+        }
     }
 
     private val source: ItemStack
     private val comparator: ItemStack
     private var size: Long = 0
+
+    constructor(source: ItemStack, comparator: ItemStack) {
+        this.source = source
+        this.comparator = comparator
+        this.size = this.source.itemMeta!!.persistentDataContainer.getOrDefault(AMOUNT_KEY, PersistentDataType.LONG, 0)
+    }
 
     constructor(top: ItemStack) {
         if (top.type.isAir) {
@@ -95,7 +123,7 @@ class InfStack {
 
     private fun setChanged() {
         val meta = this.source.itemMeta!!
-        meta.persistentDataContainer.set(PDC_SIZE_KEY, PersistentDataType.LONG, size)
+        meta.persistentDataContainer.set(AMOUNT_KEY, PersistentDataType.LONG, size)
         val lore = if (meta.hasLore()) meta.lore!! else ArrayList()
         if (lore.size >= 1 && lore[lore.size - 1].startsWith("Amount:")) lore.removeAt(lore.size - 1)
         lore.add("Amount: $size")

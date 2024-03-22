@@ -21,6 +21,10 @@ class InfStackContainer(private val size: Int) : Container {
         return contents[index].source()
     }
 
+    fun setInfStackAt(index: Int, item: InfStack) {
+        contents[index] = item
+    }
+
     override fun setItemAt(index: Int, item: ItemStack) {
         val infStack = contents[index]
         if (infStack.isEmpty()) {

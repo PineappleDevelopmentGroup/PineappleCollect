@@ -13,7 +13,6 @@ import sh.miles.collect.util.PDC_TEMPLATE_KEY
 import sh.miles.collect.util.Position
 import sh.miles.collect.util.item.InfStack
 import sh.miles.pineapple.PineappleLib
-import sh.miles.pineapple.container.Container
 import sh.miles.pineapple.function.Option
 
 class Collector(val templateKey: String, val size: Int, val position: Position) {
@@ -44,7 +43,7 @@ class Collector(val templateKey: String, val size: Int, val position: Position) 
 
             val collector = Collector(templateKey, sizeKey, position)
             for ((index, itemStack) in contents.withIndex()) {
-                collector.inventory.setItemAt(index, itemStack)
+                collector.inventory.setInfStackAt(index, InfStack.createStack(itemStack))
             }
             return Option.some(collector)
         }
