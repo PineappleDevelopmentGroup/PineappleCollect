@@ -77,6 +77,10 @@ class InfStack {
         return this.source.clone()
     }
 
+    fun sourceType(): Material {
+        return this.source.type
+    }
+
     fun grow(itemStack: ItemStack): Boolean {
         if (comparator.type == Material.AIR) return false
         if (this.comparator.isSimilar(itemStack)) {
@@ -102,8 +106,9 @@ class InfStack {
             endStackSize = this.size.toInt()
             this.size = 0
         }
+        println("After extraction [size=${this.size}, resultStack=$endStackSize]")
 
-        val result = source.clone()
+        val result = comparator.clone()
         result.amount = endStackSize
         setChanged()
         return result

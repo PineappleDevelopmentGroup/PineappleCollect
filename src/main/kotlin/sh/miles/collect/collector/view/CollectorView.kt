@@ -5,8 +5,11 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import sh.miles.collect.collector.container.InfStackContainer
 import sh.miles.collect.collector.view.menu.CollectorMenuListener
+import sh.miles.collect.util.item.InfStack
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.chat.PineappleChat
+import sh.miles.pineapple.function.Option.None
+import sh.miles.pineapple.function.Option.Some
 import sh.miles.pineapple.gui.PlayerGui
 import sh.miles.pineapple.gui.slot.GuiSlot.GuiSlotBuilder
 import sh.miles.pineapple.nms.api.menu.scene.MenuScene
@@ -14,7 +17,12 @@ import sh.miles.pineapple.nms.api.menu.scene.MenuScene
 class CollectorView(viewer: Player, private val container: InfStackContainer) : PlayerGui<MenuScene>(
     {
         PineappleLib.getNmsProvider()
-            .createMenuCustom(viewer, CollectorMenuListener(36), 4, PineappleChat.parse("<gray>Collector Menu"))
+            .createMenuCustom(
+                viewer,
+                CollectorMenuListener(container, 36),
+                4,
+                PineappleChat.parse("<gray>Collector Menu")
+            )
     }, viewer
 ) {
     override fun decorate() {
@@ -23,7 +31,6 @@ class CollectorView(viewer: Player, private val container: InfStackContainer) : 
                 GuiSlotBuilder()
                     .inventory(inventory)
                     .item(itemStack)
-                    .click { it.isCancelled = true }
                     .index(index)
                     .build()
             }
@@ -39,6 +46,27 @@ class CollectorView(viewer: Player, private val container: InfStackContainer) : 
                     .build()
             }
         }
+
+        container.changeListener = ::changeListener
+        cleanEmpties()
     }
 
+    private fun cleanEmpties() {
+        for(i in 0 until container.size) {
+            when(val someStack = container.getInfStackAt(i)) {
+                is Some -> {
+                    val stack = someStack.some()
+                    if (stack.isEmpty()) {
+                        container.setInfStackAt(i, InfStack())
+                    }
+                }
+                is None -> continue
+            }
+
+        }
+    }
+
+    private fun changeListener(index: Int, infStack: InfStack) {
+        slot(index).item = container.getItemAt(index)
+    }
 }
