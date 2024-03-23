@@ -77,6 +77,10 @@ class InfStack {
         return this.source.clone()
     }
 
+    fun comparator(): ItemStack {
+        return this.comparator.clone()
+    }
+
     fun sourceType(): Material {
         return this.source.type
     }

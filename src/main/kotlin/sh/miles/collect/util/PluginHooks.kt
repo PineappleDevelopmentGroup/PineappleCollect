@@ -21,9 +21,18 @@ object PluginHooks {
 
     /**
      * MAKE SURE THIS IS CALLED AFTER ITEMS HAVE BEEN REMOVED
-     * IT DOES GIVE THE PLAYER THAT AMOUNT OF ITEMS
+     * IT DOES GIVE THE PLAYER THE MONEY VALUE OF ITEMS
      */
-    fun sellItem(player: Player, stack: ItemStack, amount: Int) {
+    fun sellItem(player: Player, stack: ItemStack, amount: Long) {
+        var toChange = amount
+        while (toChange > Int.MAX_VALUE) {
+            sellItem(player, stack, Int.MAX_VALUE)
+            toChange -= Int.MAX_VALUE
+        }
+        sellItem(player, stack, toChange.toInt())
+    }
+
+    private fun sellItem(player: Player, stack: ItemStack, amount: Int) {
         val shopItem = ShopGuiPlusApi.getItemStackShopItem(player, stack)
         val sellPrice = shopItem.getSellPriceForAmount(player, amount)
         giveBalance(player, sellPrice)

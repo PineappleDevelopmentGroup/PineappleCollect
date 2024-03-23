@@ -5,6 +5,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import sh.miles.collect.collector.container.InfStackContainer
 import sh.miles.collect.collector.view.menu.CollectorMenuListener
+import sh.miles.collect.util.PluginHooks
 import sh.miles.collect.util.item.InfStack
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.chat.PineappleChat
@@ -45,6 +46,28 @@ class CollectorView(viewer: Player, private val container: InfStackContainer) : 
                     .index(index)
                     .build()
             }
+        }
+
+        slot(size() - 1) { inventory ->
+            GuiSlotBuilder()
+                .inventory(inventory)
+                .item(ItemStack(Material.BARRIER))
+                .click { event ->
+                    event.isCancelled = true
+                    val player = event.whoClicked as Player
+                    for (index in 0 until size() - 9) {
+                        when (val option = container.getInfStackAt(index)) {
+                            is Some -> {
+                                val stack = option.some()
+                                PluginHooks.sellItem(player, stack.comparator(), stack.size())
+                                container.setInfStackAt(index, InfStack())
+                            }
+                            is None -> return@click
+                        }
+                    }
+                }
+                .index(size() - 1)
+                .build()
         }
 
         container.changeListener = ::changeListener
