@@ -14,6 +14,7 @@ repositories {
     maven("https://maven.miles.sh/libraries")
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://jitpack.io")
 }
 
 dependencies {
@@ -25,6 +26,8 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT") { isChanging = true }
     implementation("sh.miles:Pineapple:1.0.0-SNAPSHOT") { isChanging = true }
     bukkitLibrary(kotlin("stdlib"))
+
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7")
 }
 
 idea {
@@ -60,6 +63,7 @@ bukkit {
     version = project.version.toString()
     main = "sh.miles.${project.name.lowercase()}.${project.name}Plugin"
     apiVersion = "1.20" // LATEST
+    depend = listOf("Vault")
 }
 
 kotlin {
