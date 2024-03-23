@@ -28,6 +28,7 @@ dependencies {
     bukkitLibrary(kotlin("stdlib"))
 
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
+    compileOnly("com.github.brcdev-minecraft:shopgui-api:3.0.0")
 }
 
 idea {
@@ -63,7 +64,7 @@ bukkit {
     version = project.version.toString()
     main = "sh.miles.${project.name.lowercase()}.${project.name}Plugin"
     apiVersion = "1.20" // LATEST
-    depend = listOf("Vault")
+    depend = listOf("Vault", "ShopGUIPlus")
 }
 
 kotlin {
