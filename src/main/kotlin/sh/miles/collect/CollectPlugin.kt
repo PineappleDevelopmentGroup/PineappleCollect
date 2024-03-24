@@ -44,6 +44,8 @@ class CollectPlugin : JavaPlugin() {
         server.pluginManager.registerEvents(CollectorPlaceListener, this)
         server.pluginManager.registerEvents(CollectorPickupListener, this)
         server.pluginManager.registerEvents(CollectorCollectListener, this)
+
+        CollectorManager.loadUpgrades()
     }
 
     override fun onDisable() {
@@ -54,6 +56,7 @@ class CollectPlugin : JavaPlugin() {
     private fun saveResources() {
         saveResource("collector-templates.json", false)
         saveResource("collector-menu.json", false)
+        saveResource("collector-upgrades.json", false)
     }
 
 }

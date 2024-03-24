@@ -3,9 +3,29 @@
     "id": "standard",
     "block_entity": "lectern",
     "title": "<color:blue>Standard Collector",
+    "size": 27,
     "item": {
       "item_type": "lectern",
       "name": "<color:blue>Standard Collector",
+      "lore": [
+        "<color:gray>Place to start collecting in the chunk you placed it in"
+      ],
+      "enchantment": {
+        "unbreaking": 1
+      },
+      "hide_tool_tip": [
+        "hide_enchants"
+      ]
+    }
+  },
+  {
+    "id": "supreme",
+    "block_entity": "enchanting_table",
+    "title": "<color:green>Supreme Collector",
+    "size": 36,
+    "item": {
+      "item_type": "enchanting_table",
+      "name": "<color:green>Supreme Collector",
       "lore": [
         "<color:gray>Place to start collecting in the chunk you placed it in"
       ],

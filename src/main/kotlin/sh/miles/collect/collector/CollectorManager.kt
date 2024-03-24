@@ -1,13 +1,32 @@
 package sh.miles.collect.collector
 
+import com.google.gson.reflect.TypeToken
 import org.bukkit.Chunk
+import sh.miles.collect.CollectPlugin
+import sh.miles.collect.registry.CollectorTemplateRegistry
 import sh.miles.collect.util.ChunkPosition
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.function.Option
+import java.io.File
+import java.io.FileReader
+import java.lang.reflect.Array
 
 object CollectorManager {
 
     private val loadedCollectors = HashMap<ChunkPosition, Collector>()
+    private val upgrades = HashMap<String, String>()
+
+    fun loadUpgrades() {
+        val listType = object : TypeToken<List<String>>() {}.type
+        val upgrades: List<String> = CollectPlugin.plugin.json.gson.fromJson(File(CollectPlugin.plugin.dataFolder, "collector-upgrades.json").reader(), listType)
+        for (i in 0 until upgrades.size - 1) {
+            val current = upgrades[i]
+            val next = upgrades[i + 1]
+            this.upgrades[current] = next
+        }
+
+        println(this.upgrades)
+    }
 
     fun load(collector: Collector) {
         loadedCollectors[collector.position.chunkpos()] = collector
@@ -31,6 +50,11 @@ object CollectorManager {
     fun obtain(chunkPosition: ChunkPosition): Option<Collector> {
         println("Collector Status: ${loadedCollectors[chunkPosition]}")
         return Option.some(loadedCollectors[chunkPosition] ?: return Option.none())
+    }
+
+    fun getUpgradeTemplate(currentKey: String): Option<CollectorTemplate> {
+        val nextName = this.upgrades[currentKey] ?: return Option.none()
+        return CollectorTemplateRegistry.get(nextName)
     }
 
     fun obtainAll(): Collection<Collector> {

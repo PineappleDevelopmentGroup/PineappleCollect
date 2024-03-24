@@ -14,7 +14,8 @@ class CollectorTemplate(
     private val key: String,
     val blockEntity: Material,
     val title: PineappleComponent,
-    private val source: ItemStack
+    private val source: ItemStack,
+    val size: Int
 ) : RegistryKey<String> {
 
     companion object {

@@ -28,6 +28,10 @@ object CollectorInteractListener : Listener {
             is None -> CollectorManager.recoverFromUnloaded(clickedBlock.chunk)
         }
 
+        event.setUseInteractedBlock(Event.Result.DENY)
+        event.setUseItemInHand(Event.Result.DENY)
+        event.isCancelled = true
+
         val player = event.player
         player.sendMessage(
             """
@@ -38,12 +42,8 @@ object CollectorInteractListener : Listener {
         """.trimIndent()
         )
 
-        val menu = CollectorView(player, collector.inventory)
+        val menu = CollectorView(player, collector.inventory, collector.size + 9, collector.templateKey, collector.position)
         menu.open()
-
-        event.setUseInteractedBlock(Event.Result.DENY)
-        event.setUseItemInHand(Event.Result.DENY)
-        event.isCancelled = true
     }
 
 }

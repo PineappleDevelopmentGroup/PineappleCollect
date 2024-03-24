@@ -51,7 +51,12 @@ object CollectorTemplateAdapter : JsonAdapter<CollectorTemplate> {
             .run { context.deserialize<ItemStack>(parent.get("item"), ItemStack::class.java) }
             .hard(javaClass, "deserialize").orThrow()
 
-        return CollectorTemplate(id, blockEntity, title, item)
+        val size = PineappleLib.getAnomalyFactory().create()
+            .message("CollectorTemplate must have \"size\" field")
+            .run { parent.get("size").asInt }
+            .hard(javaClass, "deserialize").orThrow()
+
+        return CollectorTemplate(id, blockEntity, title, item, size)
     }
 
     override fun getAdapterType(): Class<CollectorTemplate> {
