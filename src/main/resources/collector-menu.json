@@ -1,0 +1,34 @@
+{
+  "background_item": {
+    "item_type": "black_stained_glass_pane",
+    "name": " "
+  },
+  "sell_item": {
+    "item_type": "gold_ingot",
+    "name": "<color:gold>Sell All",
+    "lore": [
+      "<italics:!><color:gray>Sells All Items In The Collector"
+    ],
+    "enchantment": {
+      "unbreaking": 1
+    },
+    "hide_tool_tip": [
+      "hide_enchants"
+    ]
+  },
+  "upgrades_item": {
+    "item_type": "piston",
+    "name": "<color:#4ed5e5>Upgrades",
+    "lore": [
+      "<italics:!><color:gray>Upgrade Your Collector"
+    ],
+    "enchantment": {
+      "unbreaking": 1
+    },
+    "hide_tool_tip": [
+      "hide_enchants"
+    ]
+  },
+  "sell_item_location": 8,
+  "upgrade_item_location": 0
+}

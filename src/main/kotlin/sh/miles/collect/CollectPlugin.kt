@@ -12,6 +12,8 @@ import sh.miles.collect.listeners.CollectorPlaceListener
 import sh.miles.collect.registry.CollectorTemplateRegistry
 import sh.miles.collect.registry.json.CollectorTemplateAdapter
 import sh.miles.collect.registry.json.PineappleComponentAdapter
+import sh.miles.collect.util.CollectorMenuSpec
+import sh.miles.collect.util.json.CollectorMenuSpecAdapter
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.json.JsonHelper
 
@@ -23,7 +25,8 @@ class CollectPlugin : JavaPlugin() {
 
     val json: JsonHelper = JsonHelper(
         PineappleComponentAdapter,
-        CollectorTemplateAdapter
+        CollectorTemplateAdapter,
+        CollectorMenuSpecAdapter
     )
 
     override fun onEnable() {
@@ -32,6 +35,7 @@ class CollectPlugin : JavaPlugin() {
         PineappleLib.initialize(this)
 
         CollectorTemplateRegistry.run { }
+        CollectorMenuSpec.run { }
 
         PineappleLib.getCommandRegistry().register(CollectorCommand)
 
@@ -47,8 +51,9 @@ class CollectPlugin : JavaPlugin() {
         PineappleLib.cleanup() // This must be last!
     }
 
-    fun saveResources() {
+    private fun saveResources() {
         saveResource("collector-templates.json", false)
+        saveResource("collector-menu.json", false)
     }
 
 }

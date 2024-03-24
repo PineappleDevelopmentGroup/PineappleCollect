@@ -5,6 +5,7 @@ import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import sh.miles.collect.collector.container.InfStackContainer
 import sh.miles.collect.collector.view.menu.CollectorMenuListener
+import sh.miles.collect.util.CollectorMenuSpec
 import sh.miles.collect.util.PluginHooks
 import sh.miles.collect.util.item.InfStack
 import sh.miles.pineapple.PineappleLib
@@ -41,17 +42,21 @@ class CollectorView(viewer: Player, private val container: InfStackContainer) : 
             slot(index) { inventory ->
                 GuiSlotBuilder()
                     .inventory(inventory)
-                    .item(ItemStack(Material.BLACK_STAINED_GLASS_PANE))
-                    .click { it.isCancelled = true }
+                    .item(CollectorMenuSpec.backgroundItem)
+                    .click {
+                        it.isCancelled = true
+                        // TODO: Open Upgrade Menu
+                    }
                     .index(index)
                     .build()
             }
         }
 
-        slot(size() - 1) { inventory ->
+        val sellItemLoc = container.size + CollectorMenuSpec.sellItemLoc
+        slot(sellItemLoc) {
             GuiSlotBuilder()
-                .inventory(inventory)
-                .item(ItemStack(Material.BARRIER))
+                .inventory(it)
+                .item(CollectorMenuSpec.sellItem)
                 .click { event ->
                     event.isCancelled = true
                     val player = event.whoClicked as Player
@@ -62,12 +67,25 @@ class CollectorView(viewer: Player, private val container: InfStackContainer) : 
                                 PluginHooks.sellItem(player, stack.comparator(), stack.size())
                                 container.setInfStackAt(index, InfStack())
                             }
+
                             is None -> return@click
                         }
                     }
                     cleanEmpties()
                 }
-                .index(size() - 1)
+                .index(sellItemLoc)
+                .build()
+        }
+
+        val upgradeItemLoc = container.size + CollectorMenuSpec.upgradeItemLoc
+        slot(upgradeItemLoc) {
+            GuiSlotBuilder()
+                .inventory(it)
+                .item(CollectorMenuSpec.upgradeItem)
+                .click { event ->
+                    event.isCancelled = true
+                }
+                .index(upgradeItemLoc)
                 .build()
         }
 
