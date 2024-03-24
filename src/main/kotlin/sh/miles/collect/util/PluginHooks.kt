@@ -33,7 +33,7 @@ object PluginHooks {
     }
 
     private fun sellItem(player: Player, stack: ItemStack, amount: Int) {
-        val shopItem = ShopGuiPlusApi.getItemStackShopItem(player, stack)
+        val shopItem = ShopGuiPlusApi.getItemStackShopItem(player, stack) ?: return
         val sellPrice = shopItem.getSellPriceForAmount(player, amount)
         giveBalance(player, sellPrice)
     }

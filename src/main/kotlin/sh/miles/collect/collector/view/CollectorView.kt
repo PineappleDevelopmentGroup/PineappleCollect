@@ -65,6 +65,7 @@ class CollectorView(viewer: Player, private val container: InfStackContainer) : 
                             is None -> return@click
                         }
                     }
+                    cleanEmpties()
                 }
                 .index(size() - 1)
                 .build()
@@ -75,18 +76,19 @@ class CollectorView(viewer: Player, private val container: InfStackContainer) : 
     }
 
     private fun cleanEmpties() {
-        for(i in 0 until container.size) {
-            when(val someStack = container.getInfStackAt(i)) {
+        for (i in 0 until container.size) {
+            when (val someStack = container.getInfStackAt(i)) {
                 is Some -> {
                     val stack = someStack.some()
                     if (stack.isEmpty()) {
                         container.setInfStackAt(i, InfStack())
                     }
                 }
+
                 is None -> continue
             }
-
         }
+        container.condense()
     }
 
     private fun changeListener(index: Int, infStack: InfStack) {
