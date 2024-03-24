@@ -6,6 +6,7 @@ import org.bukkit.event.entity.EntityDeathEvent
 import org.bukkit.inventory.ItemStack
 import sh.miles.collect.collector.Collector
 import sh.miles.collect.collector.CollectorManager
+import sh.miles.collect.util.PluginHooks
 import sh.miles.pineapple.function.Option.None
 import sh.miles.pineapple.function.Option.Some
 
@@ -26,7 +27,7 @@ object CollectorCollectListener : Listener {
         var drop: ItemStack
         while (iterator.hasNext()) {
             drop = iterator.next()
-            if (inventory.addItem(drop)) {
+            if (PluginHooks.isSellable(drop) && inventory.addItem(drop)) {
                 iterator.remove()
             }
         }

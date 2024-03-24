@@ -5,9 +5,9 @@
   },
   "sell_item": {
     "item_type": "gold_ingot",
-    "name": "<color:gold>Sell All",
+    "name": "<italic:!><color:gold>Sell All",
     "lore": [
-      "<italics:!><color:gray>Sells All Items In The Collector"
+      "<italic:!><color:gray>Sells All Items In The Collector"
     ],
     "enchantment": {
       "unbreaking": 1
@@ -18,9 +18,9 @@
   },
   "upgrades_item": {
     "item_type": "piston",
-    "name": "<color:#4ed5e5>Upgrades",
+    "name": "<italic:!><color:#4ed5e5>Upgrades",
     "lore": [
-      "<italics:!><color:gray>Upgrade Your Collector"
+      "<italic:!><color:gray>Upgrade Your Collector"
     ],
     "enchantment": {
       "unbreaking": 1

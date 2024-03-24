@@ -32,6 +32,10 @@ object PluginHooks {
         sellItem(player, stack, toChange.toInt())
     }
 
+    fun isSellable(stack: ItemStack): Boolean {
+        return ShopGuiPlusApi.getItemStackShopItem(stack) != null
+    }
+
     private fun sellItem(player: Player, stack: ItemStack, amount: Int) {
         val shopItem = ShopGuiPlusApi.getItemStackShopItem(player, stack) ?: return
         val sellPrice = shopItem.getSellPriceForAmount(player, amount)
