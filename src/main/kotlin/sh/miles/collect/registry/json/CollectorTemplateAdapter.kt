@@ -5,10 +5,12 @@ import com.google.gson.JsonElement
 import com.google.gson.JsonSerializationContext
 import org.bukkit.Material
 import org.bukkit.inventory.ItemStack
-import sh.miles.collect.collector.CollectorTemplate
+import sh.miles.collect.collector.template.CollectorTemplate
+import sh.miles.collect.collector.template.CollectorTemplateUpgradeData
 import sh.miles.collect.util.CollectUtils
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.chat.PineappleComponent
+import sh.miles.pineapple.function.Option
 import sh.miles.pineapple.json.JsonAdapter
 import java.lang.reflect.Type
 
@@ -56,7 +58,26 @@ object CollectorTemplateAdapter : JsonAdapter<CollectorTemplate> {
             .run { parent.get("size").asInt }
             .hard(javaClass, "deserialize").orThrow()
 
-        return CollectorTemplate(id, blockEntity, title, item, size)
+        val hasUpgradeData = parent.has("upgrade_data")
+        val upgradeData: Option<CollectorTemplateUpgradeData> = if (hasUpgradeData) {
+            val upgradeDataObject = parent.get("upgrade_data").asJsonObject
+
+            val sizeUpgradeKey = PineappleLib.getAnomalyFactory().create()
+                .message("If an \"upgrade_data\" block is present it must contain a \"size_upgrade_key\" field")
+                .run { upgradeDataObject.get("size_upgrade_key").asString }
+                .hard(javaClass, "deserialize").orThrow()
+
+            val sizeUpgradeCost = PineappleLib.getAnomalyFactory().create()
+                .message("If an \"upgrade_data\" block is present it must contain a \"size_upgrade_cost\" field")
+                .run { upgradeDataObject.get("size_upgrade_cost").asDouble }
+                .hard(javaClass, "deserialize").orThrow()
+
+            Option.some(CollectorTemplateUpgradeData(sizeUpgradeKey, sizeUpgradeCost))
+        } else {
+            Option.none()
+        }
+
+        return CollectorTemplate(id, blockEntity, title, item, size, upgradeData)
     }
 
     override fun getAdapterType(): Class<CollectorTemplate> {

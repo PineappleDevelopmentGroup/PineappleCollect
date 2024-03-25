@@ -4,7 +4,7 @@ import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
-import sh.miles.collect.collector.CollectorTemplate
+import sh.miles.collect.collector.template.CollectorTemplate
 import sh.miles.collect.registry.CollectorTemplateRegistry
 import sh.miles.pineapple.command.Command
 import sh.miles.pineapple.command.CommandLabel

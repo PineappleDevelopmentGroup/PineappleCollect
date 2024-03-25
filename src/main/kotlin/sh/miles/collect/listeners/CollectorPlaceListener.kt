@@ -1,16 +1,13 @@
 package sh.miles.collect.listeners
 
-import org.bukkit.Bukkit
-import org.bukkit.Location
 import org.bukkit.block.Block
 import org.bukkit.block.TileState
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
-import sh.miles.collect.CollectPlugin
 import sh.miles.collect.collector.Collector
 import sh.miles.collect.collector.CollectorManager
-import sh.miles.collect.collector.CollectorTemplate
+import sh.miles.collect.collector.template.CollectorTemplate
 import sh.miles.collect.registry.CollectorTemplateRegistry
 import sh.miles.collect.util.Position
 import sh.miles.pineapple.function.Option

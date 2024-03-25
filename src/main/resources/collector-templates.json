@@ -4,6 +4,10 @@
     "block_entity": "lectern",
     "title": "<color:blue>Standard Collector",
     "size": 27,
+    "upgrade_data": {
+      "size_upgrade_key": "supreme",
+      "size_upgrade_cost": 1000.0
+    },
     "item": {
       "item_type": "lectern",
       "name": "<color:blue>Standard Collector",

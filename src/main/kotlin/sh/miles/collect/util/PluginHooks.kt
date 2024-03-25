@@ -19,6 +19,14 @@ object PluginHooks {
         this.economy.depositPlayer(player, amount)
     }
 
+    fun canAfford(player: Player, amount: Double): Boolean {
+        return this.economy.has(player, amount)
+    }
+
+    fun removeBalance(player: Player, amount: Double) {
+        this.economy.withdrawPlayer(player, amount)
+    }
+
     /**
      * MAKE SURE THIS IS CALLED AFTER ITEMS HAVE BEEN REMOVED
      * IT DOES GIVE THE PLAYER THE MONEY VALUE OF ITEMS

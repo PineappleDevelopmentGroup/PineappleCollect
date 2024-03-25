@@ -5,9 +5,10 @@ import org.bukkit.entity.Player
 import org.bukkit.persistence.PersistentDataType
 import sh.miles.collect.collector.Collector
 import sh.miles.collect.collector.CollectorManager
-import sh.miles.collect.collector.CollectorTemplate
+import sh.miles.collect.collector.template.CollectorTemplate
 import sh.miles.collect.collector.container.InfStackContainer
 import sh.miles.collect.collector.view.menu.CollectorMenuListener
+import sh.miles.collect.registry.CollectorTemplateRegistry
 import sh.miles.collect.util.CollectorMenuSpec
 import sh.miles.collect.util.PDC_CONTENT_KEY
 import sh.miles.collect.util.PDC_SIZE_KEY
@@ -94,21 +95,42 @@ class CollectorView(viewer: Player, private val container: InfStackContainer, pr
 
 
                     //close inv -> copy current content -> change block -> update state -> add contents -> save
-                    viewer().closeInventory()
                     val newTemplate: CollectorTemplate
-                    when (val option = CollectorManager.getUpgradeTemplate(templateName)) {
-                        is Some -> newTemplate = option.some()
+                    val newTemplateCost: Double
+                    when (val option = CollectorTemplateRegistry.get(templateName)) {
+                        is Some -> {
+                            when (val upgradeOption = option.some().upgradeSpec) {
+                                is Some -> {
+                                    val some = upgradeOption.some()
+                                    newTemplate = CollectorTemplateRegistry.get(some.sizeUpgradeKey).orThrow()
+                                    newTemplateCost = some.sizeUpgradeCost
+                                }
+                                is None -> return@click // If is none it cannot be upgraded as nothing was specified in config on load
+                            }
+                        }
                         is None -> return@click
+                    }
+
+                    viewer().closeInventory()
+
+                    if (!PluginHooks.canAfford(viewer(), newTemplateCost)) {
+                        // TODO add to messages.yml when added
+                        viewer().spigot().sendMessage(PineappleChat.parse("<red>You cannot afford this upgrade, it costs $newTemplateCost"))
+                        return@click
                     }
 
                     val collectorLocation = position.toLocation()
                     val collectorBlock = collectorLocation.block
+
                     val beforeContent = CollectorManager.obtain(position.chunkpos()).orThrow().inventory.contents
+
                     val chunkLocation = position.chunkpos()
                     val chunk = viewer().world.getChunkAt(chunkLocation.x, chunkLocation.z)
 
                     Collector.delete(chunk)
                     collectorBlock.type = newTemplate.blockEntity
+
+                    PluginHooks.removeBalance(viewer(), newTemplateCost) // This is done after the collector is deleted and the entity is changed so there isnt any loss where it would take money and not do anything else
 
                     val updatedState = collectorBlock.state as TileState
                     val statePdc = updatedState.persistentDataContainer

@@ -1,7 +1,6 @@
-package sh.miles.collect.collector
+package sh.miles.collect.collector.template
 
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.ItemMeta
 import org.bukkit.persistence.PersistentDataType
@@ -15,7 +14,8 @@ class CollectorTemplate(
     val blockEntity: Material,
     val title: PineappleComponent,
     private val source: ItemStack,
-    val size: Int
+    val size: Int,
+    val upgradeSpec: Option<CollectorTemplateUpgradeData>
 ) : RegistryKey<String> {
 
     companion object {
