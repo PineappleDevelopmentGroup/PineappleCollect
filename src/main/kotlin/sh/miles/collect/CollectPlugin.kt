@@ -14,11 +14,16 @@ import sh.miles.collect.registry.json.CollectorTemplateAdapter
 import sh.miles.collect.registry.json.CollectorTemplateUpgradeDataAdapter
 import sh.miles.collect.registry.json.PineappleComponentAdapter
 import sh.miles.collect.util.CollectorMenuSpec
+import sh.miles.collect.util.MessageConfig
 import sh.miles.collect.util.json.CollectorMenuSpecAdapter
 import sh.miles.pineapple.PineappleLib
+import sh.miles.pineapple.config.ConfigWrapper
 import sh.miles.pineapple.json.JsonHelper
+import java.io.File
 
 class CollectPlugin : JavaPlugin() {
+
+    private lateinit var messageConfig: ConfigWrapper
 
     companion object {
         lateinit var plugin: CollectPlugin;
@@ -47,6 +52,7 @@ class CollectPlugin : JavaPlugin() {
         server.pluginManager.registerEvents(CollectorPickupListener, this)
         server.pluginManager.registerEvents(CollectorCollectListener, this)
 
+        this.messageConfig = PineappleLib.getConfigurationManager().createDefault(File(dataFolder, "messages.yml"), MessageConfig.javaClass)
     }
 
     override fun onDisable() {
@@ -57,6 +63,10 @@ class CollectPlugin : JavaPlugin() {
     private fun saveResources() {
         saveResource("collector-templates.json", false)
         saveResource("collector-menu.json", false)
+    }
+
+    fun reloadMessages() {
+        this.messageConfig.load()
     }
 
 }

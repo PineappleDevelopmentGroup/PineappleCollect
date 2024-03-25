@@ -9,6 +9,7 @@ object CollectorCommand : Command(CommandLabel("collect", "collect.command")) {
     init {
         registerSubcommand(DataCommand)
         registerSubcommand(GiveCommand)
+        registerSubcommand(ReloadCommand)
     }
 
 }

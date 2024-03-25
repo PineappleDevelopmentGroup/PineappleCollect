@@ -10,6 +10,7 @@ import sh.miles.collect.collector.container.InfStackContainer
 import sh.miles.collect.collector.view.menu.CollectorMenuListener
 import sh.miles.collect.registry.CollectorTemplateRegistry
 import sh.miles.collect.util.CollectorMenuSpec
+import sh.miles.collect.util.MessageConfig
 import sh.miles.collect.util.PDC_CONTENT_KEY
 import sh.miles.collect.util.PDC_SIZE_KEY
 import sh.miles.collect.util.PDC_TEMPLATE_KEY
@@ -114,8 +115,7 @@ class CollectorView(viewer: Player, private val container: InfStackContainer, pr
                     viewer().closeInventory()
 
                     if (!PluginHooks.canAfford(viewer(), newTemplateCost)) {
-                        // TODO add to messages.yml when added
-                        viewer().spigot().sendMessage(PineappleChat.parse("<red>You cannot afford this upgrade, it costs $newTemplateCost"))
+                        viewer().spigot().sendMessage(MessageConfig.UPGRADE_NOT_ENOUGH_MONEY.component(mapOf("amount" to newTemplateCost)))
                         return@click
                     }
 
