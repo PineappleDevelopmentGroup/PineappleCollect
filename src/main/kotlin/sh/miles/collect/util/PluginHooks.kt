@@ -33,13 +33,13 @@ object PluginHooks {
      * IT DOES GIVE THE PLAYER THE MONEY VALUE OF ITEMS
      */
     fun sellItem(player: Player, stack: ItemStack, amount: Long): BigDecimal {
-        val totalSold = BigDecimal.ZERO
+        var totalSold = BigDecimal.ZERO
         var toChange = amount
         while (toChange > Int.MAX_VALUE) {
-            sellItem(player, stack, Int.MAX_VALUE)
+            totalSold = totalSold.add(sellItem(player, stack, Int.MAX_VALUE))
             toChange -= Int.MAX_VALUE
         }
-        totalSold.add(sellItem(player, stack, toChange.toInt()))
+        totalSold = totalSold.add(sellItem(player, stack, toChange.toInt()))
 
         return totalSold
     }

@@ -15,7 +15,8 @@ class CollectorTemplate(
     val title: PineappleComponent,
     private val source: ItemStack,
     val size: Int,
-    val upgradeSpec: Option<CollectorTemplateUpgradeData>
+    val upgradeSpec: Option<CollectorTemplateUpgradeData>,
+    val hasContentLore: PineappleComponent
 ) : RegistryKey<String> {
 
     companion object {

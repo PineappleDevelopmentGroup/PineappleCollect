@@ -20,6 +20,10 @@ class InfStackContainer(private val size: Int) : Container {
         return Option.some(infStack)
     }
 
+    fun isOnlyAir(): Boolean {
+        return contents[0].source().type.isAir
+    }
+
     override fun getItemAt(index: Int): ItemStack {
         return contents[index].source()
     }

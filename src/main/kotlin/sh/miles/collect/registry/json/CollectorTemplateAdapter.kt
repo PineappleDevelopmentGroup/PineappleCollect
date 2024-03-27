@@ -58,6 +58,11 @@ object CollectorTemplateAdapter : JsonAdapter<CollectorTemplate> {
             .run { parent.get("size").asInt }
             .hard(javaClass, "deserialize").orThrow()
 
+        val hasContent = PineappleLib.getAnomalyFactory().create()
+            .message("CollectorTemplate must have a \"has_content\" field")
+            .run { context.deserialize<PineappleComponent>(parent.get("has_content"), PineappleComponent::class.java) }
+            .hard(javaClass, "deserialize").orThrow()
+
         val hasUpgradeData = parent.has("upgrade_data")
         val upgradeData: Option<CollectorTemplateUpgradeData> = if (hasUpgradeData) {
             val upgradeDataObject = parent.get("upgrade_data").asJsonObject
@@ -77,7 +82,7 @@ object CollectorTemplateAdapter : JsonAdapter<CollectorTemplate> {
             Option.none()
         }
 
-        return CollectorTemplate(id, blockEntity, title, item, size, upgradeData)
+        return CollectorTemplate(id, blockEntity, title, item, size, upgradeData, hasContent)
     }
 
     override fun getAdapterType(): Class<CollectorTemplate> {

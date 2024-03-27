@@ -12,6 +12,8 @@ import sh.miles.collect.registry.CollectorTemplateRegistry
 import sh.miles.collect.util.CollectorMenuSpec
 import sh.miles.collect.util.MessageConfig
 import sh.miles.collect.util.PDC_CONTENT_KEY
+import sh.miles.collect.util.PDC_POSITION_DATA_TYPE
+import sh.miles.collect.util.PDC_POSITION_KEY
 import sh.miles.collect.util.PDC_SIZE_KEY
 import sh.miles.collect.util.PDC_TEMPLATE_KEY
 import sh.miles.collect.util.PluginHooks
@@ -24,6 +26,7 @@ import sh.miles.pineapple.function.Option.Some
 import sh.miles.pineapple.gui.PlayerGui
 import sh.miles.pineapple.gui.slot.GuiSlot.GuiSlotBuilder
 import sh.miles.pineapple.nms.api.menu.scene.MenuScene
+import java.math.BigDecimal
 import java.math.RoundingMode
 
 class CollectorView(viewer: Player, private val container: InfStackContainer, private val size: Int, private val templateName: String, private val position: Position) : PlayerGui<MenuScene>(
@@ -70,18 +73,19 @@ class CollectorView(viewer: Player, private val container: InfStackContainer, pr
                 .click { event ->
                     event.isCancelled = true
                     val player = event.whoClicked as Player
+                    var amount = BigDecimal.ZERO
                     for (index in 0 until size() - 9) {
                         when (val option = container.getInfStackAt(index)) {
                             is Some -> {
                                 val stack = option.some()
-                                val soldFor = PluginHooks.sellItem(player, stack.comparator(), stack.size())
-                                viewer().spigot().sendMessage(MessageConfig.COLLECTOR_SOLD_ALL.component(mapOf("amount" to soldFor.setScale(2, RoundingMode.HALF_UP))))
+                                amount = amount.add(PluginHooks.sellItem(player, stack.comparator(), stack.size()))
                                 container.setInfStackAt(index, InfStack())
                             }
 
-                            is None -> return@click
+                            is None -> break
                         }
                     }
+                    viewer().spigot().sendMessage(MessageConfig.COLLECTOR_SOLD_ALL.component(mapOf("amount" to amount.setScale(2, RoundingMode.HALF_UP))))
                     cleanEmpties()
                 }
                 .index(sellItemLoc)
@@ -133,7 +137,7 @@ class CollectorView(viewer: Player, private val container: InfStackContainer, pr
                     collectorBlock.type = newTemplate.blockEntity
 
                     PluginHooks.removeBalance(viewer(), newTemplateCost) // This is done after the collector is deleted and the entity is changed so there isnt any loss where it would take money and not do anything else
-                    viewer().spigot().sendMessage(MessageConfig.COLLECTOR_UPGRADED.component(mapOf("id" to newTemplate.key, "title" to newTemplate.title)))
+                    viewer().spigot().sendMessage(MessageConfig.COLLECTOR_UPGRADED.component(mapOf("id" to newTemplate.key, "title" to PineappleChat.parseLegacy(newTemplate.title.source))))
 
                     val updatedState = collectorBlock.state as TileState
                     val statePdc = updatedState.persistentDataContainer
@@ -141,6 +145,7 @@ class CollectorView(viewer: Player, private val container: InfStackContainer, pr
                     statePdc.set(PDC_TEMPLATE_KEY, PersistentDataType.STRING, newTemplate.key)
                     statePdc.set(PDC_SIZE_KEY, PersistentDataType.INTEGER, newTemplate.size)
                     statePdc.set(PDC_CONTENT_KEY, PersistentDataType.BYTE_ARRAY, PineappleLib.getNmsProvider().itemsToBytes(beforeContent))
+                    chunk.persistentDataContainer.set(PDC_POSITION_KEY, PDC_POSITION_DATA_TYPE, position)
 
                     updatedState.update()
 

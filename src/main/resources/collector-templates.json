@@ -4,6 +4,7 @@
     "block_entity": "lectern",
     "title": "<color:blue>Standard Collector",
     "size": 27,
+    "has_content": "<color:green>Has Items Inside",
     "upgrade_data": {
       "size_upgrade_key": "supreme",
       "size_upgrade_cost": 1000.0
@@ -27,6 +28,7 @@
     "block_entity": "enchanting_table",
     "title": "<color:green>Supreme Collector",
     "size": 36,
+    "has_content": "<color:green>Has Items Inside",
     "item": {
       "item_type": "enchanting_table",
       "name": "<color:green>Supreme Collector",

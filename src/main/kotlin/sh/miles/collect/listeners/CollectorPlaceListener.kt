@@ -5,11 +5,15 @@ import org.bukkit.block.TileState
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
+import org.bukkit.inventory.ItemStack
 import sh.miles.collect.collector.Collector
 import sh.miles.collect.collector.CollectorManager
 import sh.miles.collect.collector.template.CollectorTemplate
 import sh.miles.collect.registry.CollectorTemplateRegistry
 import sh.miles.collect.util.MessageConfig
+import sh.miles.collect.util.PDC_CONTENT_KEY
+import sh.miles.collect.util.PDC_POSITION_DATA_TYPE
+import sh.miles.collect.util.PDC_POSITION_KEY
 import sh.miles.collect.util.Position
 import sh.miles.pineapple.function.Option
 import sh.miles.pineapple.function.Option.None
@@ -27,7 +31,7 @@ object CollectorPlaceListener : Listener {
 
         val templateString = CollectorTemplate.template(meta)
 
-        val template: Option<CollectorTemplate>;
+        val template: Option<CollectorTemplate>
         when (templateString) {
             is Some -> {
                 template = CollectorTemplateRegistry.get(templateString.some())
@@ -45,7 +49,7 @@ object CollectorPlaceListener : Listener {
                     return
                 }
 
-                placeTemplate(event.blockPlaced, template.some())
+                placeTemplate(event.blockPlaced, template.some(), item)
             }
 
             is None -> {
@@ -54,15 +58,25 @@ object CollectorPlaceListener : Listener {
         }
     }
 
-    private fun placeTemplate(block: Block, template: CollectorTemplate) {
+    private fun placeTemplate(block: Block, template: CollectorTemplate, item: ItemStack) {
         val state = block.state
 
         if (state !is TileState) {
             throw IllegalStateException("The template ${template.key}'s field \"block_entity\" is not a block entity instead found ${template.blockEntity} which is not a block entity")
         }
 
-        val collector = Collector(template.key, 27, Position.fromLocation(block.location))
-        Collector.save(block.chunk, collector)
+
+        var collector = Collector(template.key, template.size, Position.fromLocation(block.location))
+        val hasContentKey = item.itemMeta!!.persistentDataContainer.has(PDC_CONTENT_KEY)
+        if (hasContentKey) {
+            item.itemMeta!!.persistentDataContainer.copyTo(state.persistentDataContainer, true)
+            state.update()
+            block.chunk.persistentDataContainer.set(PDC_POSITION_KEY, PDC_POSITION_DATA_TYPE, Position.fromLocation(block.location))
+            collector = Collector.load(block.chunk).orThrow()
+        } else {
+            Collector.save(block.chunk, collector)
+        }
+
         CollectorManager.load(collector)
     }
 
