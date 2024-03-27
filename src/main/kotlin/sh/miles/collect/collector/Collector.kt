@@ -70,10 +70,11 @@ class Collector(val templateKey: String, val size: Int, val position: Position) 
         }
 
 
-        fun delete(chunk: Chunk) {
+        fun delete(chunk: Chunk): Boolean {
             val pdc = chunk.persistentDataContainer
-            if (!pdc.has(PDC_POSITION_KEY)) return
+            if (!pdc.has(PDC_POSITION_KEY)) return false
             pdc.remove(PDC_POSITION_KEY)
+            return true
         }
     }
 

@@ -33,7 +33,6 @@ class CollectorMenuListener(private val container: InfStackContainer, private va
     override fun quickMoveItem(
         context: CustomMenuContext, player: HumanEntity, rawSlot: Int
     ): QuickMoveResult {
-        println(rawSlot)
         if (rawSlot >= size) {
             return QuickMoveResult.cancel()
         }

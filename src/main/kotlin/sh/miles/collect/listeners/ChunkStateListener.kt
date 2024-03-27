@@ -17,10 +17,8 @@ object ChunkStateListener : Listener {
             return
         }
 
-        println("Loaded Collector Chunk")
         when (val collector = Collector.load(event.chunk)) {
             is Some<Collector> -> {
-                println("Load collector at ${collector.some().position}")
                 CollectorManager.load(collector.some())
             }
 
@@ -34,10 +32,8 @@ object ChunkStateListener : Listener {
             return
         }
 
-        println("Unloaded Collector Chunk")
         when (val collector = CollectorManager.unload(event.chunk)) {
             is Some<Collector> -> {
-                println("Saving collector at ${collector.some().position}")
                 Collector.save(event.chunk, collector.some())
             }
 

@@ -1,23 +1,16 @@
 package sh.miles.collect.collector
 
-import com.google.gson.reflect.TypeToken
 import org.bukkit.Chunk
-import sh.miles.collect.CollectPlugin
-import sh.miles.collect.collector.template.CollectorTemplate
-import sh.miles.collect.registry.CollectorTemplateRegistry
 import sh.miles.collect.util.ChunkPosition
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.function.Option
-import java.io.File
 
 object CollectorManager {
 
     private val loadedCollectors = HashMap<ChunkPosition, Collector>()
-    private val upgrades = HashMap<String, String>()
 
     fun load(collector: Collector) {
         loadedCollectors[collector.position.chunkpos()] = collector
-        println(loadedCollectors.values.map { it.position.chunkpos() }.toList())
     }
 
     fun unload(chunk: Chunk): Option<Collector> {
@@ -25,17 +18,14 @@ object CollectorManager {
     }
 
     fun unload(chunkPosition: ChunkPosition): Option<Collector> {
-        println("$chunkPosition | ${loadedCollectors.values.map { it.position.chunkpos() }.toList()}")
         return Option.some(loadedCollectors.remove(chunkPosition) ?: return Option.none())
     }
 
     fun obtain(chunk: Chunk): Option<Collector> {
-        println("Obtain Attempted from! $chunk")
         return obtain(ChunkPosition(chunk.world.uid, chunk.x, chunk.z))
     }
 
     fun obtain(chunkPosition: ChunkPosition): Option<Collector> {
-        println("Collector Status: ${loadedCollectors[chunkPosition]}")
         return Option.some(loadedCollectors[chunkPosition] ?: return Option.none())
     }
 

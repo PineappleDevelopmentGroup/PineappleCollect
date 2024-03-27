@@ -105,7 +105,6 @@ class InfStackContainer(private val size: Int) : Container {
         var condenseTo: Int = -999
         for ((index, infStack) in contents.withIndex()) {
             if (infStack.isEmpty()) {
-                println("condenseTo at $condenseTo")
                 condenseTo = index
                 break
             }

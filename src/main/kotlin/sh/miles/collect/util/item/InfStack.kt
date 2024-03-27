@@ -110,7 +110,6 @@ class InfStack {
             endStackSize = this.size.toInt()
             this.size = 0
         }
-        println("After extraction [size=${this.size}, resultStack=$endStackSize]")
 
         val result = comparator.clone()
         result.amount = endStackSize

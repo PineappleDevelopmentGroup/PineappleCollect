@@ -5,6 +5,7 @@ import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit.getServer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import java.math.BigDecimal
 
 
 object PluginHooks {
@@ -31,23 +32,27 @@ object PluginHooks {
      * MAKE SURE THIS IS CALLED AFTER ITEMS HAVE BEEN REMOVED
      * IT DOES GIVE THE PLAYER THE MONEY VALUE OF ITEMS
      */
-    fun sellItem(player: Player, stack: ItemStack, amount: Long) {
+    fun sellItem(player: Player, stack: ItemStack, amount: Long): BigDecimal {
+        val totalSold = BigDecimal.ZERO
         var toChange = amount
         while (toChange > Int.MAX_VALUE) {
             sellItem(player, stack, Int.MAX_VALUE)
             toChange -= Int.MAX_VALUE
         }
-        sellItem(player, stack, toChange.toInt())
+        totalSold.add(sellItem(player, stack, toChange.toInt()))
+
+        return totalSold
     }
 
     fun isSellable(stack: ItemStack): Boolean {
         return ShopGuiPlusApi.getItemStackShopItem(stack) != null
     }
 
-    private fun sellItem(player: Player, stack: ItemStack, amount: Int) {
-        val shopItem = ShopGuiPlusApi.getItemStackShopItem(player, stack) ?: return
+    private fun sellItem(player: Player, stack: ItemStack, amount: Int): BigDecimal {
+        val shopItem = ShopGuiPlusApi.getItemStackShopItem(player, stack) ?: return BigDecimal.ZERO
         val sellPrice = shopItem.getSellPriceForAmount(player, amount)
         giveBalance(player, sellPrice)
+        return BigDecimal.valueOf(sellPrice)
     }
 
     private fun setupEconomy(){

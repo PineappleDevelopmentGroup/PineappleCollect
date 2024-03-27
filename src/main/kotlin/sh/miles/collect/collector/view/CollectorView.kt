@@ -24,6 +24,7 @@ import sh.miles.pineapple.function.Option.Some
 import sh.miles.pineapple.gui.PlayerGui
 import sh.miles.pineapple.gui.slot.GuiSlot.GuiSlotBuilder
 import sh.miles.pineapple.nms.api.menu.scene.MenuScene
+import java.math.RoundingMode
 
 class CollectorView(viewer: Player, private val container: InfStackContainer, private val size: Int, private val templateName: String, private val position: Position) : PlayerGui<MenuScene>(
     {
@@ -73,7 +74,8 @@ class CollectorView(viewer: Player, private val container: InfStackContainer, pr
                         when (val option = container.getInfStackAt(index)) {
                             is Some -> {
                                 val stack = option.some()
-                                PluginHooks.sellItem(player, stack.comparator(), stack.size())
+                                val soldFor = PluginHooks.sellItem(player, stack.comparator(), stack.size())
+                                viewer().spigot().sendMessage(MessageConfig.COLLECTOR_SOLD_ALL.component(mapOf("amount" to soldFor.setScale(2, RoundingMode.HALF_UP))))
                                 container.setInfStackAt(index, InfStack())
                             }
 
@@ -131,6 +133,7 @@ class CollectorView(viewer: Player, private val container: InfStackContainer, pr
                     collectorBlock.type = newTemplate.blockEntity
 
                     PluginHooks.removeBalance(viewer(), newTemplateCost) // This is done after the collector is deleted and the entity is changed so there isnt any loss where it would take money and not do anything else
+                    viewer().spigot().sendMessage(MessageConfig.COLLECTOR_UPGRADED.component(mapOf("id" to newTemplate.key, "title" to newTemplate.title)))
 
                     val updatedState = collectorBlock.state as TileState
                     val statePdc = updatedState.persistentDataContainer

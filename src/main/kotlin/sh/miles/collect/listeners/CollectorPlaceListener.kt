@@ -9,6 +9,7 @@ import sh.miles.collect.collector.Collector
 import sh.miles.collect.collector.CollectorManager
 import sh.miles.collect.collector.template.CollectorTemplate
 import sh.miles.collect.registry.CollectorTemplateRegistry
+import sh.miles.collect.util.MessageConfig
 import sh.miles.collect.util.Position
 import sh.miles.pineapple.function.Option
 import sh.miles.pineapple.function.Option.None
@@ -37,9 +38,9 @@ object CollectorPlaceListener : Listener {
 
         when (template) {
             is Some -> {
+                val location = event.blockPlaced.location
                 if (Collector.hasCollector(event.blockPlaced.chunk)) {
-                    // TODO: send message Collector placed at [position]
-                    event.player.sendMessage("Collector already placed in this chunk")
+                    event.player.spigot().sendMessage(MessageConfig.COLLECTOR_ALREADY_IN_CHUNK.component(mapOf("x" to location.x, "y" to location.y, "z" to location.z)))
                     event.isCancelled = true
                     return
                 }
@@ -54,7 +55,6 @@ object CollectorPlaceListener : Listener {
     }
 
     private fun placeTemplate(block: Block, template: CollectorTemplate) {
-        println("placeTemplate running")
         val state = block.state
 
         if (state !is TileState) {

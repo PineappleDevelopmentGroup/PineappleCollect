@@ -33,14 +33,6 @@ object CollectorInteractListener : Listener {
         event.isCancelled = true
 
         val player = event.player
-        player.sendMessage(
-            """
-            Collector with the following data found
-            template: ${collector.templateKey}
-            position: ${collector.position}
-            size: ${collector.size}
-        """.trimIndent()
-        )
 
         val menu = CollectorView(player, collector.inventory, collector.size + 9, collector.templateKey, collector.position)
         menu.open()

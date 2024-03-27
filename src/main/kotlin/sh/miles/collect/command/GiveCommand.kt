@@ -6,6 +6,7 @@ import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
 import sh.miles.collect.collector.template.CollectorTemplate
 import sh.miles.collect.registry.CollectorTemplateRegistry
+import sh.miles.collect.util.MessageConfig
 import sh.miles.pineapple.command.Command
 import sh.miles.pineapple.command.CommandLabel
 import sh.miles.pineapple.function.Option.None
@@ -20,7 +21,7 @@ internal object GiveCommand : Command(CommandLabel("give", "collect.command.give
         when (args.size) {
             1 -> {
                 if (sender !is Player) {
-                    // TODO: send no console message
+                    sender.sendMessage(MessageConfig.OTHER_PLAYER_ONLY_COMMAND)
                     return true
                 }
 
@@ -31,7 +32,7 @@ internal object GiveCommand : Command(CommandLabel("give", "collect.command.give
             2 -> {
                 val temp = Bukkit.getPlayer(args[0])
                 if (temp == null) {
-                    // TODO: send player not online message
+                    sender.spigot().sendMessage(MessageConfig.OTHER_PLAYER_NOT_ONLINE.component())
                     return true
                 }
                 target = temp
@@ -39,7 +40,7 @@ internal object GiveCommand : Command(CommandLabel("give", "collect.command.give
             }
 
             else -> {
-                // TODO: send usage message
+                sender.spigot().sendMessage(MessageConfig.OTHER_GIVE_COMMAND_USAGE.component())
                 return true
             }
         }
@@ -48,7 +49,7 @@ internal object GiveCommand : Command(CommandLabel("give", "collect.command.give
         when (collectorTemplate) {
             is Some<CollectorTemplate> -> target.inventory.addItem(collectorTemplate.some().item())
             is None<CollectorTemplate> -> {
-                // TODO: send invalid collectorTemplate message
+                sender.spigot().sendMessage(MessageConfig.OTHER_INVALID_TEMPLATE_ID.component())
                 return true
             }
         }
