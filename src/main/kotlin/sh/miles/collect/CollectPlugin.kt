@@ -9,6 +9,7 @@ import sh.miles.collect.listeners.CollectorCollectListener
 import sh.miles.collect.listeners.CollectorInteractListener
 import sh.miles.collect.listeners.CollectorPickupListener
 import sh.miles.collect.listeners.CollectorPlaceListener
+import sh.miles.collect.listeners.DeluxeSellWandsListener
 import sh.miles.collect.registry.CollectorTemplateRegistry
 import sh.miles.collect.registry.json.CollectorTemplateAdapter
 import sh.miles.collect.registry.json.CollectorTemplateUpgradeDataAdapter
@@ -51,6 +52,7 @@ class CollectPlugin : JavaPlugin() {
         server.pluginManager.registerEvents(CollectorPlaceListener, this)
         server.pluginManager.registerEvents(CollectorPickupListener, this)
         server.pluginManager.registerEvents(CollectorCollectListener, this)
+        server.pluginManager.registerEvents(DeluxeSellWandsListener, this)
 
         this.messageConfig = PineappleLib.getConfigurationManager().createDefault(File(dataFolder, "messages.yml"), MessageConfig.javaClass)
     }

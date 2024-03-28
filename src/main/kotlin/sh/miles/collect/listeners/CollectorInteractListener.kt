@@ -1,5 +1,6 @@
 package sh.miles.collect.listeners
 
+import org.bukkit.Material
 import org.bukkit.block.TileState
 import org.bukkit.event.Event
 import org.bukkit.event.EventHandler
@@ -7,9 +8,11 @@ import org.bukkit.event.Listener
 import org.bukkit.event.block.Action
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
+import org.bukkit.inventory.ItemStack
 import sh.miles.collect.collector.Collector
 import sh.miles.collect.collector.CollectorManager
 import sh.miles.collect.collector.view.CollectorView
+import sh.miles.collect.util.PluginHooks
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.function.Option.None
 import sh.miles.pineapple.function.Option.Some
@@ -22,6 +25,12 @@ object CollectorInteractListener : Listener {
         if (event.action != Action.RIGHT_CLICK_BLOCK) return
         val clickedBlock = event.clickedBlock ?: return
         if (!Collector.isCollector(clickedBlock.state)) return
+
+        val itemInHand = event.player.inventory.getItem(event.hand!!) ?: ItemStack(Material.AIR)
+
+        if (PluginHooks.isSellWand(itemInHand)) {
+            return
+        }
 
         val collector = when (val option = CollectorManager.obtain(clickedBlock.chunk)) {
             is Some -> option.some()

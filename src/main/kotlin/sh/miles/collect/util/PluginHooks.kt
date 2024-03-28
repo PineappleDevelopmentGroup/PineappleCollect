@@ -1,5 +1,6 @@
 package sh.miles.collect.util
 
+import dev.norska.dsw.DeluxeSellwands
 import net.brcdev.shopgui.ShopGuiPlusApi
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit.getServer
@@ -26,6 +27,10 @@ object PluginHooks {
 
     fun removeBalance(player: Player, amount: Double) {
         this.economy.withdrawPlayer(player, amount)
+    }
+
+    fun isSellWand(item: ItemStack): Boolean {
+        return DeluxeSellwands.getInstance().api.isSellwand(item)
     }
 
     /**
