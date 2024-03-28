@@ -78,8 +78,8 @@
     "size": 36,
     "has_content": "<color:gray>Has Items Inside",
     "upgrade_data": {
-      "size_upgrade_key": "ultra",
-      "size_upgrade_cost": 30000.0
+      "size_upgrade_key": "supreme",
+      "size_upgrade_cost": 50000.0
     },
     "item": {
       "item_type": "ender_chest",
