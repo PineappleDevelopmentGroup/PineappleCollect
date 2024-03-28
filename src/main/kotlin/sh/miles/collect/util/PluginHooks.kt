@@ -36,11 +36,23 @@ object PluginHooks {
         var totalSold = BigDecimal.ZERO
         var toChange = amount
         while (toChange > Int.MAX_VALUE) {
-            totalSold = totalSold.add(sellItem(player, stack, Int.MAX_VALUE))
+            totalSold = totalSold.add(sellItem(player, stack, Int.MAX_VALUE, true))
             toChange -= Int.MAX_VALUE
         }
-        totalSold = totalSold.add(sellItem(player, stack, toChange.toInt()))
+        totalSold = totalSold.add(sellItem(player, stack, toChange.toInt(), true))
 
+        return totalSold
+    }
+
+    fun priceItem(player: Player, stack: ItemStack, amount: Long): BigDecimal {
+        var totalSold = BigDecimal.ZERO
+        var toChange = amount
+        while (toChange > Int.MAX_VALUE) {
+            totalSold = totalSold.add(sellItem(player, stack, Int.MAX_VALUE, false))
+            toChange -= Int.MAX_VALUE
+        }
+        totalSold = totalSold.add(sellItem(player, stack, toChange.toInt(), false))
+        
         return totalSold
     }
 
@@ -48,10 +60,12 @@ object PluginHooks {
         return ShopGuiPlusApi.getItemStackShopItem(stack) != null
     }
 
-    private fun sellItem(player: Player, stack: ItemStack, amount: Int): BigDecimal {
+    private fun sellItem(player: Player, stack: ItemStack, amount: Int, giveBalance: Boolean): BigDecimal {
         val shopItem = ShopGuiPlusApi.getItemStackShopItem(player, stack) ?: return BigDecimal.ZERO
         val sellPrice = shopItem.getSellPriceForAmount(player, amount)
-        giveBalance(player, sellPrice)
+        if (giveBalance) {
+            giveBalance(player, sellPrice)
+        }
         return BigDecimal.valueOf(sellPrice)
     }
 
