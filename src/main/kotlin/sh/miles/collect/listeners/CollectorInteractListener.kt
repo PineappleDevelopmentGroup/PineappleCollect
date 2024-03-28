@@ -34,7 +34,7 @@ object CollectorInteractListener : Listener {
 
         val player = event.player
 
-        val menu = CollectorView(player, collector.inventory, collector.size + 9, collector.templateKey, collector.position)
+        val menu = CollectorView(player, collector.inventory, collector.templateKey, collector.position)
         menu.open()
     }
 

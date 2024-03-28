@@ -52,8 +52,6 @@ object CollectorPickupListener : Listener {
                     }
                     item.itemMeta = itemMeta
 
-                    // TODO Miles fix the nms
-                    println("If you still see this message, please tell miles he needs to fix the nms for lore on broken collectors")
                     item = ItemBuilder.modifyStack(item).lore(listOf(template.hasContentLore.component())).build()
 
                     val unableToAdd = event.player.inventory.addItem(item)

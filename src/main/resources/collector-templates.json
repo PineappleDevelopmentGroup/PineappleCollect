@@ -1,19 +1,91 @@
 [
   {
-    "id": "standard",
-    "block_entity": "lectern",
-    "title": "<color:blue>Standard Collector",
-    "size": 27,
-    "has_content": "<color:green>Has Items Inside",
+    "id": "tiny",
+    "block_entity": "conduit",
+    "title": "<color:#97ef63>Tiny Collector Menu",
+    "size": 9,
+    "has_content": "<color:gray>Has Items Inside",
     "upgrade_data": {
-      "size_upgrade_key": "supreme",
-      "size_upgrade_cost": 1000.0
+      "size_upgrade_key": "small",
+      "size_upgrade_cost": 10000.0
     },
     "item": {
-      "item_type": "lectern",
-      "name": "<color:blue>Standard Collector",
+      "item_type": "conduit",
+      "name": "<color:#97ef63><italic:!>Tiny Collector",
       "lore": [
-        "<color:gray>Place to start collecting in the chunk you placed it in"
+        "<color:gray>Place to start collecting resources in the chunk you put it in"
+      ],
+      "enchantment": {
+        "unbreaking": 1
+      },
+      "hide_tool_tip": [
+        "hide_enchants"
+      ]
+    }
+  },
+  {
+    "id": "small",
+    "block_entity": "beehive",
+    "title": "<color:#21decf>Small Collector Menu",
+    "size": 18,
+    "has_content": "<color:gray>Has Items Inside",
+    "upgrade_data": {
+      "size_upgrade_key": "standard",
+      "size_upgrade_cost": 15000.0
+    },
+    "item": {
+      "item_type": "beehive",
+      "name": "<color:#21decf><italic:!>Small Collector",
+      "lore": [
+        "<color:gray>Place to start collecting resources in the chunk you put it in"
+      ],
+      "enchantment": {
+        "unbreaking": 1
+      },
+      "hide_tool_tip": [
+        "hide_enchants"
+      ]
+    }
+  },
+  {
+    "id": "standard",
+    "block_entity": "chest",
+    "title": "<color:#2570df>Standard Collector Menu",
+    "size": 27,
+    "has_content": "<color:gray>Has Items Inside",
+    "upgrade_data": {
+      "size_upgrade_key": "ultra",
+      "size_upgrade_cost": 30000.0
+    },
+    "item": {
+      "item_type": "chest",
+      "name": "<color:#2570df><italic:!>Standard Collector",
+      "lore": [
+        "<color:gray>Place to start collecting resources in the chunk you put it in"
+      ],
+      "enchantment": {
+        "unbreaking": 1
+      },
+      "hide_tool_tip": [
+        "hide_enchants"
+      ]
+    }
+  },
+  {
+    "id": "ultra",
+    "block_entity": "ender_chest",
+    "title": "<color:#3814ec>Ultra Collector Menu",
+    "size": 36,
+    "has_content": "<color:gray>Has Items Inside",
+    "upgrade_data": {
+      "size_upgrade_key": "ultra",
+      "size_upgrade_cost": 30000.0
+    },
+    "item": {
+      "item_type": "ender_chest",
+      "name": "<color:#3814ec><italic:!>Ultra Collector",
+      "lore": [
+        "<color:gray>Place to start collecting resources in the chunk you put it in"
       ],
       "enchantment": {
         "unbreaking": 1
@@ -26,14 +98,14 @@
   {
     "id": "supreme",
     "block_entity": "enchanting_table",
-    "title": "<color:green>Supreme Collector",
-    "size": 36,
-    "has_content": "<color:green>Has Items Inside",
+    "title": "<color:#ec147d>Supreme Collector Menu",
+    "size": 45,
+    "has_content": "<color:gray>Has Items Inside",
     "item": {
       "item_type": "enchanting_table",
-      "name": "<color:green>Supreme Collector",
+      "name": "<color:#ec147d><italic:!>Supreme Collector",
       "lore": [
-        "<color:gray>Place to start collecting in the chunk you placed it in"
+        "<color:gray>Place to start collecting resources in the chunk you put it in"
       ],
       "enchantment": {
         "unbreaking": 1

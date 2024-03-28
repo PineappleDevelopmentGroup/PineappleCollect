@@ -29,14 +29,14 @@ import sh.miles.pineapple.nms.api.menu.scene.MenuScene
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class CollectorView(viewer: Player, private val container: InfStackContainer, private val size: Int, private val templateName: String, private val position: Position) : PlayerGui<MenuScene>(
+class CollectorView(viewer: Player, private val container: InfStackContainer, private val templateName: String, private val position: Position) : PlayerGui<MenuScene>(
     {
         PineappleLib.getNmsProvider()
             .createMenuCustom(
                 viewer,
                 CollectorMenuListener(container, container.size + 9),
                 (container.size / 9) + 1,
-                PineappleChat.parse("<gray>Collector Menu")
+                CollectorTemplateRegistry.getOrNull(templateName)!!.title.component()
             )
     }, viewer
 ) {
