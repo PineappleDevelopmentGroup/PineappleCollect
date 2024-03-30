@@ -37,4 +37,8 @@ object MessageConfig {
     @ConfigPath("collector.upgraded")
     @Comment("Use <\$id> for the upgraded id and <\$title> as the title")
     var COLLECTOR_UPGRADED: PineappleComponent = PineappleChat.component("<green>Upgraded your collector to <\$title>")
+
+    @ConfigPath("infstack.lore")
+    @Comment("Use <\$amount> for the amount in the stack")
+    var INFSTACK_LORE: PineappleComponent = PineappleChat.component("<italic:!><color:#b99a93>Amount: <\$amount>")
 }

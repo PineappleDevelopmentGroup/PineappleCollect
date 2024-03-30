@@ -18,9 +18,9 @@
   },
   "upgrades_item": {
     "item_type": "piston",
-    "name": "<italic:!><color:#4ed5e5>Upgrades",
+    "name": "<italic:!><color:#4ed5e5>Size Upgrade",
     "lore": [
-      "<italic:!><color:gray>Upgrade Your Collector"
+      "<italic:!><color:gray>Upgrade Your Collector's Size"
     ],
     "enchantment": {
       "unbreaking": 1

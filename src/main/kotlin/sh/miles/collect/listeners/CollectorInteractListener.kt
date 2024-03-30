@@ -28,10 +28,6 @@ object CollectorInteractListener : Listener {
 
         val itemInHand = event.player.inventory.getItem(event.hand!!) ?: ItemStack(Material.AIR)
 
-        if (PluginHooks.isSellWand(itemInHand)) {
-            return
-        }
-
         val collector = when (val option = CollectorManager.obtain(clickedBlock.chunk)) {
             is Some -> option.some()
             is None -> CollectorManager.recoverFromUnloaded(clickedBlock.chunk)

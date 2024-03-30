@@ -1,11 +1,14 @@
 package sh.miles.collect.util.item
 
+import net.md_5.bungee.api.chat.BaseComponent
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Item
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
+import sh.miles.collect.util.MessageConfig
 import sh.miles.collect.util.PDC_SIZE_KEY
+import sh.miles.pineapple.PineappleLib
 import java.lang.IllegalStateException
 
 /**
@@ -39,7 +42,7 @@ class InfStack {
         }
     }
 
-    private val source: ItemStack
+    private var source: ItemStack // nms
     private val comparator: ItemStack
     private var size: Long = 0
 
@@ -60,10 +63,11 @@ class InfStack {
             val meta = top.itemMeta!!
             if (meta.persistentDataContainer.has(AMOUNT_KEY)) {
                 this.source = setupFromInfStack(insert)
+                setChanged()
             } else {
                 this.source = setupFromNonInfStack(insert)
+                setChanged(false)
             }
-            setChanged()
         }
     }
 
@@ -129,14 +133,15 @@ class InfStack {
         return this.comparator.isSimilar(itemStack)
     }
 
-    private fun setChanged() {
+    private fun setChanged(isNew: Boolean = false) {
         val meta = this.source.itemMeta!!
         meta.persistentDataContainer.set(AMOUNT_KEY, PersistentDataType.LONG, size)
-        val lore = if (meta.hasLore()) meta.lore!! else ArrayList()
-        if (lore.size >= 1 && lore[lore.size - 1].startsWith("Amount:")) lore.removeAt(lore.size - 1)
-        lore.add("Amount: $size")
-        meta.lore = lore
+        val lore: MutableList<BaseComponent> = PineappleLib.getNmsProvider().getItemLore(this.source)
+        if (lore.size >= 1 && !isNew) lore.removeAt(lore.size - 1)
         source.itemMeta = meta
+
+        lore.add(MessageConfig.INFSTACK_LORE.component(mapOf("amount" to size)))
+        this.source = PineappleLib.getNmsProvider().setItemLore(source, lore)
     }
 
     private fun setupComparator(insert: ItemStack): ItemStack {
