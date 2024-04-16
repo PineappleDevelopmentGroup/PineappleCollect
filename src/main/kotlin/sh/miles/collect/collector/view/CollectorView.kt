@@ -29,7 +29,12 @@ import sh.miles.pineapple.nms.api.menu.scene.MenuScene
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-class CollectorView(viewer: Player, private val container: InfStackContainer, private val templateName: String, private val position: Position) : PlayerGui<MenuScene>(
+class CollectorView(
+    viewer: Player,
+    private val container: InfStackContainer,
+    private val templateName: String,
+    private val position: Position
+) : PlayerGui<MenuScene>(
     {
         PineappleLib.getNmsProvider()
             .createMenuCustom(
@@ -85,7 +90,16 @@ class CollectorView(viewer: Player, private val container: InfStackContainer, pr
                             is None -> break
                         }
                     }
-                    viewer().spigot().sendMessage(MessageConfig.COLLECTOR_SOLD_ALL.component(mapOf("amount" to amount.setScale(2, RoundingMode.HALF_UP))))
+                    viewer().spigot().sendMessage(
+                        MessageConfig.COLLECTOR_SOLD_ALL.component(
+                            mapOf(
+                                "amount" to amount.setScale(
+                                    2,
+                                    RoundingMode.HALF_UP
+                                )
+                            )
+                        )
+                    )
                     cleanEmpties()
                 }
                 .index(sellItemLoc)
@@ -93,10 +107,33 @@ class CollectorView(viewer: Player, private val container: InfStackContainer, pr
         }
 
         val upgradeItemLoc = container.size + CollectorMenuSpec.upgradeItemLoc
+        val upgradeItemLore = ArrayList(PineappleLib.getNmsProvider().getItemLore(CollectorMenuSpec.upgradeItem))
+        when (val upgradeSpec = CollectorTemplateRegistry.get(templateName).orThrow().upgradeSpec) {
+            is Some -> {
+                upgradeItemLore.add(
+                    CollectorMenuSpec.priceLore.component(
+                        mutableMapOf(
+                            "price" to upgradeSpec.some().sizeUpgradeCost as Any
+                        )
+                    )
+                )
+            }
+
+            is None -> {
+                upgradeItemLore.add(
+                    CollectorMenuSpec.priceLore.component(
+                        mutableMapOf(
+                            "price" to "N/A" as Any
+                        )
+                    )
+                )
+            }
+        }
+        val upgradeItem = PineappleLib.getNmsProvider().setItemLore(CollectorMenuSpec.upgradeItem, upgradeItemLore)
         slot(upgradeItemLoc) {
             GuiSlotBuilder()
                 .inventory(it)
-                .item(CollectorMenuSpec.upgradeItem)
+                .item(upgradeItem)
                 .click { event ->
                     event.isCancelled = true
 
@@ -112,16 +149,19 @@ class CollectorView(viewer: Player, private val container: InfStackContainer, pr
                                     newTemplate = CollectorTemplateRegistry.get(some.sizeUpgradeKey).orThrow()
                                     newTemplateCost = some.sizeUpgradeCost
                                 }
+
                                 is None -> return@click // If is none it cannot be upgraded as nothing was specified in config on load
                             }
                         }
+
                         is None -> return@click
                     }
 
                     viewer().closeInventory()
 
                     if (!PluginHooks.canAfford(viewer(), newTemplateCost)) {
-                        viewer().spigot().sendMessage(MessageConfig.UPGRADE_NOT_ENOUGH_MONEY.component(mapOf("amount" to newTemplateCost)))
+                        viewer().spigot()
+                            .sendMessage(MessageConfig.UPGRADE_NOT_ENOUGH_MONEY.component(mapOf("amount" to newTemplateCost)))
                         return@click
                     }
 
@@ -136,15 +176,29 @@ class CollectorView(viewer: Player, private val container: InfStackContainer, pr
                     Collector.delete(chunk)
                     collectorBlock.type = newTemplate.blockEntity
 
-                    PluginHooks.removeBalance(viewer(), newTemplateCost) // This is done after the collector is deleted and the entity is changed so there isnt any loss where it would take money and not do anything else
-                    viewer().spigot().sendMessage(MessageConfig.COLLECTOR_UPGRADED.component(mapOf("id" to newTemplate.key, "title" to PineappleChat.parseLegacy(newTemplate.title.source))))
+                    PluginHooks.removeBalance(
+                        viewer(),
+                        newTemplateCost
+                    ) // This is done after the collector is deleted and the entity is changed so there isnt any loss where it would take money and not do anything else
+                    viewer().spigot().sendMessage(
+                        MessageConfig.COLLECTOR_UPGRADED.component(
+                            mapOf(
+                                "id" to newTemplate.key,
+                                "title" to PineappleChat.parseLegacy(newTemplate.title.source)
+                            )
+                        )
+                    )
 
                     val updatedState = collectorBlock.state as TileState
                     val statePdc = updatedState.persistentDataContainer
 
                     statePdc.set(PDC_TEMPLATE_KEY, PersistentDataType.STRING, newTemplate.key)
                     statePdc.set(PDC_SIZE_KEY, PersistentDataType.INTEGER, newTemplate.size)
-                    statePdc.set(PDC_CONTENT_KEY, PersistentDataType.BYTE_ARRAY, PineappleLib.getNmsProvider().itemsToBytes(beforeContent))
+                    statePdc.set(
+                        PDC_CONTENT_KEY,
+                        PersistentDataType.BYTE_ARRAY,
+                        PineappleLib.getNmsProvider().itemsToBytes(beforeContent)
+                    )
                     chunk.persistentDataContainer.set(PDC_POSITION_KEY, PDC_POSITION_DATA_TYPE, position)
 
                     updatedState.update()

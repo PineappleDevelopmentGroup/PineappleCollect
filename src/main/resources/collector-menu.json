@@ -30,5 +30,6 @@
     ]
   },
   "sell_item_location": 8,
-  "upgrade_item_location": 0
+  "upgrade_item_location": 0,
+  "upgrade_item_price_lore": "<italic:!><color:green>Price</color><color:gold><$price>"
 }

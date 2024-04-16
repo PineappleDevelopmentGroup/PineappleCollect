@@ -6,6 +6,7 @@ import com.google.gson.JsonSerializationContext
 import org.bukkit.inventory.ItemStack
 import sh.miles.collect.CollectPlugin
 import sh.miles.collect.util.json.CollectorMenuSpecAdapter
+import sh.miles.pineapple.chat.PineappleComponent
 import sh.miles.pineapple.json.JsonAdapter
 import java.io.File
 import java.io.FileReader
@@ -18,6 +19,7 @@ object CollectorMenuSpec {
     val upgradeItem: ItemStack
     val sellItemLoc: Int
     val upgradeItemLoc: Int
+    val priceLore: PineappleComponent
 
     init {
         val gson = CollectPlugin.plugin.json.gson
@@ -30,6 +32,7 @@ object CollectorMenuSpec {
         upgradeItem = specDetails.upgradeItem
         sellItemLoc = specDetails.sellItemLoc
         upgradeItemLoc = specDetails.upgradeItemLoc
+        priceLore = specDetails.priceLore
 
         check(
             sellItemLoc != upgradeItemLoc

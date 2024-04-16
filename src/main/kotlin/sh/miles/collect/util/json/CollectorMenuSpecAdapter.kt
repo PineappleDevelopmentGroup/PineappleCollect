@@ -4,6 +4,8 @@ import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonElement
 import com.google.gson.JsonSerializationContext
 import org.bukkit.inventory.ItemStack
+import sh.miles.pineapple.chat.PineappleChat
+import sh.miles.pineapple.chat.PineappleComponent
 import sh.miles.pineapple.json.JsonAdapter
 import java.lang.reflect.Type
 
@@ -20,7 +22,8 @@ object CollectorMenuSpecAdapter : JsonAdapter<CollectorMenuSpecAdapter.SpecDetai
             context.deserialize(parent.get("sell_item"), ItemStack::class.java),
             context.deserialize(parent.get("upgrades_item"), ItemStack::class.java),
             parent.get("sell_item_location").asInt,
-            parent.get("upgrade_item_location").asInt
+            parent.get("upgrade_item_location").asInt,
+            PineappleChat.component(parent.get("upgrade_item_price_lore").asString)
         )
     }
 
@@ -33,6 +36,7 @@ object CollectorMenuSpecAdapter : JsonAdapter<CollectorMenuSpecAdapter.SpecDetai
         val sellItem: ItemStack,
         val upgradeItem: ItemStack,
         val sellItemLoc: Int,
-        val upgradeItemLoc: Int
+        val upgradeItemLoc: Int,
+        val priceLore: PineappleComponent
     )
 }
