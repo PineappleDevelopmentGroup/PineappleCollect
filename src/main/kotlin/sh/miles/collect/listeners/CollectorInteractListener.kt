@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack
 import sh.miles.collect.collector.Collector
 import sh.miles.collect.collector.CollectorManager
 import sh.miles.collect.collector.view.CollectorView
+import sh.miles.collect.util.MessageConfig
 import sh.miles.collect.util.PluginHooks
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.function.Option.None
@@ -31,6 +32,11 @@ object CollectorInteractListener : Listener {
         val collector = when (val option = CollectorManager.obtain(clickedBlock.chunk)) {
             is Some -> option.some()
             is None -> CollectorManager.recoverFromUnloaded(clickedBlock.chunk)
+        }
+
+        if (collector.owner != event.player.uniqueId && !PluginHooks.isSameIslandAsOwner(collector.owner, event.player)) {
+            event.player.spigot().sendMessage(MessageConfig.COLLECTOR_NO_ACCESS.component())
+            return
         }
 
         event.setUseInteractedBlock(Event.Result.DENY)

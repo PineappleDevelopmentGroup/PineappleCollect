@@ -26,6 +26,9 @@ object MessageConfig {
     @ConfigPath("other.player-not-online")
     var OTHER_INVALID_TEMPLATE_ID = PineappleChat.component("<red>Invalid template id")
 
+    @ConfigPath("collector.not-allowed-to-access")
+    var COLLECTOR_NO_ACCESS: PineappleComponent = PineappleChat.component("<red>You do not have access to this collector!")
+
     @ConfigPath("collector.already-in-chunk")
     @Comment("use <\$x>, <\$y>, <\$z> to represent the coordinates for the existing collector")
     var COLLECTOR_ALREADY_IN_CHUNK: PineappleComponent = PineappleChat.component("<red>There is already a collector in this chunk at <\$x>;<\$y>;<\$z>")

@@ -203,7 +203,7 @@ class CollectorView(
 
                     updatedState.update()
 
-                    val newCollector = Collector(newTemplate.key, newTemplate.size, position)
+                    val newCollector = Collector(newTemplate.key, newTemplate.size, position, viewer().uniqueId)
                     CollectorManager.load(newCollector)
 
                     for ((index, itemStack) in beforeContent.withIndex()) {

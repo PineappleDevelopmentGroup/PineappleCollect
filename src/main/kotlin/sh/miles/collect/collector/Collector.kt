@@ -6,6 +6,7 @@ import org.bukkit.block.TileState
 import org.bukkit.persistence.PersistentDataType
 import sh.miles.collect.collector.container.InfStackContainer
 import sh.miles.collect.util.PDC_CONTENT_KEY
+import sh.miles.collect.util.PDC_OWNER_KEY
 import sh.miles.collect.util.PDC_POSITION_DATA_TYPE
 import sh.miles.collect.util.PDC_POSITION_KEY
 import sh.miles.collect.util.PDC_SIZE_KEY
@@ -14,8 +15,9 @@ import sh.miles.collect.util.Position
 import sh.miles.collect.util.item.InfStack
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.function.Option
+import java.util.UUID
 
-class Collector(val templateKey: String, val size: Int, val position: Position) {
+class Collector(val templateKey: String, val size: Int, val position: Position, val owner: UUID) {
 
     val inventory: InfStackContainer = InfStackContainer(size)
 
@@ -40,8 +42,9 @@ class Collector(val templateKey: String, val size: Int, val position: Position) 
             val sizeKey = blockPdc.get(PDC_SIZE_KEY, PersistentDataType.INTEGER)!!
             val contents = PineappleLib.getNmsProvider()
                 .itemsFromBytes(blockPdc.get(PDC_CONTENT_KEY, PersistentDataType.BYTE_ARRAY)!!, sizeKey)
+            val owner = UUID.fromString(blockPdc.get(PDC_OWNER_KEY, PersistentDataType.STRING))
 
-            val collector = Collector(templateKey, sizeKey, position)
+            val collector = Collector(templateKey, sizeKey, position, owner)
             for ((index, itemStack) in contents.withIndex()) {
                 collector.inventory.setInfStackAt(index, InfStack.createStack(itemStack))
             }
@@ -66,6 +69,7 @@ class Collector(val templateKey: String, val size: Int, val position: Position) 
             )
             blockPdc.set(PDC_TEMPLATE_KEY, PersistentDataType.STRING, collector.templateKey)
             blockPdc.set(PDC_SIZE_KEY, PersistentDataType.INTEGER, collector.size)
+            blockPdc.set(PDC_OWNER_KEY, PersistentDataType.STRING, collector.owner.toString());
             tileState.update()
         }
 

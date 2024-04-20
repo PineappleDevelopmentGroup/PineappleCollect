@@ -2,6 +2,7 @@ package sh.miles.collect.listeners
 
 import org.bukkit.block.Block
 import org.bukkit.block.TileState
+import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockPlaceEvent
@@ -49,7 +50,7 @@ object CollectorPlaceListener : Listener {
                     return
                 }
 
-                placeTemplate(event.blockPlaced, template.some(), item)
+                placeTemplate(event.player, event.blockPlaced, template.some(), item)
             }
 
             is None -> {
@@ -58,7 +59,7 @@ object CollectorPlaceListener : Listener {
         }
     }
 
-    private fun placeTemplate(block: Block, template: CollectorTemplate, item: ItemStack) {
+    private fun placeTemplate(player: Player, block: Block, template: CollectorTemplate, item: ItemStack) {
         val state = block.state
 
         if (state !is TileState) {
@@ -66,7 +67,7 @@ object CollectorPlaceListener : Listener {
         }
 
 
-        var collector = Collector(template.key, template.size, Position.fromLocation(block.location))
+        var collector = Collector(template.key, template.size, Position.fromLocation(block.location), player.uniqueId)
         val hasContentKey = item.itemMeta!!.persistentDataContainer.has(PDC_CONTENT_KEY)
         if (hasContentKey) {
             item.itemMeta!!.persistentDataContainer.copyTo(state.persistentDataContainer, true)

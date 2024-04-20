@@ -1,11 +1,13 @@
 package sh.miles.collect.util
 
+import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI
 import net.brcdev.shopgui.ShopGuiPlusApi
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit.getServer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.math.BigDecimal
+import java.util.UUID
 
 
 object PluginHooks {
@@ -14,6 +16,11 @@ object PluginHooks {
 
     init {
         setupEconomy()
+    }
+
+    fun isSameIslandAsOwner(owner: UUID, player: Player): Boolean {
+        val splayer = SuperiorSkyblockAPI.getPlayer(player)
+        return splayer.hasIsland() && splayer.island.owner.uniqueId.equals(owner)
     }
 
     fun giveBalance(player: Player, amount: Double) {
@@ -52,7 +59,7 @@ object PluginHooks {
             toChange -= Int.MAX_VALUE
         }
         totalSold = totalSold.add(sellItem(player, stack, toChange.toInt(), false))
-        
+
         return totalSold
     }
 
@@ -69,7 +76,7 @@ object PluginHooks {
         return BigDecimal.valueOf(sellPrice)
     }
 
-    private fun setupEconomy(){
+    private fun setupEconomy() {
         val rsp = getServer().servicesManager.getRegistration(
             Economy::class.java
         ) ?: return
