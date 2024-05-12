@@ -17,8 +17,10 @@ object CollectorMenuSpec {
     val backgroundItem: ItemStack
     val sellItem: ItemStack
     val upgradeItem: ItemStack
+    val pickupItem: ItemStack
     val sellItemLoc: Int
     val upgradeItemLoc: Int
+    val pickupItemLoc: Int
     val priceLore: PineappleComponent
 
     init {
@@ -27,11 +29,13 @@ object CollectorMenuSpec {
             FileReader(File(CollectPlugin.plugin.dataFolder, "collector-menu.json")),
             CollectorMenuSpecAdapter.SpecDetails::class.java
         )
-        backgroundItem = specDetails.backgroundItem
-        sellItem = specDetails.sellItem
-        upgradeItem = specDetails.upgradeItem
+        backgroundItem = specDetails.backgroundItem.buildSpec()
+        sellItem = specDetails.sellItem.buildSpec()
+        upgradeItem = specDetails.upgradeItem.buildSpec()
+        pickupItem = specDetails.pickupItem.buildSpec()
         sellItemLoc = specDetails.sellItemLoc
         upgradeItemLoc = specDetails.upgradeItemLoc
+        pickupItemLoc = specDetails.pickupItemSlot
         priceLore = specDetails.priceLore
 
         check(

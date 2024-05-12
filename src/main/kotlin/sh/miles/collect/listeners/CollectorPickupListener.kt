@@ -39,9 +39,6 @@ object CollectorPickupListener : Listener {
                 val world = block.world
                 event.isDropItems = false
                 if (event.player.gameMode != GameMode.CREATIVE) {
-
-
-
                     var item = template.item()
                     val itemMeta = item.itemMeta!!
 

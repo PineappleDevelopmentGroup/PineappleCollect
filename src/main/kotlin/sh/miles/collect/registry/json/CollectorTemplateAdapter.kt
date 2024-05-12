@@ -11,6 +11,7 @@ import sh.miles.collect.util.CollectUtils
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.chat.PineappleComponent
 import sh.miles.pineapple.function.Option
+import sh.miles.pineapple.item.ItemSpec
 import sh.miles.pineapple.json.JsonAdapter
 import java.lang.reflect.Type
 
@@ -50,7 +51,7 @@ object CollectorTemplateAdapter : JsonAdapter<CollectorTemplate> {
 
         val item = PineappleLib.getAnomalyFactory().create()
             .message("CollectorTemplates must have \"item\" field")
-            .run { context.deserialize<ItemStack>(parent.get("item"), ItemStack::class.java) }
+            .run { context.deserialize<ItemSpec>(parent.get("item"), ItemSpec::class.java).buildSpec() }
             .hard(javaClass, "deserialize").orThrow()
 
         val size = PineappleLib.getAnomalyFactory().create()

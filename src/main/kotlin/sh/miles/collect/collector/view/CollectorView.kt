@@ -1,5 +1,7 @@
 package sh.miles.collect.collector.view
 
+import org.bukkit.GameMode
+import org.bukkit.Material
 import org.bukkit.block.TileState
 import org.bukkit.entity.Player
 import org.bukkit.persistence.PersistentDataType
@@ -25,7 +27,9 @@ import sh.miles.pineapple.function.Option.None
 import sh.miles.pineapple.function.Option.Some
 import sh.miles.pineapple.gui.PlayerGui
 import sh.miles.pineapple.gui.slot.GuiSlot.GuiSlotBuilder
+import sh.miles.pineapple.item.ItemBuilder
 import sh.miles.pineapple.nms.api.menu.scene.MenuScene
+import java.lang.IllegalStateException
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -211,6 +215,65 @@ class CollectorView(
                     }
                 }
                 .index(upgradeItemLoc)
+                .build()
+        }
+        val pickupItemLoc = container.size + CollectorMenuSpec.pickupItemLoc
+        slot(pickupItemLoc) {
+            GuiSlotBuilder()
+                .inventory(it)
+                .item(CollectorMenuSpec.pickupItem)
+                .click { event ->
+                    event.isCancelled = true
+                    val world = event.whoClicked.world
+                    val chunk = event.whoClicked.location.chunk
+                    when (val collector = CollectorManager.unload(chunk)) {
+                        is Some -> {
+                            val collectorSome = collector.some()
+                            val location = collectorSome.position.toLocation()
+                            val template =
+                                CollectorTemplateRegistry.getOrNull(collectorSome.templateKey)!! // this should never be null
+                            var item = template.item()
+                            val itemMeta = item.itemMeta!!
+
+                            if (!collectorSome.inventory.isOnlyAir()) {
+                                itemMeta.persistentDataContainer.set(
+                                    PDC_CONTENT_KEY,
+                                    PersistentDataType.BYTE_ARRAY,
+                                    PineappleLib.getNmsProvider().itemsToBytes(collectorSome.inventory.contents)
+                                )
+                                itemMeta.persistentDataContainer.set(
+                                    PDC_SIZE_KEY,
+                                    PersistentDataType.INTEGER,
+                                    template.size
+                                )
+                                itemMeta.persistentDataContainer.set(
+                                    PDC_TEMPLATE_KEY,
+                                    PersistentDataType.STRING,
+                                    template.key
+                                )
+                            }
+                            item.itemMeta = itemMeta
+
+                            item = ItemBuilder.modifyStack(item).lore(listOf(template.hasContentLore.component()))
+                                .build()
+
+                            val unableToAdd = event.whoClicked.inventory.addItem(item)
+                            if (unableToAdd.isNotEmpty()) {
+                                world.dropItemNaturally(location, unableToAdd[0]!!)
+
+                            }
+                            Collector.delete(chunk)
+                            world.setType(location, Material.AIR)
+                            close()
+                        }
+
+                        is None -> {
+                            event.whoClicked.sendMessage("An internal error occurred")
+                            throw IllegalStateException("No Collector Found Even Though All Checks Passed") // DEBUG ONLY
+                        }
+                    }
+                }
+                .index(pickupItemLoc)
                 .build()
         }
 

@@ -3,6 +3,8 @@ package sh.miles.collect
 import org.bukkit.plugin.java.JavaPlugin
 import sh.miles.collect.collector.Collector
 import sh.miles.collect.collector.CollectorManager
+import sh.miles.collect.collector.template.CollectorTemplate
+import sh.miles.collect.collector.template.CollectorTemplateUpgradeData
 import sh.miles.collect.command.CollectorCommand
 import sh.miles.collect.listeners.ChunkStateListener
 import sh.miles.collect.listeners.CollectorCollectListener
@@ -19,6 +21,9 @@ import sh.miles.collect.util.json.CollectorMenuSpecAdapter
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.config.ConfigWrapper
 import sh.miles.pineapple.json.JsonHelper
+import sh.miles.pineapple.util.serialization.Serialized
+import sh.miles.pineapple.util.serialization.adapter.SerializedAdapterRegistry
+import sh.miles.pineapple.util.serialization.bridges.gson.GsonSerializedBridge
 import java.io.File
 
 class CollectPlugin : JavaPlugin() {
@@ -29,17 +34,18 @@ class CollectPlugin : JavaPlugin() {
         lateinit var plugin: CollectPlugin;
     }
 
-    val json: JsonHelper = JsonHelper(
-        PineappleComponentAdapter,
-        CollectorTemplateAdapter,
-        CollectorMenuSpecAdapter,
-        CollectorTemplateUpgradeDataAdapter
-    )
+    lateinit var json: JsonHelper
 
     override fun onEnable() {
         saveResources()
         plugin = this
         PineappleLib.initialize(this)
+        json = JsonHelper { gson ->
+            gson.registerTypeAdapter(CollectorTemplate::class.java, CollectorTemplateAdapter)
+            gson.registerTypeAdapter(CollectorMenuSpecAdapter.SpecDetails::class.java, CollectorMenuSpecAdapter)
+            gson.registerTypeAdapter(CollectorTemplateUpgradeData::class.java, CollectorTemplateUpgradeDataAdapter)
+            SerializedAdapterRegistry.INSTANCE.registerBridge(GsonSerializedBridge(gson))
+        }
 
         CollectorTemplateRegistry.run { }
         CollectorMenuSpec.run { }
