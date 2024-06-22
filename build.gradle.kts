@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "sh.miles"
-version = "1.1.0-SNAPSHOT"
+version = "1.1.1-SNAPSHOT"
 val debugLibraries = true
 
 repositories {
@@ -47,7 +47,7 @@ tasks.compileKotlin {
 tasks.shadowJar {
     this.archiveClassifier = ""
     this.archiveVersion = ""
-    archiveFileName = "${project.name}-${project.version}.jar"
+    archiveFileName = "ArcticCollectors-${project.version}.jar"
 
     val packageName = "${project.group}.${project.name.lowercase()}"
     this.relocate("sh.miles.pineapple", "$packageName.libs.pineapple")
@@ -62,7 +62,7 @@ tasks.build {
 }
 
 bukkit {
-    name = project.name
+    name = "ArcticCollectors"
     version = project.version.toString()
     main = "sh.miles.${project.name.lowercase()}.${project.name}Plugin"
     apiVersion = "1.20" // LATEST

@@ -36,7 +36,9 @@ class Collector(val templateKey: String, val size: Int, val position: Position, 
             val pdc = chunk.persistentDataContainer
             val position = pdc.get(PDC_POSITION_KEY, PDC_POSITION_DATA_TYPE) ?: return Option.none()
 
-            val tileState = chunk.world.getBlockState(position.toLocation()) as TileState
+            val blockState = chunk.world.getBlockState(position.toLocation())
+            if (!isCollector(blockState)) return Option.none()
+            val tileState = blockState as TileState
             val blockPdc = tileState.persistentDataContainer
             val templateKey = blockPdc.get(PDC_TEMPLATE_KEY, PersistentDataType.STRING)!!
             val sizeKey = blockPdc.get(PDC_SIZE_KEY, PersistentDataType.INTEGER)!!
