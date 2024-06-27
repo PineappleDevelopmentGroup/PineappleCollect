@@ -1,16 +1,17 @@
-package sh.miles.collect.command.data
+package sh.miles.collect.command.data.get
 
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import sh.miles.collect.collector.CollectorManager
 import sh.miles.collect.registry.CollectorTemplateRegistry
 import sh.miles.collect.util.MessageConfig
+import sh.miles.collect.util.PDC_POSITION_KEY
 import sh.miles.pineapple.command.Command
 import sh.miles.pineapple.command.CommandLabel
 import sh.miles.pineapple.function.Option.None
 import sh.miles.pineapple.function.Option.Some
 
-object DataGetCommand : Command(CommandLabel("get", "collect.command.data.get")) {
+object DataGetGlobalCommand : Command(CommandLabel("global", "collect.command.data.get.global")) {
 
     override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
         if (sender !is Player) {
@@ -36,10 +37,13 @@ object DataGetCommand : Command(CommandLabel("get", "collect.command.data.get"))
             }
 
             is None -> {
-                sender.sendMessage("No collector in this chunk")
+                if (chunk.persistentDataContainer.has(PDC_POSITION_KEY)) {
+                    sender.sendMessage("No collector was found but chunk potion key data")
+                } else {
+                    sender.sendMessage("No collector in this chunk")
+                }
             }
         }
         return true
     }
-
 }

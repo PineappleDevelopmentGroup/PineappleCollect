@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "sh.miles"
-version = "1.1.1-SNAPSHOT"
+version = "1.1.3-SNAPSHOT"
 val debugLibraries = true
 
 repositories {

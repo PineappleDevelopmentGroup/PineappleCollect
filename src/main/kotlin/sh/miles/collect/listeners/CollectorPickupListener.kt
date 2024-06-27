@@ -13,6 +13,7 @@ import sh.miles.collect.collector.Collector
 import sh.miles.collect.collector.CollectorManager
 import sh.miles.collect.registry.CollectorTemplateRegistry
 import sh.miles.collect.util.PDC_CONTENT_KEY
+import sh.miles.collect.util.PDC_OWNER_KEY
 import sh.miles.collect.util.PDC_SIZE_KEY
 import sh.miles.collect.util.PDC_TEMPLATE_KEY
 import sh.miles.pineapple.PineappleLib
@@ -46,6 +47,7 @@ object CollectorPickupListener : Listener {
                         itemMeta.persistentDataContainer.set(PDC_CONTENT_KEY, PersistentDataType.BYTE_ARRAY, PineappleLib.getNmsProvider().itemsToBytes(collectorSome.inventory.contents))
                         itemMeta.persistentDataContainer.set(PDC_SIZE_KEY, PersistentDataType.INTEGER, template.size)
                         itemMeta.persistentDataContainer.set(PDC_TEMPLATE_KEY, PersistentDataType.STRING, template.key)
+                        itemMeta.persistentDataContainer.set(PDC_OWNER_KEY, PersistentDataType.STRING, collectorSome.owner.toString())
                     }
                     item.itemMeta = itemMeta
 

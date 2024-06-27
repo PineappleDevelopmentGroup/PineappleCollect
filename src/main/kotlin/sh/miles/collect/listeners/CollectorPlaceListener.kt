@@ -15,6 +15,7 @@ import sh.miles.collect.util.MessageConfig
 import sh.miles.collect.util.PDC_CONTENT_KEY
 import sh.miles.collect.util.PDC_POSITION_DATA_TYPE
 import sh.miles.collect.util.PDC_POSITION_KEY
+import sh.miles.collect.util.PluginHooks
 import sh.miles.collect.util.Position
 import sh.miles.pineapple.function.Option
 import sh.miles.pineapple.function.Option.None
@@ -25,10 +26,13 @@ object CollectorPlaceListener : Listener {
 
     @EventHandler
     fun onBlockPlace(event: BlockPlaceEvent) {
+        // TODO check is superior world
         val item = event.itemInHand
         if (!item.hasItemMeta()) return
         val meta = item.itemMeta!!
         if (!CollectorTemplate.hasTemplate(meta)) return
+
+        if (!PluginHooks.canPlace(event.player, event.block.location)) return
 
         val templateString = CollectorTemplate.template(meta)
 

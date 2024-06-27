@@ -33,6 +33,11 @@ data class Position(val uuid: UUID, val x: Int, val y: Int, val z: Int) {
         return result
     }
 
+    override fun toString(): String {
+        return "Position(uuid=$uuid, x=$x, y=$y, z=$z)"
+    }
+
+
     companion object {
         fun fromLocation(location: Location): Position {
             return Position(location.world!!.uid, location.blockX, location.blockY, location.blockZ)

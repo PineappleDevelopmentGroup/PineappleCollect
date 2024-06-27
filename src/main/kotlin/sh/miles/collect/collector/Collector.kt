@@ -5,6 +5,7 @@ import org.bukkit.block.BlockState
 import org.bukkit.block.TileState
 import org.bukkit.persistence.PersistentDataType
 import sh.miles.collect.collector.container.InfStackContainer
+import sh.miles.collect.util.CollectUtils
 import sh.miles.collect.util.PDC_CONTENT_KEY
 import sh.miles.collect.util.PDC_OWNER_KEY
 import sh.miles.collect.util.PDC_POSITION_DATA_TYPE
@@ -35,8 +36,10 @@ class Collector(val templateKey: String, val size: Int, val position: Position, 
         fun load(chunk: Chunk): Option<Collector> {
             val pdc = chunk.persistentDataContainer
             val position = pdc.get(PDC_POSITION_KEY, PDC_POSITION_DATA_TYPE) ?: return Option.none()
+            val positionLocation = position.toLocation()
 
-            val blockState = chunk.world.getBlockState(position.toLocation())
+            if (!CollectUtils.BLOCK_ENTITIES.contains(positionLocation.block.type)) return Option.none()
+            val blockState = chunk.world.getBlockState(positionLocation)
             if (!isCollector(blockState)) return Option.none()
             val tileState = blockState as TileState
             val blockPdc = tileState.persistentDataContainer

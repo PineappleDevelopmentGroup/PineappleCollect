@@ -4,6 +4,7 @@ import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI
 import net.brcdev.shopgui.ShopGuiPlusApi
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit.getServer
+import org.bukkit.Location
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import java.math.BigDecimal
@@ -65,6 +66,19 @@ object PluginHooks {
 
     fun isSellable(stack: ItemStack): Boolean {
         return ShopGuiPlusApi.getItemStackShopItem(stack) != null
+    }
+
+    fun canPlace(player: Player, location: Location): Boolean {
+        val island = SuperiorSkyblockAPI.getIslandAt(location)
+        val superiorPlayer = SuperiorSkyblockAPI.getPlayer(player)
+
+        if (island.owner.uniqueId.equals(superiorPlayer.uniqueId)) return true
+
+        if (island.isMember(superiorPlayer)) return true
+
+        if (superiorPlayer.hasBypassModeEnabled()) return true
+
+        return false
     }
 
     private fun sellItem(player: Player, stack: ItemStack, amount: Int, giveBalance: Boolean): BigDecimal {
