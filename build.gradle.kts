@@ -1,12 +1,14 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
-    kotlin("jvm") version "1.9.22"
+    kotlin("jvm") version "2.0.0"
     id("idea")
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("net.minecrell.plugin-yml.bukkit") version "0.5.3"
 }
 
 group = "sh.miles"
-version = "1.1.3-SNAPSHOT"
+version = "2.0.0-SNAPSHOT"
 val debugLibraries = true
 
 repositories {
@@ -31,6 +33,7 @@ dependencies {
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
     compileOnly("com.github.brcdev-minecraft:shopgui-api:3.0.0")
     compileOnly("com.bgsoftware:SuperiorSkyblockAPI:2023.3")
+    compileOnly("com.github.decentsoftware-eu:decentholograms:2.8.9")
 }
 
 idea {
@@ -41,13 +44,13 @@ idea {
 }
 
 tasks.compileKotlin {
-    kotlinOptions.jvmTarget = "17"
+    compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
 }
 
 tasks.shadowJar {
     this.archiveClassifier = ""
     this.archiveVersion = ""
-    archiveFileName = "ArcticCollectors-${project.version}.jar"
+    archiveFileName = "PineappleCollectors-${project.version}.jar"
 
     val packageName = "${project.group}.${project.name.lowercase()}"
     this.relocate("sh.miles.pineapple", "$packageName.libs.pineapple")
@@ -62,11 +65,11 @@ tasks.build {
 }
 
 bukkit {
-    name = "ArcticCollectors"
+    name = "PineappleCollectors"
     version = project.version.toString()
     main = "sh.miles.${project.name.lowercase()}.${project.name}Plugin"
     apiVersion = "1.20" // LATEST
-    depend = listOf("Vault", "ShopGUIPlus", "SuperiorSkyblock2")
+    depend = listOf("Vault", "ShopGUIPlus", "SuperiorSkyblock2", "DecentHolograms")
 }
 
 kotlin {
