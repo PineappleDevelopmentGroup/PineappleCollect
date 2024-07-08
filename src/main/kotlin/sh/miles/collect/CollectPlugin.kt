@@ -3,6 +3,7 @@ package sh.miles.collect
 import org.bukkit.plugin.java.JavaPlugin
 import sh.miles.collect.hook.SkyblockHook
 import sh.miles.collect.hook.VaultHook
+import sh.miles.crown.infstacks.InfStackSettings
 import sh.miles.pineapple.PineappleLib
 
 class CollectPlugin : JavaPlugin() {
