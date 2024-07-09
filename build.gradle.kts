@@ -29,7 +29,8 @@ dependencies {
 
     compileOnly("org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT") { isChanging = true }
     implementation("sh.miles:Pineapple:1.0.0-SNAPSHOT") { isChanging = true }
-    implementation("sh.miles.crown:infstacks:1.0.0-SNAPSHOT")
+    implementation("sh.miles.crown:infstacks:1.0.0-SNAPSHOT") { isChanging = true }
+    implementation("sh.miles.crown:tiles:1.0.0-SNAPSHOT") { isChanging = true }
     bukkitLibrary(kotlin("stdlib"))
 
     compileOnly("com.github.MilkBowl:VaultAPI:1.7")
@@ -71,7 +72,7 @@ bukkit {
     version = project.version.toString()
     main = "sh.miles.${project.name.lowercase()}.${project.name}Plugin"
     apiVersion = "1.20" // LATEST
-    depend = listOf("Vault", "ShopGUIPlus", "SuperiorSkyblock2", "DecentHolograms")
+    depend = listOf("Vault", "SuperiorSkyblock2")
 }
 
 kotlin {
