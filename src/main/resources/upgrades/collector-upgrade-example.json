@@ -1,0 +1,15 @@
+{
+  "id": "super_cool_id",
+  "display_name": "Super Cool Upgrade",
+  "upgrades": [
+    {
+      "type": "INVENTORY_SIZE"
+    },
+    {
+      "type": "STACK_SIZE"
+    },
+    {
+      "type": "RANGE"
+    }
+  ]
+}

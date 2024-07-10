@@ -1,4 +1,4 @@
-package sh.miles.collect.meta
+package sh.miles.collect.upgrades
 
 import sh.miles.pineapple.util.serialization.SerializedDeserializeContext
 import sh.miles.pineapple.util.serialization.SerializedElement
@@ -7,17 +7,17 @@ import sh.miles.pineapple.util.serialization.SerializedSerializeContext
 import sh.miles.pineapple.util.serialization.adapter.SerializedAdapter
 import sh.miles.pineapple.util.serialization.exception.SerializedAdaptationException
 
-object CollectorMetaAdapter : SerializedAdapter<CollectorMeta> {
+object CollectorUpgradeAdapter : SerializedAdapter<CollectorUpgrade> {
 
     private val ID_KEY = "id"
 
     override fun getKey(): Class<*> {
-        return CollectorMeta::class.java
+        return CollectorUpgrade::class.java
     }
 
-    override fun deserialize(element: SerializedElement, context: SerializedDeserializeContext): CollectorMeta {
+    override fun deserialize(element: SerializedElement, context: SerializedDeserializeContext): CollectorUpgrade {
         if (!element.isObject) {
-            throw SerializedAdaptationException("CollectorMeta's can only be deserialized from an object")
+            throw SerializedAdaptationException("CollectorUpgrade's can only be deserialized from an object")
         }
 
         element as SerializedObject
@@ -26,10 +26,10 @@ object CollectorMetaAdapter : SerializedAdapter<CollectorMeta> {
 
         val id = element.getPrimitive(ID_KEY).orThrow().asString
 
-        return CollectorMeta(id)
+        return CollectorUpgrade(id, listOf())
     }
 
-    override fun serialize(meta: CollectorMeta, context: SerializedSerializeContext): SerializedElement {
+    override fun serialize(meta: CollectorUpgrade, context: SerializedSerializeContext): SerializedElement {
         val serializedObject = SerializedElement.`object`()
         serializedObject.add(ID_KEY, meta.id)
 
