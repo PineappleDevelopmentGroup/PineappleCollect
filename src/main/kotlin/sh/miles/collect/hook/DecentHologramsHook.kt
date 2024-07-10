@@ -1,7 +1,5 @@
 package sh.miles.collect.hook
 
-import eu.decentsoftware.holograms.api.DHAPI
-import eu.decentsoftware.holograms.api.holograms.Hologram
 import org.bukkit.Location
 
 object DecentHologramsHook {

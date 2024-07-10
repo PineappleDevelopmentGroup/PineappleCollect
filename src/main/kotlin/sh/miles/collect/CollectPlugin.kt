@@ -4,12 +4,12 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
-import sh.miles.collect.hook.SkyblockHook
 import sh.miles.collect.hook.VaultHook
+import sh.miles.collect.meta.CollectorMetaAdapter
 import sh.miles.collect.test.TestTileType
-import sh.miles.crown.infstacks.InfStackSettings
 import sh.miles.crown.tiles.Tiles
 import sh.miles.pineapple.PineappleLib
+import sh.miles.pineapple.util.serialization.adapter.SerializedAdapterRegistry
 
 class CollectPlugin : JavaPlugin(), Listener {
 
@@ -17,6 +17,7 @@ class CollectPlugin : JavaPlugin(), Listener {
         PineappleLib.initialize(this)
         Tiles.setup(this)
         Tiles.getTileTypeRegistry().register(TestTileType)
+        SerializedAdapterRegistry.INSTANCE.register(CollectorMetaAdapter)
 
         // Initialize Plugin Hooks
         VaultHook

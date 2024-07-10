@@ -13,12 +13,12 @@ val debugLibraries = true
 
 repositories {
     mavenCentral()
-    mavenLocal()
     maven("https://maven.miles.sh/libraries")
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://jitpack.io")
     maven("https://repo.bg-software.com/repository/api/")
+    mavenLocal()
 }
 
 dependencies {
