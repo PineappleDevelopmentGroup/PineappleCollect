@@ -18,6 +18,7 @@ repositories {
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://jitpack.io")
     maven("https://repo.bg-software.com/repository/api/")
+    maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
     mavenLocal()
 }
 
@@ -37,6 +38,7 @@ dependencies {
     compileOnly("com.github.brcdev-minecraft:shopgui-api:3.0.0")
     compileOnly("com.bgsoftware:SuperiorSkyblockAPI:2023.3")
     compileOnly("com.github.decentsoftware-eu:decentholograms:2.8.9")
+    compileOnly("me.clip:placeholderapi:2.11.6")
 }
 
 idea {
@@ -72,7 +74,7 @@ bukkit {
     version = project.version.toString()
     main = "sh.miles.${project.name.lowercase()}.${project.name}Plugin"
     apiVersion = "1.20" // LATEST
-    depend = listOf("Vault", "SuperiorSkyblock2")
+    softDepend = listOf("Vault", "SuperiorSkyblock2", "ShopGuiPlus", "PlaceholderAPI")
 }
 
 kotlin {

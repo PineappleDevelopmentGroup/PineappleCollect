@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.java.JavaPlugin
+import sh.miles.collect.hook.PlaceholderAPIHook
 import sh.miles.collect.hook.VaultHook
 import sh.miles.collect.meta.CollectorMetaAdapter
 import sh.miles.collect.test.TestTileType
@@ -26,6 +27,7 @@ class CollectPlugin : JavaPlugin(), Listener {
 
         // Initialize Plugin Hooks
         VaultHook
+        PlaceholderAPIHook
 
         server.pluginManager.registerEvents(this, this)
     }
