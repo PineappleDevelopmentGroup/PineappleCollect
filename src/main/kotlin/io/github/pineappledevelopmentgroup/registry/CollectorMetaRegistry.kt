@@ -5,6 +5,8 @@ import sh.miles.pineapple.collection.registry.WriteableRegistry
 
 class CollectorMetaRegistry : WriteableRegistry<CollectorMeta, String>() {
 
+    // have a merge conflict
+
     init {
         register(CollectorMeta.Singleton)
     }
