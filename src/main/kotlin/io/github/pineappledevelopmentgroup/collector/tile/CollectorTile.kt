@@ -19,6 +19,6 @@ class CollectorTile : Tile {
     }
 
     override fun getTileTypeKey(): NamespacedKey {
-        TODO("Not yet implemented")`
+        TODO("Not yet implemented")
     }
 }
