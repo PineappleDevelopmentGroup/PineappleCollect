@@ -60,10 +60,10 @@ class CollectorUpgradeLoader {
     }
 
     private fun loadFile(file: File) {
-        val collectorMeta = PineappleCollectorsPlugin.plugin.json.gson.fromJson<CollectorUpgrade>(file.reader(Charsets.UTF_8), object : TypeToken<CollectorUpgrade>() {}.type)
+        val collectorUpgrade = PineappleCollectorsPlugin.plugin.json.gson.fromJson<CollectorUpgrade>(file.reader(Charsets.UTF_8), object : TypeToken<CollectorUpgrade>() {}.type)
 
         PineappleCollectorsPlugin.plugin.logger.info("Loaded `${file.name} as a CollectorUpgrade")
 
-        CollectorUpgradeRegistry.register(collectorMeta)
+        CollectorUpgradeRegistry.register(collectorUpgrade)
     }
 }
