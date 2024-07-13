@@ -25,9 +25,9 @@ class PineappleCollectorsPlugin : JavaPlugin() {
         Tiles.getTileTypeRegistry().register(TestTileType)
         json = JsonHelper { builder ->
             SerializedAdapterRegistry.INSTANCE.registerBridge(GsonSerializedBridge(builder))
+            SerializedAdapterRegistry.INSTANCE.register(CollectorMetaAdapter)
+            SerializedAdapterRegistry.INSTANCE.register(CollectorUpgradeAdapter)
         }
-        SerializedAdapterRegistry.INSTANCE.register(CollectorMetaAdapter)
-        SerializedAdapterRegistry.INSTANCE.register(CollectorUpgradeAdapter)
 
 
         // Initialize Plugin Hooks

@@ -26,12 +26,12 @@ object CollectorUpgradeAdapter : SerializedAdapter<CollectorUpgrade> {
 
         val id = element.getPrimitive(ID_KEY).orThrow().asString
 
-        return CollectorUpgrade(id, listOf())
+        return CollectorUpgrade(id)
     }
 
     override fun serialize(meta: CollectorUpgrade, context: SerializedSerializeContext): SerializedElement {
         val serializedObject = SerializedElement.`object`()
-        serializedObject.add(ID_KEY, meta.id)
+        serializedObject.add(ID_KEY, meta.key)
 
         return serializedObject
     }
