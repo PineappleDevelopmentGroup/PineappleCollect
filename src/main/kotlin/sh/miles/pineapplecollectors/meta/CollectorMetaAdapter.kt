@@ -31,7 +31,7 @@ object CollectorMetaAdapter : SerializedAdapter<CollectorMeta> {
 
     override fun serialize(meta: CollectorMeta, context: SerializedSerializeContext): SerializedElement {
         val serializedObject = SerializedElement.`object`()
-        serializedObject.add(ID_KEY, meta.id)
+        serializedObject.add(ID_KEY, meta.key)
 
         return serializedObject
     }
