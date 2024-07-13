@@ -19,7 +19,12 @@ repositories {
     maven("https://jitpack.io")
     maven("https://repo.bg-software.com/repository/api/")
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
-    mavenLocal()
+    maven("https://maven.miles.sh/private") {
+        credentials {
+            this.username = System.getenv("PINEAPPLE_REPOSILITE_USERNAME")
+            this.password = System.getenv("PINEAPPLE_REPOSILITE_PASSWORD")
+        }
+    }
 }
 
 dependencies {
