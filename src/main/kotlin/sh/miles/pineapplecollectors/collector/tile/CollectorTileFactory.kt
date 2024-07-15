@@ -1,14 +1,17 @@
 package sh.miles.pineapplecollectors.collector.tile
 
 import org.bukkit.inventory.ItemStack
+import org.bukkit.persistence.PersistentDataType
 import sh.miles.crown.tiles.factory.tile.TileFactory
 
 object CollectorTileFactory : TileFactory<CollectorTile> {
     override fun create(): CollectorTile {
-        TODO("Not yet implemented")
+        return CollectorTile()
     }
 
     override fun create(item: ItemStack): CollectorTile {
-        TODO("Not yet implemented")
+        val itemPdc = item.itemMeta!!.persistentDataContainer
+
+        return CollectorTile(itemPdc.get(CollectorTileItemFactory.META_KEY, PersistentDataType.STRING)!!)
     }
 }

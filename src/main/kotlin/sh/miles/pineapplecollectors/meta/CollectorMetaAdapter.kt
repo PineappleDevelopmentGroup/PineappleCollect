@@ -1,5 +1,6 @@
 package sh.miles.pineapplecollectors.meta
 
+import sh.miles.pineapple.item.ItemSpec
 import sh.miles.pineapple.util.serialization.SerializedDeserializeContext
 import sh.miles.pineapple.util.serialization.SerializedElement
 import sh.miles.pineapple.util.serialization.SerializedObject
@@ -10,6 +11,7 @@ import sh.miles.pineapple.util.serialization.exception.SerializedAdaptationExcep
 object CollectorMetaAdapter : SerializedAdapter<CollectorMeta> {
 
     private val ID_KEY = "id"
+    private val ITEM_KEY = "item"
 
     override fun getKey(): Class<*> {
         return CollectorMeta::class.java
@@ -25,13 +27,15 @@ object CollectorMetaAdapter : SerializedAdapter<CollectorMeta> {
         // TODO use anomoly
 
         val id = element.getPrimitive(ID_KEY).orThrow().asString
+        val spec = context.deserialize(element.getObjectOrNull(ITEM_KEY)!!, ItemSpec::class.java)
 
-        return CollectorMeta(id)
+        return CollectorMeta(id, spec.buildSpec())
     }
 
     override fun serialize(meta: CollectorMeta, context: SerializedSerializeContext): SerializedElement {
         val serializedObject = SerializedElement.`object`()
         serializedObject.add(ID_KEY, meta.key)
+        serializedObject.add(ITEM_KEY, context.serialize(meta.item))
 
         return serializedObject
     }

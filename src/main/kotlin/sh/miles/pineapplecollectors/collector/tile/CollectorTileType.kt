@@ -10,33 +10,42 @@ import sh.miles.crown.tiles.TileType
 import sh.miles.crown.tiles.factory.item.TileItemFactory
 import sh.miles.crown.tiles.factory.tile.TileFactory
 
-object CollectorTileType : TileType<Tile> {
+object CollectorTileType : TileType<CollectorTile> {
+
+    private val key = NamespacedKey.fromString("pineapplecollectors:type")!!
 
     override fun getKey(): NamespacedKey {
-        return NamespacedKey.fromString("pineapplecollectors:collector")!!
+        return key
     }
 
     override fun onInteract(event: PlayerInteractEvent, tile: Tile) {
-        TODO("Not yet implemented")
+        println("onInteract")
+        val collectorTile = tile as CollectorTile
+        collectorTile.count += 1
+        event.player.sendMessage("You Clicked a Collector!!")
+        event.player.sendMessage("You've clicked this tile ${collectorTile.count} times")
     }
 
     override fun onBlockBreak(event: BlockBreakEvent, tile: Tile) {
-        TODO("Not yet implemented")
+        println("onBlockBreak")
+
     }
 
     override fun onBlockPlace(event: BlockPlaceEvent, tile: Tile) {
-        TODO("Not yet implemented")
+        println("onBlockPlace")
     }
 
     override fun onBlockDrop(event: BlockDropItemEvent, tile: Tile) {
-        TODO("Not yet implemented")
+        println("onBlockDrop")
+        val itemEntity = event.items[0]
+        itemEntity.itemStack = tileItemFactory.create(tile as CollectorTile)
     }
 
-    override fun getTileFactory(): TileFactory<Tile> {
-        TODO("Not yet implemented")
+    override fun getTileFactory(): TileFactory<CollectorTile> {
+        return CollectorTileFactory
     }
 
-    override fun getTileItemFactory(): TileItemFactory<Tile> {
-        TODO("Not yet implemented")
+    override fun getTileItemFactory(): TileItemFactory<CollectorTile> {
+        return CollectorTileItemFactory
     }
 }
