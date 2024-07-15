@@ -1,7 +1,6 @@
 package sh.miles.pineapplecollectors.collector.tile
 
 import org.bukkit.Material
-import org.bukkit.NamespacedKey
 import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataType
 import sh.miles.crown.tiles.factory.item.TileItemFactory
@@ -11,10 +10,9 @@ import sh.miles.pineapple.function.Option.Some
 import sh.miles.pineapple.function.Option.none
 import sh.miles.pineapple.item.ItemBuilder
 import sh.miles.pineapplecollectors.registry.CollectorMetaRegistry
+import sh.miles.pineapplecollectors.util.TilePDC
 
 object CollectorTileItemFactory : TileItemFactory<CollectorTile> {
-
-    val META_KEY = NamespacedKey.fromString("pineapplecollectors:meta")!!
 
     override fun create(): ItemStack {
         throw IllegalAccessException("create() without meta is disallowed")
@@ -28,7 +26,7 @@ object CollectorTileItemFactory : TileItemFactory<CollectorTile> {
 
         val modifiedItem = ItemBuilder.modifyStack(some.item)
             .persistentData(TileItemFactory.TILE_ITEM_KEY, PersistentDataType.STRING, CollectorTileType.key.toString())
-            .persistentData(META_KEY, PersistentDataType.STRING, metaKey)
+            .persistentData(TilePDC.META_KEY, PersistentDataType.STRING, metaKey)
             .build()
 
         return Option.some(modifiedItem)
@@ -50,8 +48,8 @@ object CollectorTileItemFactory : TileItemFactory<CollectorTile> {
 
         val modifiedItem = ItemBuilder.modifyStack(some.item)
             .persistentData(TileItemFactory.TILE_ITEM_KEY, PersistentDataType.STRING, CollectorTileType.key.toString())
-            .persistentData(META_KEY, PersistentDataType.STRING, some.key)
-            .persistentData(CollectorTile.COUNT_KEY, PersistentDataType.INTEGER, tile.count)
+            .persistentData(TilePDC.META_KEY, PersistentDataType.STRING, some.key)
+            .persistentData(TilePDC.COUNT_KEY, PersistentDataType.INTEGER, tile.count)
             .build()
 
 
