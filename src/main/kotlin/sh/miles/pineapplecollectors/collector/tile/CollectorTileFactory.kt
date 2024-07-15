@@ -11,7 +11,8 @@ object CollectorTileFactory : TileFactory<CollectorTile> {
 
     override fun create(item: ItemStack): CollectorTile {
         val itemPdc = item.itemMeta!!.persistentDataContainer
-
-        return CollectorTile(itemPdc.get(CollectorTileItemFactory.META_KEY, PersistentDataType.STRING)!!)
+        val tile = CollectorTile(itemPdc.get(CollectorTileItemFactory.META_KEY, PersistentDataType.STRING)!!)
+        tile.count = itemPdc.getOrDefault(CollectorTile.COUNT_KEY, PersistentDataType.INTEGER, 0)
+        return tile
     }
 }
