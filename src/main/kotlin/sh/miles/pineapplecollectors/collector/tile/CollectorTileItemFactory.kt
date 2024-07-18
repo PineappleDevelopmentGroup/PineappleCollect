@@ -34,7 +34,8 @@ object CollectorTileItemFactory : TileItemFactory<CollectorTile> {
 
     override fun isFactoryResultant(item: ItemStack): Boolean {
         val meta = item.itemMeta ?: return false
-        if (!meta.persistentDataContainer.has(TileItemFactory.TILE_ITEM_KEY)) return false
+        val pdc = meta.persistentDataContainer
+        if (!pdc.has(TileItemFactory.TILE_ITEM_KEY) && !pdc.has(TilePDC.META_KEY)) return false
         val key = meta.persistentDataContainer.get(TileItemFactory.TILE_ITEM_KEY, PersistentDataType.STRING)
         return key.equals(CollectorTileType.key.toString())
     }

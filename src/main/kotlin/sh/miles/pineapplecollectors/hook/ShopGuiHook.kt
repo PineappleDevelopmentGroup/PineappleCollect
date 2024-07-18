@@ -17,5 +17,9 @@ object ShopGuiHook {
         return getShopItem(player, item).sellPrice
     }
 
+    fun canSell(stack: ItemStack): Boolean {
+        return ShopGuiPlusApi.getItemStackShopItem(stack) == null
+    }
+
     // TODO method to get price for an amount, will incluse some form of recursion and reutrn BigNumber as infstack is long so cost can be bigger
 }
