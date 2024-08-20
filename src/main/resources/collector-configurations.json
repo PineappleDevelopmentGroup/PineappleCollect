@@ -1,0 +1,6 @@
+{
+  "activate-all": false,
+  "active": [
+    "collectors/default-configuration.json"
+  ]
+}

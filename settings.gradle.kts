@@ -1,2 +1,2 @@
-rootProject.name = "PineappleCollectors"
+rootProject.name = "Collector"
 

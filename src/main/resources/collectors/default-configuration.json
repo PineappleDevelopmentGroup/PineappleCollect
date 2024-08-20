@@ -1,0 +1,39 @@
+{
+  "id": "default-collector",
+  "menu_configuration": "default-menu",
+  "storage_slots": 14,
+  "hologram": {
+    "text": [
+      "<gray>↠↠<yellow>Collector<gray>↞↞"
+    ],
+    "relative_position": {
+      "x": 0.5,
+      "y": 1.25,
+      "z": 0.5
+    }
+  },
+  "item": {
+    "item_type": "oak_log",
+    "name": "<yellow><italic:!>Collector",
+    "lore": [
+      "<gray><italics:!>Place the collector to start earning"
+    ]
+  },
+  "place_sound": {
+    "sound": "block.lantern.place",
+    "category": "BLOCKS",
+    "pitch": 0.13,
+    "volume": 1.0
+  },
+  "break_sound": {
+    "sound": "block.lantern.break",
+    "category": "BLOCKS",
+    "pitch": 0.13,
+    "volume": 1.0
+  },
+  "stacking_settings": {
+    "lore": [
+      "<gold><italic:!>Stack Size<dark_gray>: <green><$amount> <dark_gray>/ <red><$max_amount>"
+    ]
+  }
+}
