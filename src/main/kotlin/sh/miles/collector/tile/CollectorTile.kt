@@ -1,12 +1,15 @@
 package sh.miles.collector.tile
 
 import org.bukkit.NamespacedKey
+import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataAdapterContext
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
 import sh.miles.collector.configuration.CollectorConfiguration
 import sh.miles.collector.Registries
+import sh.miles.collector.menu.InfStackContainer
 import sh.miles.collector.upgrade.CollectorUpgrade
+import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.tiles.api.Tile
 import sh.miles.pineapple.tiles.api.TileType
 import java.util.UUID
@@ -19,6 +22,7 @@ class CollectorTile : Tile {
     var accessWhitelist = mutableSetOf<UUID>()
         private set
     var upgrades = mutableMapOf<CollectorUpgrade, Int>()
+    lateinit var stackContainer: InfStackContainer
 
     override fun save(container: PersistentDataContainer, excludeFields: MutableSet<String>?) {
         setIfIncludes(COLLECTOR_OWNER, PersistentDataType.STRING, owner.toString(), container, excludeFields)
@@ -60,6 +64,14 @@ class CollectorTile : Tile {
             }
             return@setIfIncludes upgradeContainer
         }
+
+        setIfIncludes(
+            COLLECTOR_ITEMS,
+            PersistentDataType.BYTE_ARRAY,
+            PineappleLib.getNmsProvider().itemsToBytes(stackContainer.getContents()),
+            container,
+            excludeFields
+        )
     }
 
     override fun load(container: PersistentDataContainer) {
@@ -93,6 +105,12 @@ class CollectorTile : Tile {
             }
             return@getOrNull map
         } ?: mutableMapOf()
+
+
+        this.stackContainer = getOrNull(COLLECTOR_ITEMS, PersistentDataType.BYTE_ARRAY, container) {
+            if (it == null) return@getOrNull null
+            return@getOrNull InfStackContainer(configuration, PineappleLib.getNmsProvider().itemsFromBytes(it, configuration.storageSlots).toList())
+        } ?: InfStackContainer(configuration)
     }
 
     override fun getTileType(): TileType<*> {

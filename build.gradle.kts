@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     kotlin("jvm") version "2.0.0"
     id("idea")
@@ -57,7 +55,7 @@ bukkit {
     name = "ArcticCollectors"
     version = project.version.toString()
     main = "sh.miles.${project.name.lowercase()}.${project.name}Plugin"
-    apiVersion = "1.20.4" // LATEST
+    apiVersion = "1.20" // LATEST
 }
 
 kotlin {

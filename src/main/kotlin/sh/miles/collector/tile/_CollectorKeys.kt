@@ -9,3 +9,4 @@ val COLLECTOR_DISPLAY_MSB = NamespacedKey.fromString("pineapple-collect:uuid_mos
 val COLLECTOR_DISPLAY_LSB = NamespacedKey.fromString("pineapple-collect:uuid_least_significant_bits")!!
 val COLLECTOR_ACCESSORS = NamespacedKey.fromString("pineapple-collect:accessors")!!
 val COLLECTOR_UPGRADES = NamespacedKey.fromString("pineapple-collect:upgrade_container")!!
+val COLLECTOR_ITEMS = NamespacedKey.fromString("pineapple-collect:items")!!

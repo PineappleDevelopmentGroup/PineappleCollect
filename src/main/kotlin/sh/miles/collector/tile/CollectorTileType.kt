@@ -13,6 +13,7 @@ import org.bukkit.persistence.PersistentDataType
 import sh.miles.collector.Registries
 import sh.miles.collector.configuration.CollectorConfiguration
 import sh.miles.collector.menu.CollectorMenu
+import sh.miles.collector.menu.InfStackContainer
 import sh.miles.pineapple.chat.PineappleChat
 import sh.miles.pineapple.item.ItemBuilder
 import sh.miles.pineapple.tiles.api.TileType
@@ -74,6 +75,8 @@ object CollectorTileType : TileType<CollectorTile>(false) {
         }.uniqueId
 
         tile.configuration.placeSound.playSound(player.location)
+
+        tile.stackContainer = InfStackContainer(tile.configuration)
     }
 
     override fun onBreak(event: BlockBreakEvent, tile: CollectorTile) {

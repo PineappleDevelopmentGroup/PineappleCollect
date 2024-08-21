@@ -15,6 +15,7 @@ object CollectorCommand : Command(CommandLabel("collectors", "collector.command"
     init {
         registerSubcommand(CollectorGiveCommand)
         registerSubcommand(CollectorDebugCommand)
+        registerSubcommand(CollectorTestingCommand)
     }
 
     private object CollectorGiveCommand : Command(CommandLabel("give", "collector.command.give")) {

@@ -5,6 +5,7 @@ import org.bukkit.plugin.Plugin
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.Path
+import kotlin.io.path.name
 import kotlin.io.path.notExists
 import kotlin.io.path.pathString
 import kotlin.io.path.reader

@@ -96,6 +96,10 @@ class InfStackContainer {
         }
     }
 
+    fun getContents(): MutableList<ItemStack> {
+        return ArrayList(contents.map { it.display })
+    }
+
     class ChangeListener {
         private val listening = mutableMapOf<UUID, (Int, InfStack) -> Unit>()
 
