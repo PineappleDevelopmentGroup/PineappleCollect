@@ -7,15 +7,34 @@ import org.bukkit.inventory.ItemStack
 
 object EconomyShopHook {
 
-    fun getItemPrice(stack: ItemStack, player: Player) : Double {
+    fun getItemPrice(stack: ItemStack, player: Player): Double {
         return EconomyShopGUIHook.getItemSellPrice(getShopItem(stack, player), stack, player)
     }
 
-    fun getShopItem(stack: ItemStack, player: Player) : ShopItem? {
+    fun getShopItem(stack: ItemStack, player: Player): ShopItem? {
         return EconomyShopGUIHook.getShopItem(player, stack)!!
     }
 
-    fun canSell(stack: ItemStack, player: Player) : Boolean {
-        return getShopItem(stack, player) != null
+    fun canSell(stack: ItemStack, player: Player): Boolean {
+        val item = getShopItem(stack, player)
+        return item != null && EconomyShopGUIHook.isSellAble(item)
+    }
+
+    /**
+     * @return -1 if it cant be so ld, 0 if no set limit
+     */
+    fun maxSell(stack: ItemStack, player: Player) : Int {
+        if (!canSell(stack, player)) return -1
+
+        return getShopItem(stack, player)!!.maxSell
+    }
+
+    /**
+     * @return false if unable to sell, true if success
+     */
+    fun sellItem(stack: ItemStack, player: Player, amount: Int): Boolean {
+        if (!canSell(stack, player)) return false
+        EconomyShopGUIHook.sellItem(getShopItem(stack, player), amount)
+        return true
     }
 }
