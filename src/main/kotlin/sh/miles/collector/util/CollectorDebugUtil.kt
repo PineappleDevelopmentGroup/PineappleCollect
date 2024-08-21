@@ -42,7 +42,8 @@ object CollectorDebugUtil {
         val accessors = tile.accessWhitelist.map { Bukkit.getOfflinePlayer(it).name }.toList()
         val configurationId = tile.configuration.id
         val items = tile.stackContainer.getContents().map {
-            it.itemMeta!!.displayName + " X" + it.amount
+            if (it.type.isAir) return@map "Air"
+            return@map it.itemMeta!!.displayName + " X" + it.amount
         }
         sender.spigot().sendMessage(
             PineappleChat.parse(

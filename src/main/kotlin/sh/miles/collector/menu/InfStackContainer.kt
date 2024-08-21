@@ -1,5 +1,6 @@
 package sh.miles.collector.menu
 
+import org.bukkit.Bukkit
 import org.bukkit.inventory.ItemStack
 import sh.miles.collector.configuration.CollectorConfiguration
 import sh.miles.crown.infstacks.InfStack
@@ -21,7 +22,9 @@ class InfStackContainer {
     constructor(configuration: CollectorConfiguration, items: List<ItemStack>) {
         if (configuration.storageSlots != items.size) throw IllegalStateException("InfStackContainer can not be initialized because the storageSlot amount does not line up with the stacks provided")
         this.contents = NonNullArray(configuration.storageSlots) { configuration.infStackFactory.air() }
-        this.contents.addAll(items.map { configuration.infStackFactory.create(it) })
+        for ((index, infStack) in items.map { configuration.infStackFactory.create(it) }.withIndex()) {
+            this.contents.set(index, infStack)
+        }
         this.factory = configuration.infStackFactory
     }
 
@@ -38,6 +41,11 @@ class InfStackContainer {
         for (slot in slots) {
             modify(slot, modification)
         }
+    }
+
+    operator fun get(index: Int): InfStack {
+        val item = contents[index]
+        return item
     }
 
     fun add(item: ItemStack): Boolean {

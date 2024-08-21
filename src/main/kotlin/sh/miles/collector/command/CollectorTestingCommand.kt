@@ -10,7 +10,7 @@ import sh.miles.pineapple.command.CommandLabel
 import sh.miles.pineapple.item.ItemBuilder
 import sh.miles.pineapple.tiles.api.Tiles
 
-object CollectorTestingCommand : Command(CommandLabel("testing", "collector.command.testing")){
+object CollectorTestingCommand : Command(CommandLabel("testing", "collector.command.testing")) {
 
     init {
         registerSubcommand(CollectorTestingItem)
@@ -41,7 +41,10 @@ object CollectorTestingCommand : Command(CommandLabel("testing", "collector.comm
             }
             val tile = possibleTile as CollectorTile
 
-            tile.stackContainer.add(ItemBuilder.of(Material.OAK_PLANKS).name(PineappleChat.parse("<green>Woah this is sussy")).build())
+            if (!tile.stackContainer.add(
+                    ItemBuilder.of(Material.OAK_PLANKS).name(PineappleChat.parse("<green>Woah this is sussy")).build()
+                )
+            ) throw IllegalStateException("Unable to add item to container for some reason")
             return true
         }
     }

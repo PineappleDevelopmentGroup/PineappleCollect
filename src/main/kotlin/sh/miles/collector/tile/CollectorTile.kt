@@ -1,12 +1,12 @@
 package sh.miles.collector.tile
 
+import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
-import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataAdapterContext
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
-import sh.miles.collector.configuration.CollectorConfiguration
 import sh.miles.collector.Registries
+import sh.miles.collector.configuration.CollectorConfiguration
 import sh.miles.collector.menu.InfStackContainer
 import sh.miles.collector.upgrade.CollectorUpgrade
 import sh.miles.pineapple.PineappleLib
@@ -64,7 +64,6 @@ class CollectorTile : Tile {
             }
             return@setIfIncludes upgradeContainer
         }
-
         setIfIncludes(
             COLLECTOR_ITEMS,
             PersistentDataType.BYTE_ARRAY,
@@ -106,11 +105,15 @@ class CollectorTile : Tile {
             return@getOrNull map
         } ?: mutableMapOf()
 
-
         this.stackContainer = getOrNull(COLLECTOR_ITEMS, PersistentDataType.BYTE_ARRAY, container) {
             if (it == null) return@getOrNull null
-            return@getOrNull InfStackContainer(configuration, PineappleLib.getNmsProvider().itemsFromBytes(it, configuration.storageSlots).toList())
+            return@getOrNull InfStackContainer(
+                configuration,
+                PineappleLib.getNmsProvider().itemsFromBytes(it, configuration.storageSlots).toList()
+            )
         } ?: InfStackContainer(configuration)
+        println(this)
+        println(stackContainer)
     }
 
     override fun getTileType(): TileType<*> {

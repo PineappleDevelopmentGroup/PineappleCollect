@@ -6,6 +6,7 @@ import org.bukkit.entity.Display
 import org.bukkit.entity.TextDisplay
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
+import org.bukkit.event.block.BlockDropItemEvent
 import org.bukkit.event.block.BlockPlaceEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.ItemStack
@@ -75,8 +76,6 @@ object CollectorTileType : TileType<CollectorTile>(false) {
         }.uniqueId
 
         tile.configuration.placeSound.playSound(player.location)
-
-        tile.stackContainer = InfStackContainer(tile.configuration)
     }
 
     override fun onBreak(event: BlockBreakEvent, tile: CollectorTile) {

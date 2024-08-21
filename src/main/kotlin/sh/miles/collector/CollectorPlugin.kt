@@ -4,6 +4,8 @@ import org.bukkit.plugin.java.JavaPlugin
 import sh.miles.collector.command.CollectorCommand
 import sh.miles.collector.configuration.adapter.CollectorConfigurationAdapter
 import sh.miles.collector.configuration.adapter.MenuConfigurationAdapter
+import sh.miles.collector.hook.EconomyShopHook
+import sh.miles.collector.hook.VaultHook
 import sh.miles.collector.tile.CollectorTileType
 import sh.miles.collector.util.spec.adapter.HologramSpecAdapter
 import sh.miles.collector.util.spec.adapter.InfStackSettingsAdapter
@@ -30,11 +32,14 @@ class CollectorPlugin : JavaPlugin() {
         Registries.load(this, jsonHelper)
 
         PineappleLib.getCommandRegistry().register(CollectorCommand)
+
+        VaultHook
+        EconomyShopHook
     }
 
     override fun onDisable() {
-        PineappleLib.cleanup()
         Tiles.cleanup()
+        PineappleLib.cleanup()
     }
 
     private fun setupSerializer() {

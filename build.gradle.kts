@@ -13,6 +13,7 @@ repositories {
     mavenCentral()
     maven("https://maven.miles.sh/pineapple")
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    maven("https://jitpack.io/")
 }
 
 dependencies {
@@ -21,6 +22,8 @@ dependencies {
     implementation("sh.miles:pineapple-infstack:1.0.0-SNAPSHOT") { isChanging = true }
     implementation("sh.miles:pineapple-tiles:1.0.0-SNAPSHOT") { isChanging = true }
     bukkitLibrary(kotlin("stdlib"))
+    compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
+    compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.7.1")
 }
 
 java {
@@ -55,6 +58,8 @@ bukkit {
     name = "ArcticCollectors"
     version = project.version.toString()
     main = "sh.miles.${project.name.lowercase()}.${project.name}Plugin"
+    depend = listOf("Vault")
+    softDepend = listOf("EconomyShopGUI", "EconomyShopGUI-Premium")
     apiVersion = "1.20" // LATEST
 }
 
