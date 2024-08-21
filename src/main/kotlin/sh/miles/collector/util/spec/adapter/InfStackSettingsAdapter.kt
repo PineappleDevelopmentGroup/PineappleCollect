@@ -35,12 +35,20 @@ object InfStackSettingsAdapter : SerializedAdapter<InfStackSettings> {
             val baseLore: MutableList<BaseComponent> =
                 PineappleLib.getNmsProvider().getItemLore(comparator).toMutableList()
             for (component in components) {
+
+                // Check an item can be sold, if it cannot show [UNSELLABLE] to avoid needing a message send in the menu if its attempted to be sold
+                val sellPrice: String = if (!EconomyShopHook.canSell(comparator)) {
+                    "[UNSELLABLE]"
+                } else {
+                    DECIMAL_FORMAT.format((EconomyShopHook.getItemPrice(comparator) * currentAmount))
+                }
+
                 baseLore.add(
                     component.component(
                         mapOf(
                             "amount" to currentAmount,
                             "max_amount" to (if (maxStackSize == Long.MAX_VALUE) "∞" else maxStackSize),
-                            "sell_price" to DECIMAL_FORMAT.format((EconomyShopHook.getItemPrice(comparator) * currentAmount)),
+                            "sell_price" to sellPrice,
                             "withdraw_amount" to (if (currentAmount > 64) 64 else currentAmount)
                         )
                     )

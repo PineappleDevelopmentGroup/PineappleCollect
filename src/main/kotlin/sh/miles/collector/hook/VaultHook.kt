@@ -20,4 +20,8 @@ object VaultHook {
         return economy.withdrawPlayer(player, balance).transactionSuccess()
     }
 
+    fun giveBalance(player: Player, amount: Double) : Boolean {
+        return economy.depositPlayer(player, amount).transactionSuccess()
+    }
+
 }
