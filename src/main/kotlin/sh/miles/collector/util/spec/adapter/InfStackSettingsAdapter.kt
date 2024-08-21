@@ -1,6 +1,7 @@
 package sh.miles.collector.util.spec.adapter
 
 import net.md_5.bungee.api.chat.BaseComponent
+import sh.miles.collector.hook.EconomyShopHook
 import sh.miles.crown.infstacks.InfStackSettings
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.chat.PineappleChat
@@ -9,8 +10,12 @@ import sh.miles.pineapple.util.serialization.SerializedDeserializeContext
 import sh.miles.pineapple.util.serialization.SerializedElement
 import sh.miles.pineapple.util.serialization.SerializedSerializeContext
 import sh.miles.pineapple.util.serialization.adapter.SerializedAdapter
+import java.text.DecimalFormat
+import java.util.Locale
 
 object InfStackSettingsAdapter : SerializedAdapter<InfStackSettings> {
+
+    private val DECIMAL_FORMAT = DecimalFormat.getCurrencyInstance(Locale.US);
 
     private const val MAX_STACK = "max_stack_size"
     private const val LORE = "lore"
@@ -27,13 +32,16 @@ object InfStackSettingsAdapter : SerializedAdapter<InfStackSettings> {
         }.orThrow()
 
         return InfStackSettings(lore, maxStackSize) { components, currentAmount, display, comparator, _ ->
-            val baseLore: MutableList<BaseComponent> = PineappleLib.getNmsProvider().getItemLore(comparator).toMutableList()
+            val baseLore: MutableList<BaseComponent> =
+                PineappleLib.getNmsProvider().getItemLore(comparator).toMutableList()
             for (component in components) {
                 baseLore.add(
                     component.component(
                         mapOf(
                             "amount" to currentAmount,
-                            "max_amount" to (if (maxStackSize == Long.MAX_VALUE) "∞" else maxStackSize)
+                            "max_amount" to (if (maxStackSize == Long.MAX_VALUE) "∞" else maxStackSize),
+                            "sell_price" to DECIMAL_FORMAT.format((EconomyShopHook.getItemPrice(comparator) * currentAmount)),
+                            "withdraw_amount" to (if (currentAmount > 64) 64 else currentAmount)
                         )
                     )
                 )

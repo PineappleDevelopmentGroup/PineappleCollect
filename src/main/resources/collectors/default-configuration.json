@@ -33,7 +33,10 @@
   },
   "stacking_settings": {
     "lore": [
-      "<gold><italic:!>Stack Size<dark_gray>: <green><$amount> <dark_gray>/ <red><$max_amount>"
+      "<gold><italic:!>Stack Size<dark_gray>: <green><$amount> <dark_gray>/ <red><$max_amount>",
+      "",
+      "<gray><italic:!>Sell all for <dark_green><$sell_price>",
+      "<gray><italic:!>Right click to withdraw <gold><$withdraw_amount>"
     ]
   }
 }

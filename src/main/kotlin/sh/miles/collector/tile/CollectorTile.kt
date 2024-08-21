@@ -112,8 +112,6 @@ class CollectorTile : Tile {
                 PineappleLib.getNmsProvider().itemsFromBytes(it, configuration.storageSlots).toList()
             )
         } ?: InfStackContainer(configuration)
-        println(this)
-        println(stackContainer)
     }
 
     override fun getTileType(): TileType<*> {

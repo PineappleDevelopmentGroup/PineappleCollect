@@ -31,9 +31,10 @@ class InfStackContainer {
     fun modify(slot: Int, modification: (InfStack) -> Unit) {
         val item = contents[slot]
         modification.invoke(item)
+        listener.invoke(slot, item)
         if (item.isEmpty) {
             this.contents.remove(item)
-            listener.invoke(slot, item)
+            condense()
         }
     }
 
@@ -106,6 +107,10 @@ class InfStackContainer {
 
     fun getContents(): MutableList<ItemStack> {
         return ArrayList(contents.map { it.display })
+    }
+
+    fun clearContents() {
+        return contents.clear()
     }
 
     class ChangeListener {

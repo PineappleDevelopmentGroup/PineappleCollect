@@ -11,8 +11,16 @@ object EconomyShopHook {
         return EconomyShopGUIHook.getItemSellPrice(getShopItem(stack, player), stack, player)
     }
 
+    fun getItemPrice(stack: ItemStack): Double {
+        return EconomyShopGUIHook.getItemSellPrice(getShopItem(stack), stack)
+    }
+
     fun getShopItem(stack: ItemStack, player: Player): ShopItem? {
         return EconomyShopGUIHook.getShopItem(player, stack)!!
+    }
+
+    fun getShopItem(stack: ItemStack): ShopItem? {
+        return EconomyShopGUIHook.getShopItem(stack)
     }
 
     fun canSell(stack: ItemStack, player: Player): Boolean {
