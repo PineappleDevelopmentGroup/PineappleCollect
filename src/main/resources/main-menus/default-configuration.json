@@ -1,0 +1,72 @@
+{
+  "id": "default-main-menu",
+  "title": "<dark_gray>Collector Menu",
+  "view_rows": 3,
+  "sell_menu": "default-sell-menu",
+  "items": [
+    {
+      "slot": 13,
+      "action": "open_sell_gui",
+      "click_sound": {
+        "sound": "ui.button.click",
+        "category": "AMBIENT",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      "item_type": "GOLD_INGOT",
+      "name": "<gold><italic:!>Sell Menu",
+      "lore": [
+        "<gray><italic:!>Opens the sell menu"
+      ]
+    },
+    {
+      "slot": 11,
+      "action": "toggle_hologram",
+      "click_sound": {
+        "sound": "ui.button.click",
+        "category": "AMBIENT",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      "item_type": "ORANGE_BANNER",
+      "name": "<gold><italic:!>Toggle Hologram",
+      "lore": [
+        "<gray><italic:!>Toggles the hologram"
+      ]
+    },
+    {
+      "slot": 2,
+      "action": "add_accessor",
+      "click_sound": {
+        "sound": "ui.button.click",
+        "category": "AMBIENT",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      "item_type": "WRITABLE_BOOK",
+      "name": "<white><italic:!>Whitelist Accessor",
+      "lore": [
+        "<gray><italic:!>Allows addition of an accessor"
+      ]
+    },
+    {
+      "slot": 20,
+      "action": "remove_accessor",
+      "click_sound": {
+        "sound": "ui.button.click",
+        "category": "AMBIENT",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      "item_type": "WRITTEN_BOOK",
+      "name": "<red><italic:!>Remove Accessor",
+      "lore": [
+        "<gray><italic:!>Allows removal of an accessor"
+      ]
+    }
+  ],
+  "background_item": {
+    "item_type": "BLACK_STAINED_GLASS_PANE",
+    "name": ""
+  }
+}

@@ -30,6 +30,7 @@ class InfStackContainer {
 
     fun modify(slot: Int, modification: (InfStack) -> Unit) {
         val item = contents[slot]
+        if (item.isAir) return
         modification.invoke(item)
         listener.invoke(slot, item)
         if (item.isEmpty) {

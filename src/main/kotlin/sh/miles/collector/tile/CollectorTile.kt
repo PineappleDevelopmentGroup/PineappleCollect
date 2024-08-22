@@ -1,6 +1,7 @@
 package sh.miles.collector.tile
 
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.NamespacedKey
 import org.bukkit.persistence.PersistentDataAdapterContext
 import org.bukkit.persistence.PersistentDataContainer
@@ -8,36 +9,45 @@ import org.bukkit.persistence.PersistentDataType
 import sh.miles.collector.Registries
 import sh.miles.collector.configuration.CollectorConfiguration
 import sh.miles.collector.menu.InfStackContainer
-import sh.miles.collector.upgrade.CollectorUpgrade
+import sh.miles.collector.upgrade.CollectorUpgradeAction
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.tiles.api.Tile
 import sh.miles.pineapple.tiles.api.TileType
 import java.util.UUID
+import java.util.concurrent.ConcurrentSkipListSet
 
 class CollectorTile : Tile {
 
     var owner: UUID? = null
+    var location: Location? = null
     lateinit var configuration: CollectorConfiguration
-    lateinit var textDisplayUUID: UUID
-    var accessWhitelist = mutableSetOf<UUID>()
+    var textDisplayUUID: UUID? = null
+    var accessWhitelist = ConcurrentSkipListSet<UUID>()
         private set
-    var upgrades = mutableMapOf<CollectorUpgrade, Int>()
+    var upgrades = mutableMapOf<CollectorUpgradeAction, Int>()
     lateinit var stackContainer: InfStackContainer
 
     override fun save(container: PersistentDataContainer, excludeFields: MutableSet<String>?) {
         setIfIncludes(COLLECTOR_OWNER, PersistentDataType.STRING, owner.toString(), container, excludeFields)
+        setIfIncludes(
+            COLLECTOR_LOCATION,
+            PersistentDataType.STRING,
+            "${location?.world?.uid}=${location?.x}=${location?.y}=${location?.z}",
+            container,
+            excludeFields
+        )
         setIfIncludes(COLLECTOR_CONFIGURATION, PersistentDataType.STRING, configuration.id, container, excludeFields)
         setIfIncludes(
             COLLECTOR_DISPLAY_MSB,
             PersistentDataType.LONG,
-            textDisplayUUID.mostSignificantBits,
+            textDisplayUUID?.mostSignificantBits,
             container,
             excludeFields
         )
         setIfIncludes(
             COLLECTOR_DISPLAY_LSB,
             PersistentDataType.LONG,
-            textDisplayUUID.leastSignificantBits,
+            textDisplayUUID?.leastSignificantBits,
             container,
             excludeFields
         )
@@ -49,17 +59,12 @@ class CollectorTile : Tile {
             excludeFields
         )
         setIfIncludes(
-            COLLECTOR_UPGRADES,
-            PersistentDataType.TAG_CONTAINER,
-            container,
-            excludeFields
+            COLLECTOR_UPGRADES, PersistentDataType.TAG_CONTAINER, container, excludeFields
         ) {
             val upgradeContainer = it.newPersistentDataContainer()
             upgrades.forEach { (upgrade, level) ->
                 upgradeContainer.set(
-                    upgrade.key,
-                    PersistentDataType.INTEGER,
-                    level
+                    upgrade.key, PersistentDataType.INTEGER, level
                 )
             }
             return@setIfIncludes upgradeContainer
@@ -79,6 +84,16 @@ class CollectorTile : Tile {
                 it ?: return@getOrNull null
             )
         }
+        this.location = getOrNull(COLLECTOR_LOCATION, PersistentDataType.STRING, container) {
+            val split = it?.split("=") ?: return@getOrNull null
+
+            return@getOrNull Location(
+                Bukkit.getWorld(UUID.fromString(split[0])),
+                split[1].toDouble(),
+                split[2].toDouble(),
+                split[3].toDouble()
+            )
+        }
         this.configuration = getOrThrow(COLLECTOR_CONFIGURATION, PersistentDataType.STRING, container, {
             Registries.COLLECTOR.get(it).orThrow()
         }) { throw IllegalStateException("Unable to load saved collector with missing configuration value") }
@@ -93,12 +108,13 @@ class CollectorTile : Tile {
         }
         this.accessWhitelist = getOrNull(
             COLLECTOR_ACCESSORS, PersistentDataType.LIST.strings(), container
-        ) { it?.map { entry -> UUID.fromString(entry) }?.toMutableSet() } ?: mutableSetOf()
+        ) { it?.map { entry -> UUID.fromString(entry) }?.toCollection(ConcurrentSkipListSet()) }
+            ?: ConcurrentSkipListSet()
         this.upgrades = getOrNull(
             COLLECTOR_UPGRADES, PersistentDataType.TAG_CONTAINER, container
         ) {
             if (it == null) return@getOrNull null
-            val map = mutableMapOf<CollectorUpgrade, Int>()
+            val map = mutableMapOf<CollectorUpgradeAction, Int>()
             for (key in it.keys) {
                 map[Registries.UPGRADE.get(key).orThrow()] = container.get(key, PersistentDataType.INTEGER)!!
             }
@@ -108,8 +124,7 @@ class CollectorTile : Tile {
         this.stackContainer = getOrNull(COLLECTOR_ITEMS, PersistentDataType.BYTE_ARRAY, container) {
             if (it == null) return@getOrNull null
             return@getOrNull InfStackContainer(
-                configuration,
-                PineappleLib.getNmsProvider().itemsFromBytes(it, configuration.storageSlots).toList()
+                configuration, PineappleLib.getNmsProvider().itemsFromBytes(it, configuration.storageSlots).toList()
             )
         } ?: InfStackContainer(configuration)
     }

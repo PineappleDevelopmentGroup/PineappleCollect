@@ -1,6 +1,6 @@
 {
   "activate-all": false,
   "active": [
-    "menus/default-configuration.json"
+    "main-menus/default-configuration.json"
   ]
 }

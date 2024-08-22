@@ -1,6 +1,6 @@
 {
   "id": "default-collector",
-  "menu_configuration": "default-menu",
+  "menu_configuration": "default-main-menu",
   "storage_slots": 14,
   "hologram": {
     "text": [
