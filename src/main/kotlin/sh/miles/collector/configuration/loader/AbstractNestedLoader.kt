@@ -2,6 +2,7 @@ package sh.miles.collector.configuration.loader
 
 import com.google.gson.JsonParser
 import org.bukkit.plugin.Plugin
+import sh.miles.collector.CollectorPlugin
 import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.Path
@@ -22,7 +23,15 @@ abstract class AbstractNestedLoader(private val plugin: Plugin) {
         val activationJson =
             JsonParser.parseReader(Path(plugin.dataFolder.path, activationFile).reader(Charsets.UTF_8)).asJsonObject
         val activateAll = activationJson.getAsJsonPrimitive("activate-all").asBoolean
-        val activationList = activationJson.getAsJsonArray("active").map { it.asString }.toSet()
+        val activationList = activationJson.getAsJsonArray("active").map {
+            // Shouldn't ever be used in prod
+            if (System.getProperty("os.name").lowercase().contains("windows")) {
+                CollectorPlugin.plugin.logger.warning("System detected as windows, converting to windows file paths. IF THIS IS SEEN IN PROD REPORT TO EBIC/MILES")
+                it.asString.replace("/", "\\")
+            } else {
+                it.asString
+            }
+        }.toSet()
 
         val activationPath = Path(plugin.dataFolder.path, activationDir)
         for (child in Files.list(activationPath)) {
