@@ -62,7 +62,7 @@ object CollectorDebugCommand : Command(CommandLabel("debug", "collector.command.
                         sender.sendMessage("Item in hand must not be air")
                         return true
                     }
-                    collector.stackContainer.add(item)
+                    collector.addItem(item)
                     sender.spigot().sendMessage(
                         PineappleChat.parse(
                             "<green>Successfully added ${item.type} to container"

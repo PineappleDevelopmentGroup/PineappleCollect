@@ -3,6 +3,7 @@ package sh.miles.collector.upgrade
 import org.bukkit.NamespacedKey
 import org.bukkit.event.entity.EntityDeathEvent
 import sh.miles.collector.tile.CollectorTile
+import sh.miles.collector.tile.action.CollectorGainItemAction
 import sh.miles.collector.tile.action.CollectorLoadAction
 import sh.miles.collector.tile.action.CollectorSaveAction
 import sh.miles.collector.tile.action.CollectorSellAction
@@ -22,4 +23,6 @@ interface CollectorUpgradeAction : RegistryKey<NamespacedKey> {
 
     fun onCollectorSave(event: CollectorSaveAction, tile: CollectorTile, level: Int) {
     }
+
+    fun onCollectAddItem(event: CollectorGainItemAction, tile: CollectorTile, level: Int)
 }

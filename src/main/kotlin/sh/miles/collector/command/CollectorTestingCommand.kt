@@ -41,7 +41,7 @@ object CollectorTestingCommand : Command(CommandLabel("testing", "collector.comm
             }
             val tile = possibleTile as CollectorTile
 
-            if (!tile.stackContainer.add(
+            if (!tile.addItem(
                     ItemBuilder.of(Material.OAK_PLANKS).name(PineappleChat.parse("<green>Woah this is sussy")).build()
                 )
             ) throw IllegalStateException("Unable to add item to container for some reason")

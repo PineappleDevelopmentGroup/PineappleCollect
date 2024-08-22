@@ -3,6 +3,7 @@ package sh.miles.collector.tile
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import org.bukkit.NamespacedKey
+import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataAdapterContext
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
@@ -127,6 +128,11 @@ class CollectorTile : Tile {
                 configuration, PineappleLib.getNmsProvider().itemsFromBytes(it, configuration.storageSlots).toList()
             )
         } ?: InfStackContainer(configuration)
+    }
+
+    fun addItem(stack: ItemStack): Boolean {
+        // Call CollectorGainItemAction
+        return this.stackContainer.add(stack)
     }
 
     override fun getTileType(): TileType<*> {
