@@ -4,10 +4,11 @@ import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import sh.miles.collector.command.CollectorCommand
 import sh.miles.collector.configuration.adapter.CollectorConfigurationAdapter
-import sh.miles.collector.configuration.adapter.MainMenuConfigurationAdapter
+import sh.miles.collector.configuration.adapter.MenuConfigurationAdapter
 import sh.miles.collector.configuration.adapter.SellMenuConfigurationAdapter
 import sh.miles.collector.hook.EconomyShopHook
 import sh.miles.collector.hook.VaultHook
+import sh.miles.collector.listener.EntityDeathListener
 import sh.miles.collector.tile.CollectorTileType
 import sh.miles.collector.util.spec.adapter.GuiItemSpecAdapter
 import sh.miles.collector.util.spec.adapter.HologramSpecAdapter
@@ -41,6 +42,7 @@ class CollectorPlugin : JavaPlugin() {
 
         VaultHook
         EconomyShopHook
+        server.pluginManager.registerEvents(EntityDeathListener(), this)
     }
 
     override fun onDisable() {
@@ -53,7 +55,7 @@ class CollectorPlugin : JavaPlugin() {
         // registry
         registry.register(CollectorConfigurationAdapter)
         registry.register(SellMenuConfigurationAdapter)
-        registry.register(MainMenuConfigurationAdapter)
+        registry.register(MenuConfigurationAdapter)
         // spec
         registry.register(GuiItemSpecAdapter)
         registry.register(SoundSpecAdapter)

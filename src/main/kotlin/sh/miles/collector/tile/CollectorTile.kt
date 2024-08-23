@@ -7,6 +7,7 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataAdapterContext
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
+import sh.miles.collector.GlobalConfig
 import sh.miles.collector.Registries
 import sh.miles.collector.configuration.CollectorConfiguration
 import sh.miles.collector.menu.InfStackContainer
@@ -27,6 +28,8 @@ class CollectorTile : Tile {
         private set
     var upgrades = mutableMapOf<CollectorUpgradeAction, Int>()
     lateinit var stackContainer: InfStackContainer
+
+    var tickCount: Int = GlobalConfig.DISPLAY_REFRESH_TIME
 
     override fun save(container: PersistentDataContainer, excludeFields: MutableSet<String>?) {
         setIfIncludes(COLLECTOR_OWNER, PersistentDataType.STRING, owner.toString(), container, excludeFields)

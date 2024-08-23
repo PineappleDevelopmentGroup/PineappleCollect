@@ -1,0 +1,57 @@
+{
+  "id": "default_settings_menu",
+  "title": "<dark_gray>Collector Settings",
+  "view_rows": 3,
+  "items": [
+    {
+      "slot": 1,
+      "action": "add_accessor",
+      "click_sound": {
+        "sound": "ui.button.click",
+        "category": "AMBIENT",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      "item_type": "GREEN_BANNER",
+      "name": "<green><italic:!>Add Whitelisted User",
+      "lore": [
+        "<gray><italic:!>Opens an anvil gui that allows a players name to be added to the whitelist"
+      ]
+    },
+    {
+      "slot": 10,
+      "action": "show_accessors",
+      "link": "<dark_green><italic:!><$name>",
+      "click_sound": {
+        "sound": "ui.button.click",
+        "category": "AMBIENT",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      "item_type": "WHITE_BANNER",
+      "name": "<white><italic:!>Whitelisted Users",
+      "lore": [
+        "<gray><italic:!>Click to see whitelisted users"
+      ]
+    },
+    {
+      "slot": 19,
+      "action": "remove_accessor",
+      "click_sound": {
+        "sound": "ui.button.click",
+        "category": "AMBIENT",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      "item_type": "RED_BANNER",
+      "name": "<red><italic:!>Remove Whitelisted User",
+      "lore": [
+        "<gray><italic:!>Opens an anvil gui that allows a player name to be typed to be removed from the whitelist"
+      ]
+    }
+  ],
+  "background_item": {
+    "item_type": "BLACK_STAINED_GLASS_PANE",
+    "name": ""
+  }
+}

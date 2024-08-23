@@ -1,5 +1,5 @@
 {
-  "id": "default-sell-menu",
+  "id": "default_sell_menu",
   "title": "<dark_gray>Collector Sell Menu",
   "view_rows": 4,
   "storage_slots": [
@@ -18,6 +18,16 @@
     24,
     25
   ],
+  "sell_all_item": {
+    "slot": 31,
+    "item_type": "GOLD_INGOT",
+    "name": "<gold><italic:!>Sell All",
+    "lore": [
+      "<gray><italic:!>Sells all items in the collector",
+      "",
+      "<gray><italic:!>Total Worth: <gold><$sell_price>"
+    ]
+  },
   "sell_sound": {
     "sound": "entity.player.levelup",
     "category": "AMBIENT",

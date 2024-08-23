@@ -5,11 +5,10 @@ import sh.miles.pineapple.chat.PineappleComponent
 import sh.miles.pineapple.collection.registry.RegistryKey
 import sh.miles.pineapple.item.ItemSpec
 
-data class MainMenuConfiguration(
+data class MenuConfiguration(
     val id: String,
     val title: PineappleComponent,
     val viewRows: Int,
-    val sellMenuId: String,
     val itemMap: Map<Int, GuiItemSpec>,
     val backgroundItem: ItemSpec
 ) :

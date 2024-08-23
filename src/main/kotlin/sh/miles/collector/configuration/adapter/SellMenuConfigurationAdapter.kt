@@ -15,6 +15,7 @@ object SellMenuConfigurationAdapter : SerializedAdapter<SellMenuConfiguration> {
     private const val TITLE = "title"
     private const val VIEW_ROWS = "view_rows"
     private const val STORAGE_SLOTS = "storage_slots"
+    private const val SELL_ALL_ITEM = "sell_all_item"
     private const val SELL_SOUND = "sell_sound"
     private const val EXTRACT_SOUND = "extract_sound"
     private const val BACKGROUND_ITEM = "background_item"
@@ -36,6 +37,12 @@ object SellMenuConfigurationAdapter : SerializedAdapter<SellMenuConfiguration> {
             }
             return@map slots.toSet()
         }.orElse(setOf())
+        val sellAllItem = context.deserialize(
+            parent.getOrNull(SELL_ALL_ITEM)
+                ?: throw IllegalStateException("Can not find required field $SELL_ALL_ITEM"),
+            ItemSpec::class.java
+        )
+        val sellAllItemSlot = parent.getOrNull(SELL_ALL_ITEM)!!.asObject.get("slot").orThrow().asPrimitive.asInt
         val soundSpec = context.deserialize(
             parent.getOrNull(SELL_SOUND) ?: throw IllegalStateException("Can not find required field $SELL_SOUND"),
             SoundSpec::class.java
@@ -57,6 +64,8 @@ object SellMenuConfigurationAdapter : SerializedAdapter<SellMenuConfiguration> {
             viewRows,
             storageSlots.size,
             storageSlots,
+            sellAllItemSlot,
+            sellAllItem,
             soundSpec,
             extractSound,
             backgroundItem

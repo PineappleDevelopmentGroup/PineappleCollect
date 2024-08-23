@@ -12,6 +12,7 @@ object GuiItemSpecAdapter : SerializedAdapter<GuiItemSpec> {
 
     private const val SLOT = "slot"
     private const val ACTION = "action"
+    private const val LINK = "link"
     private const val CLICK_SOUND = "click_sound"
 
     override fun deserialize(element: SerializedElement, context: SerializedDeserializeContext): GuiItemSpec {
@@ -20,12 +21,13 @@ object GuiItemSpecAdapter : SerializedAdapter<GuiItemSpec> {
         val slot = parent.getPrimitiveOrNull(SLOT)?.asInt ?: throw IllegalStateException("Missing required field $SLOT")
         val actionId =
             parent.getPrimitiveOrNull(ACTION)?.asString ?: throw IllegalStateException("Missing required field $ACTION")
+        val link = parent.getPrimitiveOrNull(LINK)?.asString
         val clickSound = context.deserialize(
             parent.getOrNull(CLICK_SOUND) ?: throw IllegalStateException("Missing required field $CLICK_SOUND"),
             SoundSpec::class.java
         )
 
-        return GuiItemSpec(itemSpec, slot, actionId, clickSound)
+        return GuiItemSpec(itemSpec, slot, actionId, link, clickSound)
     }
 
     override fun serialize(obj: GuiItemSpec, context: SerializedSerializeContext): SerializedElement {

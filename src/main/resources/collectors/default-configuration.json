@@ -1,10 +1,12 @@
 {
-  "id": "default-collector",
-  "menu_configuration": "default-main-menu",
+  "id": "default_collector",
+  "menu_configuration": "default_main_menu",
   "storage_slots": 14,
   "hologram": {
     "text": [
-      "<gray>↠↠<yellow>Collector<gray>↞↞"
+      "<gray>↠↠<yellow>Collector<gray>↞↞",
+      "<white>Collects items from dead mobs",
+      "<gray>Total Worth: <gold><$sell_price>"
     ],
     "relative_position": {
       "x": 0.5,

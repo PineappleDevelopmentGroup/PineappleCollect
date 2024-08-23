@@ -1,8 +1,11 @@
 package sh.miles.collector.menu
 
 import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
+import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import sh.miles.collector.configuration.CollectorConfiguration
+import sh.miles.collector.hook.EconomyShopHook
 import sh.miles.crown.infstacks.InfStack
 import sh.miles.crown.infstacks.InfStackFactory
 import sh.miles.pineapple.collection.NonNullArray
@@ -110,8 +113,29 @@ class InfStackContainer {
         return ArrayList(contents.map { it.display })
     }
 
+    fun getTotalSellPrice(player: Player): Double {
+        var sellPrice = 0.0
+        for (content in this.contents) {
+            val item = content.comparator
+            if (EconomyShopHook.canSell(item)) sellPrice += (EconomyShopHook.getItemPrice(item, player) * content.stackSize)
+        }
+        return sellPrice
+    }
+
+    fun getTotalSellPrice(): Double {
+        var sellPrice = 0.0
+        for (content in this.contents) {
+            val item = content.comparator
+            if (EconomyShopHook.canSell(item)) sellPrice += (EconomyShopHook.getItemPrice(item) * content.stackSize)
+        }
+        return sellPrice
+    }
+
     fun clearContents() {
-        return contents.clear()
+        contents.clear()
+        for (index in (0 until contents.size)) {
+            listener.invoke(index, contents[index])
+        }
     }
 
     class ChangeListener {

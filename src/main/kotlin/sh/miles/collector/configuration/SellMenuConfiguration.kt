@@ -11,6 +11,8 @@ data class SellMenuConfiguration(
     val viewRows: Int,
     val storageSize: Int,
     val storageSlots: Set<Int>,
+    val sellAllItemSlot: Int,
+    val sellAllItem: ItemSpec,
     val sellSound: SoundSpec,
     val extractSound: SoundSpec,
     val backgroundItem: ItemSpec

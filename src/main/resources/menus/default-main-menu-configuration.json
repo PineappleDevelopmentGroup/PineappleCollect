@@ -1,0 +1,58 @@
+{
+  "id": "default_main_menu",
+  "title": "<dark_gray>Collector Menu",
+  "view_rows": 3,
+  "items": [
+    {
+      "slot": 15,
+      "action": "open_sub_menu",
+      "link": "default_settings_menu",
+      "click_sound": {
+        "sound": "ui.button.click",
+        "category": "AMBIENT",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      "item_type": "ARMOR_STAND",
+      "name": "<white><italic:!>Settings Menu",
+      "lore": [
+        "<gray><italic:!>Opens the settings menu"
+      ]
+    },
+    {
+      "slot": 13,
+      "action": "open_sub_menu",
+      "link": "default_sell_menu",
+      "click_sound": {
+        "sound": "ui.button.click",
+        "category": "AMBIENT",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      "item_type": "GOLD_INGOT",
+      "name": "<gold><italic:!>Sell Menu",
+      "lore": [
+        "<gray><italic:!>Opens the sell menu"
+      ]
+    },
+    {
+      "slot": 11,
+      "action": "toggle_hologram",
+      "click_sound": {
+        "sound": "ui.button.click",
+        "category": "AMBIENT",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      "item_type": "ORANGE_BANNER",
+      "name": "<gold><italic:!>Toggle Hologram",
+      "lore": [
+        "<gray><italic:!>Toggles the hologram"
+      ]
+    }
+  ],
+  "background_item": {
+    "item_type": "BLACK_STAINED_GLASS_PANE",
+    "name": ""
+  }
+}
