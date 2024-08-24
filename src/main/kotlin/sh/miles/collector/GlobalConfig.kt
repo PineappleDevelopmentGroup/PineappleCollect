@@ -18,6 +18,10 @@ object GlobalConfig {
     @Comment("The time between refreshing the display entity on top of collectors in ticks")
     var DISPLAY_REFRESH_TIME = 100
 
+    @ConfigPath("auto-sell-time")
+    @Comment("The time between selling items in ticks")
+    var AUTO_SELL_COOLDOWN = 300
+
     @ConfigPath("anvil-title")
     @Comment("The name of the text collecting anvil title")
     var ANVIL_TITLE = PineappleChat.component("<gray>Enter Text")

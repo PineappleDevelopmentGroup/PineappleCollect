@@ -2,6 +2,7 @@ package sh.miles.collector.hook
 
 import net.milkbowl.vault.economy.Economy
 import org.bukkit.Bukkit
+import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 
 object VaultHook {
@@ -20,7 +21,7 @@ object VaultHook {
         return economy.withdrawPlayer(player, balance).transactionSuccess()
     }
 
-    fun giveBalance(player: Player, amount: Double) : Boolean {
+    fun giveBalance(player: OfflinePlayer, amount: Double) : Boolean {
         return economy.depositPlayer(player, amount).transactionSuccess()
     }
 

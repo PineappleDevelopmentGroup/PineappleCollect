@@ -4,8 +4,6 @@ import org.bukkit.NamespacedKey
 import org.bukkit.event.entity.EntityDeathEvent
 import sh.miles.collector.tile.CollectorTile
 import sh.miles.collector.tile.action.CollectorGainItemAction
-import sh.miles.collector.tile.action.CollectorLoadAction
-import sh.miles.collector.tile.action.CollectorSaveAction
 import sh.miles.collector.tile.action.CollectorSellAction
 import sh.miles.pineapple.collection.registry.RegistryKey
 
@@ -15,14 +13,18 @@ interface CollectorUpgradeAction : RegistryKey<NamespacedKey> {
     fun onEntityDeath(event: EntityDeathEvent, tile: CollectorTile, level: Int) {
     }
 
-    fun onCollectorSell(event: CollectorSellAction, tile: CollectorTile, level: Int) {
+    fun onCollectorSell(action: CollectorSellAction, tile: CollectorTile, level: Int) {
     }
 
-    fun onCollectorLoad(event: CollectorLoadAction, tile: CollectorTile, level: Int) {
+    fun onCollectorLoad(tile: CollectorTile, level: Int) {
     }
 
-    fun onCollectorSave(event: CollectorSaveAction, tile: CollectorTile, level: Int) {
+    fun onCollectorSave(tile: CollectorTile, level: Int) {
     }
 
-    fun onCollectAddItem(event: CollectorGainItemAction, tile: CollectorTile, level: Int)
+    fun onCollectAddItem(action: CollectorGainItemAction, tile: CollectorTile, level: Int) {
+    }
+
+    fun onCollectorTick(tile: CollectorTile, level: Int) {
+    }
 }

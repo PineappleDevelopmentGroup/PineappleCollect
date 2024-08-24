@@ -50,4 +50,10 @@ object EconomyShopHook {
         EconomyShopGUIHook.sellItem(getShopItem(stack, player), amount)
         return Pair(true, EconomyShopGUIHook.getItemSellPrice(getShopItem(stack, player), stack, player, amount, 0))
     }
+
+    fun sellItem(stack: ItemStack, amount: Int): Pair<Boolean, Double> {
+        if (!canSell(stack)) return Pair(false, 0.0)
+        EconomyShopGUIHook.sellItem(getShopItem(stack), amount)
+        return Pair(true, EconomyShopGUIHook.getItemSellPrice(getShopItem(stack), stack, amount, 0))
+    }
 }

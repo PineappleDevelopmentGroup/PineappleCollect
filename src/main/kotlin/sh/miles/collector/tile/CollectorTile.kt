@@ -29,7 +29,7 @@ class CollectorTile : Tile {
     var upgrades = mutableMapOf<CollectorUpgradeAction, Int>()
     lateinit var stackContainer: InfStackContainer
 
-    var tickCount: Int = GlobalConfig.DISPLAY_REFRESH_TIME
+    var tickCount: Int = 0
 
     override fun save(container: PersistentDataContainer, excludeFields: MutableSet<String>?) {
         setIfIncludes(COLLECTOR_OWNER, PersistentDataType.STRING, owner.toString(), container, excludeFields)

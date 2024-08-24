@@ -126,21 +126,32 @@ object CollectorTileType : TileType<CollectorTile>(true) {
     }
 
     override fun tick(tile: CollectorTile) {
+        if (tile.tickCount == Int.MAX_VALUE) {
+            tile.tickCount = 0
+        } else {
+            tile.tickCount++
+        }
+
+        if (tile.tickCount % GlobalConfig.DISPLAY_REFRESH_TIME == 0) {
+            tickDisplay(tile)
+        }
+
+        tile.upgrades.forEach { (upgrade, level) ->
+            upgrade.onCollectorTick(tile, level)
+        }
+    }
+
+    private fun tickDisplay(tile: CollectorTile) {
         if (tile.textDisplayUUID == null) return
         val textDisplay = Bukkit.getEntity(tile.textDisplayUUID!!)
         if (textDisplay !is TextDisplay) {
             return // This occurs when the server is first loading chunks because the entity isn't registered before the tick loop starts
         }
 
-        if (tile.tickCount >= GlobalConfig.DISPLAY_REFRESH_TIME) {
-            textDisplay.text = PineappleChat.parseLegacy(
-                tile.configuration.hologram.hologramText.source, mutableMapOf<String, Any>(
-                    "sell_price" to (DECIMAL_FORMAT.format(tile.stackContainer.getTotalSellPrice()) ?: "$0.00")
-                )
+        textDisplay.text = PineappleChat.parseLegacy(
+            tile.configuration.hologram.hologramText.source, mutableMapOf<String, Any>(
+                "sell_price" to (DECIMAL_FORMAT.format(tile.stackContainer.getTotalSellPrice()) ?: "$0.00")
             )
-            tile.tickCount = 0
-        } else {
-            tile.tickCount++
-        }
+        )
     }
 }
