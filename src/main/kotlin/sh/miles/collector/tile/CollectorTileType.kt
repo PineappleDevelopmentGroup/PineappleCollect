@@ -87,6 +87,7 @@ object CollectorTileType : TileType<CollectorTile>(true) {
             )
         ) {
             it.billboard = Display.Billboard.CENTER
+            it.isShadowed = false
         }.uniqueId
         tile.location = location
 

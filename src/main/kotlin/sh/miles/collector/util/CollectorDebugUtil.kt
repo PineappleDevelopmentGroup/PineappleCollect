@@ -60,6 +60,7 @@ object CollectorDebugUtil {
             return
         }
         val tile = possibleTile as CollectorTile
+        val dataVersion = tile.dataVersion
         val player = Bukkit.getOfflinePlayer(tile.owner!!).name
         val accessors = tile.accessWhitelist.map { Bukkit.getOfflinePlayer(it).name }.toList()
         val configurationId = tile.configuration.id
@@ -70,10 +71,12 @@ object CollectorDebugUtil {
         sender.spigot().sendMessage(
             PineappleChat.parse(
                 """
+                        <gold>Data Version<gray>:<dark_gray> $dataVersion
                         <gold>Owner<gray>:<green> $player
                         <gold>Accessors<gray>:<dark_green> $accessors
                         <gold>Configuration Id<gray>:<light_purple> $configurationId
                         <gold>Items<gray>:<white> $items
+                        <gold>Upgrades<gray>:<yellow>${tile.upgrades}
                     """.trimIndent()
             )
         )

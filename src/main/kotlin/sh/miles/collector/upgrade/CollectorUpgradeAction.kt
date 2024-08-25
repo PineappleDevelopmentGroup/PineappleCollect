@@ -9,6 +9,7 @@ import sh.miles.pineapple.collection.registry.RegistryKey
 
 interface CollectorUpgradeAction : RegistryKey<NamespacedKey> {
     val maxLevel: Int
+    val name: String
 
     fun onEntityDeath(event: EntityDeathEvent, tile: CollectorTile, level: Int) {
     }

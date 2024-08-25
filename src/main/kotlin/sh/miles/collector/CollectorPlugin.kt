@@ -20,6 +20,7 @@ import sh.miles.pineapple.json.JsonHelper
 import sh.miles.pineapple.tiles.api.Tiles
 import sh.miles.pineapple.util.serialization.adapter.SerializedAdapterRegistry
 import sh.miles.pineapple.util.serialization.bridges.gson.GsonSerializedBridge
+import java.io.File
 
 class CollectorPlugin : JavaPlugin() {
 
@@ -37,12 +38,14 @@ class CollectorPlugin : JavaPlugin() {
         Tiles.getInstance().registerTileType(CollectorTileType)
         setupSerializer()
         Registries.load(this, jsonHelper)
+        PineappleLib.getConfigurationManager().createDefault(File(dataFolder, "config.yml"), GlobalConfig::class.java)
 
         PineappleLib.getCommandRegistry().register(CollectorCommand)
 
         VaultHook
         EconomyShopHook
         server.pluginManager.registerEvents(EntityDeathListener(), this)
+        Tiles.getInstance().loadSpawnChunks() // We need this since we load PostWorld
     }
 
     override fun onDisable() {

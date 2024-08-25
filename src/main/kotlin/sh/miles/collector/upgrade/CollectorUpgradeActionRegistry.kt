@@ -21,6 +21,8 @@ object CollectorUpgradeActionRegistry : WriteableRegistry<CollectorUpgradeAction
     private object AutoSellUpgrade : CollectorUpgradeAction {
         override val maxLevel: Int
             get() = 1
+        override val name: String
+            get() = "Auto Sell"
 
         override fun getKey(): NamespacedKey {
             return AUTO_SELL
@@ -36,8 +38,11 @@ object CollectorUpgradeActionRegistry : WriteableRegistry<CollectorUpgradeAction
                 VaultHook.giveBalance(player, sellPrice)
 
                 player.player!!.playSound(player.player!!, Sound.BLOCK_ANVIL_LAND, 10F, 1F)
+            }
+        }
+
+        override fun toString(): String {
+            return name
         }
     }
-
-}
 }

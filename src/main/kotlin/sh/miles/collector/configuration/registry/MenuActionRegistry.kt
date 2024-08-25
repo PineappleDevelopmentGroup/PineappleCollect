@@ -4,9 +4,11 @@ import org.bukkit.Bukkit
 import org.bukkit.entity.Display
 import sh.miles.collector.GlobalConfig
 import sh.miles.collector.Registries
+import sh.miles.collector.hook.VaultHook
 import sh.miles.collector.menu.AnvilTextMenu
 import sh.miles.collector.menu.CollectorMenu
 import sh.miles.collector.menu.CollectorSellMenu
+import sh.miles.collector.upgrade.CollectorUpgradeActionRegistry
 import sh.miles.collector.util.ClickAction
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.chat.PineappleChat
@@ -23,6 +25,44 @@ object MenuActionRegistry : FrozenRegistry<ClickAction, String>({
         } else {
             CollectorMenu(player, lastOpenMenu, tile, Registries.MENU.get(id).orThrow()).open()
         }
+    }, "add_autosell" to ClickAction("add_autosell") { tile, _, _, link, player, event ->
+        event.isCancelled = true
+        val upgrade = CollectorUpgradeActionRegistry.get(Registries.UPGRADE.AUTO_SELL).orThrow()
+        val curUpgrades = tile.upgrades
+        if (curUpgrades.containsKey(upgrade) && tile.upgrades[upgrade]!! == upgrade.maxLevel) {
+            player.spigot().sendMessage(
+                GlobalConfig.ALREADY_HAVE_UPGRADE.component(
+                    mutableMapOf<String, Any>(
+                        "upgrade" to upgrade.name, "level" to upgrade.maxLevel
+                    )
+                )
+            )
+            return@ClickAction
+        }
+
+        val cost = link!!.toDouble()
+        if (!VaultHook.hasBalance(player, cost)) {
+            player.spigot().sendMessage(
+                GlobalConfig.NOT_ENOUGH_MONEY.component(
+                    mutableMapOf<String, Any>(
+                        "upgrade" to upgrade.name,
+                        "player_balance" to VaultHook.getBalannce(player),
+                        "upgrade_cost" to cost
+                    )
+                )
+            )
+            return@ClickAction
+        }
+
+        VaultHook.removeBalance(player, cost)
+        player.spigot().sendMessage(
+            GlobalConfig.UPGRADE_PURCHASED.component(
+                mutableMapOf<String, Any>(
+                    "upgrade" to upgrade.name, "price" to cost
+                )
+            )
+        )
+        curUpgrades[upgrade] = curUpgrades.getOrDefault(upgrade, 0) + 1
     }, "toggle_hologram" to ClickAction("toggle_hologram") { tile, _, _, _, _, event ->
         event.isCancelled = true
         val display = tile.textDisplayUUID

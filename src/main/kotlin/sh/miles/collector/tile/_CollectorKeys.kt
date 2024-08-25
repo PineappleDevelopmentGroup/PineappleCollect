@@ -4,6 +4,7 @@ import org.bukkit.NamespacedKey
 
 val COLLECTOR_TILE_KEY = NamespacedKey.fromString("pineapple-collect:collector_tile")!!
 val COLLECTOR_OWNER = NamespacedKey.fromString("pineapple-collect:owner")!!
+val COLLECTOR_DATA_VERSION = NamespacedKey.fromString("pineapple-collect:data_version")!!
 val COLLECTOR_LOCATION = NamespacedKey.fromString("pineapple-collector:location")!!
 val COLLECTOR_CONFIGURATION = NamespacedKey.fromString("pineapple-collect:configuration")!!
 val COLLECTOR_DISPLAY_MSB = NamespacedKey.fromString("pineapple-collect:uuid_most_significant_bits")!!

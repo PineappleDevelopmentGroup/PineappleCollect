@@ -48,6 +48,22 @@
       "lore": [
         "<gray><italic:!>Opens an anvil gui that allows a player name to be typed to be removed from the whitelist"
       ]
+    },
+    {
+      "slot": 2,
+      "action": "add_autosell",
+      "link": "900.0",
+      "click_sound": {
+        "sound": "ui.button.click",
+        "category": "AMBIENT",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      "item_type": "ANVIL",
+      "name": "<green><italic:!>Buy Autosell",
+      "lore": [
+        "<gray><italic:!>Click to purchase autosell for 900"
+      ]
     }
   ],
   "background_item": {

@@ -11,6 +11,7 @@ import sh.miles.collector.GlobalConfig
 import sh.miles.collector.Registries
 import sh.miles.collector.configuration.CollectorConfiguration
 import sh.miles.collector.menu.InfStackContainer
+import sh.miles.collector.tile.loader.CollectorFixing
 import sh.miles.collector.upgrade.CollectorUpgradeAction
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.tiles.api.Tile
@@ -20,6 +21,7 @@ import java.util.concurrent.ConcurrentSkipListSet
 
 class CollectorTile : Tile {
 
+    var dataVersion: Long = Long.MIN_VALUE
     var owner: UUID? = null
     var location: Location? = null
     lateinit var configuration: CollectorConfiguration
@@ -32,6 +34,7 @@ class CollectorTile : Tile {
     var tickCount: Int = 0
 
     override fun save(container: PersistentDataContainer, excludeFields: MutableSet<String>?) {
+        setIfIncludes(COLLECTOR_DATA_VERSION, PersistentDataType.LONG, dataVersion, container, excludeFields)
         setIfIncludes(COLLECTOR_OWNER, PersistentDataType.STRING, owner.toString(), container, excludeFields)
         setIfIncludes(
             COLLECTOR_LOCATION,
@@ -83,6 +86,12 @@ class CollectorTile : Tile {
     }
 
     override fun load(container: PersistentDataContainer) {
+        this.dataVersion = getOrNull(COLLECTOR_DATA_VERSION, PersistentDataType.LONG, container) { it }
+            ?: CollectorFixing.NO_DATA_VERSION
+        if (this.dataVersion < CollectorFixing.CURRENT_DATA_VERSION) {
+            CollectorFixing.applyFixes(container, this.dataVersion)
+            this.dataVersion = CollectorFixing.CURRENT_DATA_VERSION
+        }
         this.owner = getOrNull(COLLECTOR_OWNER, PersistentDataType.STRING, container) {
             UUID.fromString(
                 it ?: return@getOrNull null
