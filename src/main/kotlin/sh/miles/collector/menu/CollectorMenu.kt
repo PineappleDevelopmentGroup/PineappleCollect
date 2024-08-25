@@ -1,6 +1,7 @@
 package sh.miles.collector.menu
 
 import org.bukkit.Bukkit
+import org.bukkit.GameMode
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryType
@@ -48,7 +49,7 @@ class CollectorMenu(
         super.handleClose(event)
         if (this.lastOpenMenu != null) {
             Bukkit.getScheduler().runTask(CollectorPlugin.plugin, Runnable {
-                if (player.openInventory.type == InventoryType.CRAFTING) {
+                if (player.openInventory.type == InventoryType.CRAFTING || player.openInventory.type == InventoryType.CREATIVE) {
                     lastOpenMenu.open()
                 }
             })

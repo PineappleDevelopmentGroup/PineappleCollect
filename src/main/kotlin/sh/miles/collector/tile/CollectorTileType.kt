@@ -26,7 +26,7 @@ import java.util.Locale
 
 object CollectorTileType : TileType<CollectorTile>(true) {
 
-    private val DECIMAL_FORMAT = DecimalFormat.getCurrencyInstance(Locale.US);
+    private val DECIMAL_FORMAT = DecimalFormat.getCurrencyInstance(Locale.US)
     private val excludeItemKeys = mutableSetOf(
         COLLECTOR_OWNER.toString(),
         COLLECTOR_LOCATION.toString(),
@@ -89,6 +89,7 @@ object CollectorTileType : TileType<CollectorTile>(true) {
             it.billboard = Display.Billboard.CENTER
             it.isShadowed = false
         }.uniqueId
+        this.tickDisplay(tile)
         tile.location = location
 
         tile.configuration.placeSound.playSound(player.location)
@@ -142,7 +143,7 @@ object CollectorTileType : TileType<CollectorTile>(true) {
         }
     }
 
-    private fun tickDisplay(tile: CollectorTile) {
+    fun tickDisplay(tile: CollectorTile) {
         if (tile.textDisplayUUID == null) return
         val textDisplay = Bukkit.getEntity(tile.textDisplayUUID!!)
         if (textDisplay !is TextDisplay) {

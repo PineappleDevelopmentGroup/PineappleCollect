@@ -126,7 +126,7 @@ class CollectorTile : Tile {
         this.upgrades = getOrNull(
             COLLECTOR_UPGRADES, PersistentDataType.TAG_CONTAINER, container
         ) {
-            if (it == null) return@getOrNull null
+            if (it == null || it.isEmpty) return@getOrNull null
             val map = mutableMapOf<CollectorUpgradeAction, Int>()
             for (key in it.keys) {
                 map[Registries.UPGRADE.get(key).orThrow()] = container.get(key, PersistentDataType.INTEGER)!!
@@ -147,7 +147,7 @@ class CollectorTile : Tile {
         return this.stackContainer.add(stack)
     }
 
-    override fun getTileType(): TileType<*> {
+    override fun getTileType(): CollectorTileType {
         return CollectorTileType
     }
 

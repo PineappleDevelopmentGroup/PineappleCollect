@@ -35,6 +35,7 @@ object CollectorUpgradeActionRegistry : WriteableRegistry<CollectorUpgradeAction
 
                 val sellPrice = tile.stackContainer.getTotalSellPrice()
                 tile.stackContainer.clearContents()
+                tile.tileType.tickDisplay(tile)
                 VaultHook.giveBalance(player, sellPrice)
 
                 player.player!!.playSound(player.player!!, Sound.BLOCK_ANVIL_LAND, 10F, 1F)

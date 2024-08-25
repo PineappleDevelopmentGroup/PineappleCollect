@@ -87,6 +87,7 @@ class CollectorSellMenu(
                             it.isCancelled = true
                             val price = tile.stackContainer.getTotalSellPrice(viewer())
                             tile.stackContainer.clearContents()
+                            tile.tileType.tickDisplay(tile)
                             VaultHook.giveBalance(player, price)
                             config.sellSound.playSound(player)
                             val spec = ItemSpec(config.sellAllItem)
