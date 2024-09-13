@@ -7,15 +7,13 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataAdapterContext
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
-import sh.miles.collector.GlobalConfig
 import sh.miles.collector.Registries
 import sh.miles.collector.configuration.CollectorConfiguration
+import sh.miles.collector.configuration.UpgradeConfiguration
 import sh.miles.collector.menu.InfStackContainer
 import sh.miles.collector.tile.loader.CollectorFixing
-import sh.miles.collector.upgrade.CollectorUpgradeAction
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.tiles.api.Tile
-import sh.miles.pineapple.tiles.api.TileType
 import java.util.UUID
 import java.util.concurrent.ConcurrentSkipListSet
 
@@ -28,7 +26,7 @@ class CollectorTile : Tile {
     var textDisplayUUID: UUID? = null
     var accessWhitelist = ConcurrentSkipListSet<UUID>()
         private set
-    var upgrades = mutableMapOf<CollectorUpgradeAction, Int>()
+    var upgrades = mutableMapOf<UpgradeConfiguration, Int>()
     lateinit var stackContainer: InfStackContainer
 
     var tickCount: Int = 0
@@ -127,9 +125,10 @@ class CollectorTile : Tile {
             COLLECTOR_UPGRADES, PersistentDataType.TAG_CONTAINER, container
         ) {
             if (it == null || it.isEmpty) return@getOrNull null
-            val map = mutableMapOf<CollectorUpgradeAction, Int>()
+            val map = mutableMapOf<UpgradeConfiguration, Int>()
             for (key in it.keys) {
-                map[Registries.UPGRADE.get(key).orThrow()] = container.get(key, PersistentDataType.INTEGER)!!
+                map[Registries.UPGRADE.get(key).orThrow("Can not find upgrade with key $key")] =
+                    container.get(key, PersistentDataType.INTEGER)!!
             }
             return@getOrNull map
         } ?: mutableMapOf()

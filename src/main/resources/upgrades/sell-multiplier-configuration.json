@@ -1,0 +1,31 @@
+{
+  "id": "sell_multiplier",
+  "icon": {
+    "item_type": "PAPER",
+    "name": "<gold>Sell Multiplier <gray>(<gold><$level><gray>)",
+    "lore": [
+      "<dark_gray>Left click to purchase for <gold><$price>",
+      "",
+      "<gray>Multiplies sell by<gold><$multiplier><gray>x"
+    ]
+  },
+  "maxed_icon": {
+    "item_type": "PAPER",
+    "name": "<gold>Sell Multiplier <gray>(<gold><$level><gray>)",
+    "lore": [
+      "<gray>Multiplies sell by<gold><$multiplier><gray>x"
+    ]
+  },
+  "levels": [
+    {
+      "level": 1,
+      "price": 500,
+      "multiplier": 1.25
+    },
+    {
+      "level": 2,
+      "price": 1000,
+      "multiplier": 1.5
+    }
+  ]
+}

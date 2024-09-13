@@ -24,7 +24,7 @@ object CollectorCommand : Command(CommandLabel("collectors", "collector.command"
             val collectorConfiguration: CollectorConfiguration
             if (sender !is Player) {
                 if (args.size == 2) {
-                    target = Bukkit.getPlayer(args[0])!!
+                    target = Bukkit.getPlayerExact(args[0])!!
                     collectorConfiguration = Registries.COLLECTOR.get(args[1]).orThrow()
                 } else {
                     sender.sendMessage("/collect give <player> <collector>")

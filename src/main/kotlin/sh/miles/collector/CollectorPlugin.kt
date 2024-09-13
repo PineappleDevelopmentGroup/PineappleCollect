@@ -6,6 +6,7 @@ import sh.miles.collector.command.CollectorCommand
 import sh.miles.collector.configuration.adapter.CollectorConfigurationAdapter
 import sh.miles.collector.configuration.adapter.MenuConfigurationAdapter
 import sh.miles.collector.configuration.adapter.SellMenuConfigurationAdapter
+import sh.miles.collector.configuration.adapter.UpgradeConfigurationAdapter
 import sh.miles.collector.hook.EconomyShopHook
 import sh.miles.collector.hook.VaultHook
 import sh.miles.collector.listener.EntityDeathListener
@@ -59,6 +60,7 @@ class CollectorPlugin : JavaPlugin() {
         registry.register(CollectorConfigurationAdapter)
         registry.register(SellMenuConfigurationAdapter)
         registry.register(MenuConfigurationAdapter)
+        registry.register(UpgradeConfigurationAdapter)
         // spec
         registry.register(GuiItemSpecAdapter)
         registry.register(SoundSpecAdapter)

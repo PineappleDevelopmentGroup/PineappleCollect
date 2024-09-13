@@ -1,6 +1,7 @@
 package sh.miles.collector.configuration.registry
 
 import org.bukkit.Bukkit
+import org.bukkit.NamespacedKey
 import org.bukkit.entity.Display
 import sh.miles.collector.GlobalConfig
 import sh.miles.collector.Registries
@@ -8,13 +9,17 @@ import sh.miles.collector.hook.VaultHook
 import sh.miles.collector.menu.AnvilTextMenu
 import sh.miles.collector.menu.CollectorMenu
 import sh.miles.collector.menu.CollectorSellMenu
-import sh.miles.collector.upgrade.CollectorUpgradeActionRegistry
 import sh.miles.collector.util.ClickAction
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.chat.PineappleChat
 import sh.miles.pineapple.collection.registry.FrozenRegistry
 import java.util.concurrent.CompletableFuture
 
+@Deprecated(
+    message = "Replaced by GeneralMenuActionRegistry",
+    replaceWith = ReplaceWith(expression = "GeneralMenuActionRegistry"),
+    level = DeprecationLevel.WARNING
+)
 object MenuActionRegistry : FrozenRegistry<ClickAction, String>({
     mapOf("open_sub_menu" to ClickAction("open_sell_gui") { tile, lastOpenMenu, _, id, player, event ->
         event.isCancelled = true
@@ -27,13 +32,13 @@ object MenuActionRegistry : FrozenRegistry<ClickAction, String>({
         }
     }, "add_autosell" to ClickAction("add_autosell") { tile, _, _, link, player, event ->
         event.isCancelled = true
-        val upgrade = CollectorUpgradeActionRegistry.get(Registries.UPGRADE.AUTO_SELL).orThrow()
+        val upgrade = Registries.UPGRADE.get(Registries.UPGRADE_ACTION.AUTO_SELL).orThrow()
         val curUpgrades = tile.upgrades
-        if (curUpgrades.containsKey(upgrade) && tile.upgrades[upgrade]!! == upgrade.maxLevel) {
+        if (curUpgrades.containsKey(upgrade) && tile.upgrades[upgrade]!! == upgrade.level.size) {
             player.spigot().sendMessage(
                 GlobalConfig.ALREADY_HAVE_UPGRADE.component(
                     mutableMapOf<String, Any>(
-                        "upgrade" to upgrade.name, "level" to upgrade.maxLevel
+                        "upgrade" to upgrade.action.internalName, "level" to upgrade.level.size
                     )
                 )
             )
@@ -45,7 +50,7 @@ object MenuActionRegistry : FrozenRegistry<ClickAction, String>({
             player.spigot().sendMessage(
                 GlobalConfig.NOT_ENOUGH_MONEY.component(
                     mutableMapOf<String, Any>(
-                        "upgrade" to upgrade.name,
+                        "upgrade" to upgrade.action.internalName,
                         "player_balance" to VaultHook.getBalannce(player),
                         "upgrade_cost" to cost
                     )
@@ -58,7 +63,7 @@ object MenuActionRegistry : FrozenRegistry<ClickAction, String>({
         player.spigot().sendMessage(
             GlobalConfig.UPGRADE_PURCHASED.component(
                 mutableMapOf<String, Any>(
-                    "upgrade" to upgrade.name, "price" to cost
+                    "upgrade" to upgrade.action.internalName, "price" to cost
                 )
             )
         )

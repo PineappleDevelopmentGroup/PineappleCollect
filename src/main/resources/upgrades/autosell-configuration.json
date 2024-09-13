@@ -1,0 +1,31 @@
+{
+  "id": "auto_sell",
+  "icon": {
+    "item_type": "EMERALD",
+    "name": "<green>Auto Sell <gray>(<gold><$level><gray>)",
+    "lore": [
+      "<dark_gray>Left click to purchase for <gold><$price>",
+      "",
+      "<gray>Sells every <gold><$ticks> <gray>ticks"
+    ]
+  },
+  "maxed_icon": {
+    "item_type": "EMERALD",
+    "name": "<green>Auto Sell <gray>(<gold><$level><gray>)",
+    "lore": [
+      "<gray>Sells every <gold><$ticks> <gray>ticks"
+    ]
+  },
+  "levels": [
+    {
+      "level": 1,
+      "price": 500,
+      "cooldown": 1000
+    },
+    {
+      "level": 2,
+      "price": 1000,
+      "cooldown": 500
+    }
+  ]
+}

@@ -139,7 +139,7 @@ object CollectorTileType : TileType<CollectorTile>(true) {
         }
 
         tile.upgrades.forEach { (upgrade, level) ->
-            upgrade.onCollectorTick(tile, level)
+            upgrade.action.onTick(tile, upgrade, level)
         }
     }
 

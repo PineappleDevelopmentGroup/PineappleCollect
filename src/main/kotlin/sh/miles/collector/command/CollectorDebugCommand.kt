@@ -4,8 +4,8 @@ import org.bukkit.NamespacedKey
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
+import sh.miles.collector.Registries
 import sh.miles.collector.tile.CollectorTile
-import sh.miles.collector.upgrade.CollectorUpgradeActionRegistry
 import sh.miles.collector.util.CollectorDebugUtil
 import sh.miles.pineapple.chat.PineappleChat
 import sh.miles.pineapple.command.Command
@@ -101,7 +101,7 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", "col
                     return true
                 }
 
-                val upgradeAction = when (val action = CollectorUpgradeActionRegistry.get(NamespacedKey.fromString("pineapple-collect:${args[0]}")!!)) {
+                val upgrade = when (val action = Registries.UPGRADE.get(NamespacedKey.fromString("pineapple-collect:${args[0]}")!!)) {
                     is Some -> {
                         action.some()
                     }
@@ -113,14 +113,14 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", "col
 
                 val upgradeLevel = args[1].toInt()
 
-                if (upgradeAction.maxLevel < upgradeLevel) {
+                if (upgrade.level.size < upgradeLevel) {
                     sender.spigot().sendMessage(PineappleChat.parse("<red>Invalid level, use one specified in tab complete"))
                     return true
                 }
 
                 val collector = CollectorDebugUtil.getTargetedCollector(sender) ?: return true
-                collector.upgrades[upgradeAction] = upgradeLevel
-                sender.spigot().sendMessage(PineappleChat.parse("<green>Added upgrade <white>\'${upgradeAction.key}: $upgradeLevel\'"))
+                collector.upgrades[upgrade] = upgradeLevel
+                sender.spigot().sendMessage(PineappleChat.parse("<green>Added upgrade <white>\'${upgrade.key}: $upgradeLevel\'"))
                 return true
             }
 
@@ -131,9 +131,9 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", "col
                 }
 
                 if (args.size == 1)
-                    return StringUtil.copyPartialMatches(args[0], CollectorUpgradeActionRegistry.keys().map { it.key }, mutableListOf())
+                    return StringUtil.copyPartialMatches(args[0], Registries.UPGRADE.keys().map { it.key }, mutableListOf())
                 else if (args.size == 2)
-                    return StringUtil.copyPartialMatches(args[1], getIntToZero(CollectorUpgradeActionRegistry.get(NamespacedKey.fromString("pineapple-collect:${args[0]}")!!).orThrow().maxLevel).map { it.toString() }, mutableListOf())
+                    return StringUtil.copyPartialMatches(args[1], getIntToZero(Registries.UPGRADE.get(NamespacedKey.fromString("pineapple-collect:${args[0]}")!!).orThrow().level.size).map { it.toString() }, mutableListOf())
 
 
                 return super.complete(sender, args)
@@ -161,7 +161,7 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", "col
                 }
 
                 val collector = CollectorDebugUtil.getTargetedCollector(sender) ?: return true
-                val upgradeAction = when (val action = CollectorUpgradeActionRegistry.get(NamespacedKey.fromString("pineapple-collect:${args[0]}")!!)) {
+                val upgrade = when (val action = Registries.UPGRADE.get(NamespacedKey.fromString("pineapple-collect:${args[0]}")!!)) {
                     is Some -> {
                         action.some()
                     }
@@ -171,7 +171,7 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", "col
                     }
                 }
 
-                val level = collector.upgrades.remove(upgradeAction)
+                val level = collector.upgrades.remove(upgrade)
                 if (level == null) {
                     sender.spigot().sendMessage(PineappleChat.parse("<red>This collector did not have that upgrade"))
                     return true
