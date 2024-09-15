@@ -12,6 +12,8 @@ data class UpgradeConfiguration(
     val icon: ItemSpec,
     val maxIcon: ItemSpec
 ) : RegistryKey<NamespacedKey> {
+    val maxLevel = level.size
+
     override fun getKey(): NamespacedKey {
         return NamespacedKey.fromString("pineapple-collect:${action.key}")!!
     }

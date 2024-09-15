@@ -24,5 +24,5 @@ data class MenuAction(
         return id
     }
 
-    data class ActionData(val providedArgs: List<String>, val tile: CollectorTile, val lastOpenMenu: PlayerGui<*>?, val viewer: Player)
+    data class ActionData(val providedArgs: List<String>, val slot: Int, val tile: CollectorTile, val lastOpenMenu: PlayerGui<*>?, val viewer: Player)
 }
