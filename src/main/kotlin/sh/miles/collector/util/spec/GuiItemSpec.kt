@@ -6,6 +6,6 @@ data class GuiItemSpec(
     val item: ItemSpec,
     val slot: Int,
     val actionId: String,
-    val link: String?,
+    val args: List<String>,
     val clickSound: SoundSpec
 )

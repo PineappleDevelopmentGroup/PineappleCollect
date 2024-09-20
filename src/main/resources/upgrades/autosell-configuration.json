@@ -1,0 +1,43 @@
+{
+  "id": "auto_sell",
+  "icon": {
+    "item_type": "EMERALD",
+    "name": "<green><italic:!>Auto Sell <gray>(<gold><$level><gray>)",
+    "lore": [
+      "<dark_gray><italic:!>Left click to purchase for <gold><$price> <dark_gray>will sell every <gold><$new_ticks>",
+      "<dark_gray><italic:!>Right click to disable",
+      "",
+      "<gray><italic:!>Sells every <gold><$ticks> <gray>ticks"
+    ]
+  },
+  "disabled_icon": {
+    "item_type": "REDSTONE_BLOCK",
+    "name": "<green><italic:!>Auto Sell <gray>(<gold><$level><gray>)",
+    "lore": [
+      "<dark_gray><italic:!>Right click to enable",
+      "",
+      "<gray><italic:!>Sells every <gold><$ticks> <gray>ticks"
+    ]
+  },
+  "maxed_icon": {
+    "item_type": "EMERALD",
+    "name": "<green><italic:!>Auto Sell <gray>(<gold><$level><gray>)",
+    "lore": [
+      "<dark_gray><italic:!>Right click to disable",
+      "",
+      "<gray><italic:!>Sells every <gold><$ticks> <gray>ticks"
+    ]
+  },
+  "levels": [
+    {
+      "level": 1,
+      "price": 1500,
+      "cooldown": 1000
+    },
+    {
+      "level": 2,
+      "price": 2500,
+      "cooldown": 500
+    }
+  ]
+}

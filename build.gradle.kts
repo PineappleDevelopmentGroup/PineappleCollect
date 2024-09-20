@@ -43,7 +43,7 @@ tasks.shadowJar {
     archiveFileName = "PineappleCollectors-${project.version}.jar"
 
     val packageName = "${project.group}.${project.name.lowercase()}"
-    this.relocate("sh.miles.pineapple.*", "$packageName.libs.pineapple")
+    this.relocate("sh.miles.pineapple", "$packageName.libs.pineapple")
 }
 
 tasks.test {

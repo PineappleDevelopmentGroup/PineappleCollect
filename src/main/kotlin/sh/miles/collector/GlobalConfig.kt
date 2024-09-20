@@ -19,10 +19,6 @@ object GlobalConfig {
     @Comment("The time between refreshing the display entity on top of collectors in ticks")
     var DISPLAY_REFRESH_TIME = 100
 
-    @ConfigPath("auto-sell-time")
-    @Comment("The time between selling items in ticks")
-    var AUTO_SELL_COOLDOWN = 300
-
     @ConfigPath("messages.already-have-upgrade")
     @Comment("Sent if the player already has an upgrade")
     var ALREADY_HAVE_UPGRADE: PineappleComponent =

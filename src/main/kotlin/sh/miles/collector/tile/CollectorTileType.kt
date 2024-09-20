@@ -3,6 +3,7 @@ package sh.miles.collector.tile
 import org.bukkit.Bukkit
 import org.bukkit.NamespacedKey
 import org.bukkit.entity.Display
+import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
@@ -14,8 +15,13 @@ import org.bukkit.persistence.PersistentDataType
 import sh.miles.collector.GlobalConfig
 import sh.miles.collector.Registries
 import sh.miles.collector.configuration.CollectorConfiguration
+import sh.miles.collector.configuration.UpgradeConfiguration
 import sh.miles.collector.hook.EconomyShopHook
+import sh.miles.collector.hook.VaultHook
 import sh.miles.collector.menu.CollectorMenu
+import sh.miles.collector.tile.event.SellActionEvent
+import sh.miles.collector.upgrade.level.SellMultiplierLevel
+import sh.miles.collector.util.COLLECTOR_ACCESS_BYPASS
 import sh.miles.pineapple.chat.PineappleChat
 import sh.miles.pineapple.item.ItemBuilder
 import sh.miles.pineapple.tiles.api.TileType
@@ -63,7 +69,7 @@ object CollectorTileType : TileType<CollectorTile>(true) {
 
     private fun createItemShell(configuration: CollectorConfiguration): ItemBuilder {
         return ItemBuilder.modifyStack(configuration.item.buildSpec())
-            .persistentData(TileKeys.TILE_TYPE_KEY, PersistentDataType.STRING, key.toString())
+            .persistentData(TileKeys.getTileTypeKey(), PersistentDataType.STRING, key.toString())
     }
 
     override fun getKey(): NamespacedKey {
@@ -117,7 +123,7 @@ object CollectorTileType : TileType<CollectorTile>(true) {
         val player = event.player
 
         if (event.action == Action.RIGHT_CLICK_BLOCK) {
-            if (tile.owner != player.uniqueId && !tile.accessWhitelist.contains(player.uniqueId)) {
+            if ((tile.owner != player.uniqueId && !tile.accessWhitelist.contains(player.uniqueId)) && !player.hasPermission(COLLECTOR_ACCESS_BYPASS) && !player.isOp) {
                 event.isCancelled = true
                 player.spigot().sendMessage(GlobalConfig.NOT_WHITELISTED.component())
                 return
@@ -138,8 +144,9 @@ object CollectorTileType : TileType<CollectorTile>(true) {
             tickDisplay(tile)
         }
 
-        tile.upgrades.forEach { (upgrade, level) ->
-            upgrade.onCollectorTick(tile, level)
+        tile.upgrades.forEach { (upgrade, status) ->
+            if (status.second != 1) return@forEach
+            upgrade.action.onTick(tile, upgrade, status.first)
         }
     }
 
@@ -150,10 +157,48 @@ object CollectorTileType : TileType<CollectorTile>(true) {
             return // This occurs when the server is first loading chunks because the entity isn't registered before the tick loop starts
         }
 
+        val multiplier = Registries.UPGRADE[Registries.UPGRADE_ACTION.SELL_MULTIPLIER].map { upgrade ->
+            upgrade.mapLevelOrDefault(
+                tile.getUpgradeStatus(upgrade).first, 1.0
+            ) { level -> (level as SellMultiplierLevel).multiplier }
+        }.orElse(1.0)
         textDisplay.text = PineappleChat.parseLegacy(
             tile.configuration.hologram.hologramText.source, mutableMapOf<String, Any>(
-                "sell_price" to (DECIMAL_FORMAT.format(tile.stackContainer.getTotalSellPrice()) ?: "$0.00")
+                "sell_price" to (DECIMAL_FORMAT.format(tile.stackContainer.getTotalSellPrice() * multiplier) ?: "$0.00")
             )
         )
+    }
+
+    fun sellAllContents(tile: CollectorTile, seller: Player?) {
+        val profiteer = seller ?: Bukkit.getOfflinePlayer(tile.owner!!)
+        var sellPrice =
+            if (profiteer.isOnline) tile.stackContainer.getTotalSellPrice(profiteer.player!!) else tile.stackContainer.getTotalSellPrice()
+        val action = SellActionEvent(sellPrice, profiteer, tile)
+        action.call()
+        sellPrice = action.sellPrice
+
+        tile.stackContainer.clearContents()
+        tile.tileType.tickDisplay(tile)
+        VaultHook.giveBalance(profiteer, sellPrice)
+    }
+
+    fun sellSlot(tile: CollectorTile, slot: Int, seller: Player?, onSell: () -> Unit) {
+        val profiteer = seller ?: Bukkit.getOfflinePlayer(tile.owner!!)
+        tile.stackContainer.modify(slot) { stack ->
+            if (!EconomyShopHook.canSell(stack.comparator, profiteer.player)) {
+                stack.shrink(stack.stackSize)
+                return@modify
+            }
+            val sellItem = EconomyShopHook.sellItem(stack.comparator, profiteer.player, stack.stackSize.toInt())
+            if (sellItem.first) {
+                var sellPrice = sellItem.second
+                val action = SellActionEvent(sellPrice, profiteer, tile)
+                action.call()
+                sellPrice = action.sellPrice
+                VaultHook.giveBalance(profiteer, sellPrice)
+                stack.shrink(stack.stackSize)
+                onSell.invoke()
+            }
+        }
     }
 }

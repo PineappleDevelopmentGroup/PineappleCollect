@@ -1,0 +1,41 @@
+{
+  "id": "sell_multiplier",
+  "icon": {
+    "item_type": "PAPER",
+    "name": "<gold><italic:!>Sell Multiplier <gray>(<gold><$level><gray>)",
+    "lore": [
+      "<dark_gray><italic:!>Left click to purchase for <gold><$price> <dark_gray>will sell every <gold><$new_multiplier>",
+      "<dark_gray><italic:!>Right click to disable",
+      "",
+      "<gray><italic:!>Multiplies sells by <gold><$multiplier><gray>x"
+    ]
+  },
+  "disabled_icon": {
+    "item_type": "REDSTONE_BLOCK",
+    "name": "<gold><italic:!>Sell Multiplier <gray>(<gold><$level><gray>)",
+    "lore": [
+      "<dark_gray><italic:!>Right click to enable",
+      "",
+      "<gray><italic:!>Multiplies sells by <gold><$multiplier><gray>x"
+    ]
+  },
+  "maxed_icon": {
+    "item_type": "PAPER",
+    "name": "<gold>Sell Multiplier <gray>(<gold><$level><gray>)",
+    "lore": [
+      "<gray><italic:!>Multiplies sells by <gold><$multiplier><gray>x"
+    ]
+  },
+  "levels": [
+    {
+      "level": 1,
+      "price": 500,
+      "multiplier": 1.25
+    },
+    {
+      "level": 2,
+      "price": 1000,
+      "multiplier": 1.5
+    }
+  ]
+}

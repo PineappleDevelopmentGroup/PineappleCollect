@@ -7,15 +7,13 @@ import org.bukkit.inventory.ItemStack
 import org.bukkit.persistence.PersistentDataAdapterContext
 import org.bukkit.persistence.PersistentDataContainer
 import org.bukkit.persistence.PersistentDataType
-import sh.miles.collector.GlobalConfig
 import sh.miles.collector.Registries
 import sh.miles.collector.configuration.CollectorConfiguration
+import sh.miles.collector.configuration.UpgradeConfiguration
 import sh.miles.collector.menu.InfStackContainer
 import sh.miles.collector.tile.loader.CollectorFixing
-import sh.miles.collector.upgrade.CollectorUpgradeAction
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.tiles.api.Tile
-import sh.miles.pineapple.tiles.api.TileType
 import java.util.UUID
 import java.util.concurrent.ConcurrentSkipListSet
 
@@ -28,7 +26,7 @@ class CollectorTile : Tile {
     var textDisplayUUID: UUID? = null
     var accessWhitelist = ConcurrentSkipListSet<UUID>()
         private set
-    var upgrades = mutableMapOf<CollectorUpgradeAction, Int>()
+    var upgrades = mutableMapOf<UpgradeConfiguration, Pair<Int, Int>>()
     lateinit var stackContainer: InfStackContainer
 
     var tickCount: Int = 0
@@ -69,9 +67,9 @@ class CollectorTile : Tile {
             COLLECTOR_UPGRADES, PersistentDataType.TAG_CONTAINER, container, excludeFields
         ) {
             val upgradeContainer = it.newPersistentDataContainer()
-            upgrades.forEach { (upgrade, level) ->
+            upgrades.forEach { (upgrade, status) ->
                 upgradeContainer.set(
-                    upgrade.key, PersistentDataType.INTEGER, level
+                    upgrade.key, PersistentDataType.LIST.integers(), listOf(status.first, status.second)
                 )
             }
             return@setIfIncludes upgradeContainer
@@ -127,9 +125,12 @@ class CollectorTile : Tile {
             COLLECTOR_UPGRADES, PersistentDataType.TAG_CONTAINER, container
         ) {
             if (it == null || it.isEmpty) return@getOrNull null
-            val map = mutableMapOf<CollectorUpgradeAction, Int>()
+            val map = mutableMapOf<UpgradeConfiguration, Pair<Int, Int>>()
             for (key in it.keys) {
-                map[Registries.UPGRADE.get(key).orThrow()] = container.get(key, PersistentDataType.INTEGER)!!
+                val status = it.get(key, PersistentDataType.LIST.integers())!!
+                map[Registries.UPGRADE.get(key).orThrow("Can not find upgrade with key $key")] = Pair(
+                    status[0], status[1]
+                )
             }
             return@getOrNull map
         } ?: mutableMapOf()
@@ -145,6 +146,16 @@ class CollectorTile : Tile {
     fun addItem(stack: ItemStack): Boolean {
         // Call CollectorGainItemAction
         return this.stackContainer.add(stack)
+    }
+
+    fun getUpgradeStatus(upgrade: UpgradeConfiguration?): Pair<Int, Boolean> {
+        if (upgrade == null) return Pair(0, false)
+        val status = this.upgrades[upgrade]
+        return if (status == null) Pair(0, false) else Pair(status.first, status.second == 1)
+    }
+
+    fun setUpgradeStatus(upgrade: UpgradeConfiguration, status: Pair<Int, Boolean>) {
+        this.upgrades[upgrade] = Pair(status.first, if (status.second) 1 else 0)
     }
 
     override fun getTileType(): CollectorTileType {

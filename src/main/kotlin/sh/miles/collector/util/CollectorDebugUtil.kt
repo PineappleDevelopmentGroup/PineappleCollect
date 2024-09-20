@@ -76,7 +76,7 @@ object CollectorDebugUtil {
                         <gold>Accessors<gray>:<dark_green> $accessors
                         <gold>Configuration Id<gray>:<light_purple> $configurationId
                         <gold>Items<gray>:<white> $items
-                        <gold>Upgrades<gray>:<yellow>${tile.upgrades}
+                        <gold>Upgrades<gray>:<yellow>${tile.upgrades.mapKeys { it.key.key }}
                     """.trimIndent()
             )
         )

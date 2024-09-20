@@ -6,7 +6,9 @@
     {
       "slot": 15,
       "action": "open_sub_menu",
-      "link": "default_settings_menu",
+      "args": [
+        "default_settings_menu"
+      ],
       "click_sound": {
         "sound": "ui.button.click",
         "category": "AMBIENT",
@@ -22,7 +24,9 @@
     {
       "slot": 13,
       "action": "open_sub_menu",
-      "link": "default_sell_menu",
+      "args": [
+        "default_sell_menu"
+      ],
       "click_sound": {
         "sound": "ui.button.click",
         "category": "AMBIENT",

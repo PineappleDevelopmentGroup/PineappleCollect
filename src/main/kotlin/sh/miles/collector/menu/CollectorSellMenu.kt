@@ -6,10 +6,12 @@ import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryCloseEvent
 import sh.miles.collector.CollectorPlugin
+import sh.miles.collector.Registries
 import sh.miles.collector.configuration.SellMenuConfiguration
 import sh.miles.collector.hook.EconomyShopHook
 import sh.miles.collector.hook.VaultHook
 import sh.miles.collector.tile.CollectorTile
+import sh.miles.collector.upgrade.level.SellMultiplierLevel
 import sh.miles.pineapple.chat.PineappleChat
 import sh.miles.pineapple.gui.PlayerGui
 import sh.miles.pineapple.gui.slot.GuiSlot.GuiSlotBuilder
@@ -48,18 +50,8 @@ class CollectorSellMenu(
                             val index = slotMapping[it.slot]!!
                             it.isCancelled = true
                             if (it.click == ClickType.LEFT) {
-                                stackContainer.modify(index) { stack ->
-                                    if (!EconomyShopHook.canSell(stack.comparator, player)) {
-                                        stack.shrink(stack.stackSize)
-                                        return@modify
-                                    }
-                                    val sellItem =
-                                        EconomyShopHook.sellItem(stack.comparator, player, stack.stackSize.toInt())
-                                    if (sellItem.first) {
-                                        VaultHook.giveBalance(player, sellItem.second)
-                                        stack.shrink(stack.stackSize)
-                                        config.sellSound.playSound(viewer())
-                                    }
+                                tile.tileType.sellSlot(tile, index, viewer()) {
+                                    config.sellSound.playSound(viewer())
                                 }
                             } else if (it.click == ClickType.RIGHT) {
                                 stackContainer.modify(index) { stack ->
@@ -73,29 +65,32 @@ class CollectorSellMenu(
                 }
             } else if (slot == config.sellAllItemSlot) {
                 slot(slot) { inventory ->
+                    val multiplier =
+                        Registries.UPGRADE[Registries.UPGRADE_ACTION.SELL_MULTIPLIER].map { upgrade ->
+                            upgrade.mapLevelOrDefault(
+                                tile.getUpgradeStatus(upgrade).first, 1.0
+                            ) { level -> (level as SellMultiplierLevel).multiplier }
+                        }.orElse(1.0)
                     val spec = ItemSpec(config.sellAllItem)
                     spec.setLoreMutator {
                         PineappleChat.parse(
                             it, mutableMapOf<String, Any>(
                                 "sell_price" to (DecimalFormat.getCurrencyInstance(Locale.US)
-                                    .format(tile.stackContainer.getTotalSellPrice()) ?: "$0.00")
+                                    .format(tile.stackContainer.getTotalSellPrice() * multiplier) ?: "$0.00")
                             )
                         )
                     }
                     GuiSlotBuilder().inventory(inventory).index(slot).item(spec.buildSpec())
                         .drag { it.isCancelled = true }.click {
                             it.isCancelled = true
-                            val price = tile.stackContainer.getTotalSellPrice(viewer())
-                            tile.stackContainer.clearContents()
-                            tile.tileType.tickDisplay(tile)
-                            VaultHook.giveBalance(player, price)
+                            tile.tileType.sellAllContents(tile, player)
                             config.sellSound.playSound(player)
                             val spec = ItemSpec(config.sellAllItem)
                             spec.setLoreMutator {
                                 PineappleChat.parse(
                                     it, mutableMapOf<String, Any>(
                                         "sell_price" to (DecimalFormat.getCurrencyInstance(Locale.US)
-                                            .format(tile.stackContainer.getTotalSellPrice()) ?: "$0.00")
+                                            .format(tile.stackContainer.getTotalSellPrice() * multiplier) ?: "$0.00")
                                     )
                                 )
                             }

@@ -4,8 +4,22 @@ import org.bukkit.NamespacedKey
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.util.StringUtil
+import sh.miles.collector.Registries
 import sh.miles.collector.tile.CollectorTile
-import sh.miles.collector.upgrade.CollectorUpgradeActionRegistry
+import sh.miles.collector.util.COLLECTOR_COMMAND_DEBUG
+import sh.miles.collector.util.COLLECTOR_COMMAND_DEBUG_DELETE
+import sh.miles.collector.util.COLLECTOR_COMMAND_DEBUG_DELETE_CHUNK
+import sh.miles.collector.util.COLLECTOR_COMMAND_DEBUG_DELETE_TARGETED
+import sh.miles.collector.util.COLLECTOR_COMMAND_DEBUG_GET
+import sh.miles.collector.util.COLLECTOR_COMMAND_DEBUG_GET_CHUNK
+import sh.miles.collector.util.COLLECTOR_COMMAND_DEBUG_GET_TARGETED
+import sh.miles.collector.util.COLLECTOR_COMMAND_DEBUG_MODIFY
+import sh.miles.collector.util.COLLECTOR_COMMAND_DEBUG_MODIFY_CONTAINER
+import sh.miles.collector.util.COLLECTOR_COMMAND_DEBUG_MODIFY_CONTAINER_CLEAR
+import sh.miles.collector.util.COLLECTOR_COMMAND_DEBUG_MODIFY_CONTAINER_INSERT
+import sh.miles.collector.util.COLLECTOR_COMMAND_DEBUG_MODIFY_UPGRADE
+import sh.miles.collector.util.COLLECTOR_COMMAND_DEBUG_MODIFY_UPGRADE_ADD
+import sh.miles.collector.util.COLLECTOR_COMMAND_DEBUG_MODIFY_UPGRADE_REMOVE
 import sh.miles.collector.util.CollectorDebugUtil
 import sh.miles.pineapple.chat.PineappleChat
 import sh.miles.pineapple.command.Command
@@ -14,7 +28,7 @@ import sh.miles.pineapple.function.Option.None
 import sh.miles.pineapple.function.Option.Some
 import sh.miles.pineapple.tiles.api.Tiles
 
-object CollectorDebugCommand : Command(CommandLabel("debug", "collector.command.debug")) {
+object CollectorDebugCommand : Command(CommandLabel("debug", COLLECTOR_COMMAND_DEBUG)) {
 
     init {
         registerSubcommand(CollectorDebugGetCommand)
@@ -23,20 +37,20 @@ object CollectorDebugCommand : Command(CommandLabel("debug", "collector.command.
     }
 }
 
-private object CollectorDebugModifyCommand : Command(CommandLabel("modify", "collector.command.debug.modify")) {
+private object CollectorDebugModifyCommand : Command(CommandLabel("modify", COLLECTOR_COMMAND_DEBUG_MODIFY)) {
     init {
         registerSubcommand(CollectorModifyContainer)
         registerSubcommand(CollectorModifyUpgrade)
     }
 
-    private object CollectorModifyContainer : Command(CommandLabel("container", "collector.command.debug.modify.container")) {
+    private object CollectorModifyContainer : Command(CommandLabel("container", COLLECTOR_COMMAND_DEBUG_MODIFY_CONTAINER)) {
         init {
             registerSubcommand(ContainerInsert)
             registerSubcommand(ContainerClear)
         }
 
         private object ContainerClear :
-            Command(CommandLabel("clear", "collector.command.debug.modify.container.clear")) {
+            Command(CommandLabel("clear", COLLECTOR_COMMAND_DEBUG_MODIFY_CONTAINER_CLEAR)) {
             override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
                 if (sender !is Player) {
                     sender.sendMessage("Only players can send this command")
@@ -55,7 +69,7 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", "col
         }
 
         private object ContainerInsert :
-            Command(CommandLabel("insert", "collector.command.debug.modify.container.insert")) {
+            Command(CommandLabel("insert", COLLECTOR_COMMAND_DEBUG_MODIFY_CONTAINER_INSERT)) {
             override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
                 if (sender !is Player) {
                     sender.sendMessage("Only players can send this command")
@@ -79,16 +93,15 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", "col
         }
     }
 
-    private object CollectorModifyUpgrade : Command(CommandLabel("upgrade", "collector.command.debug.modify.upgrade")) {
+    private object CollectorModifyUpgrade : Command(CommandLabel("upgrade", COLLECTOR_COMMAND_DEBUG_MODIFY_UPGRADE)) {
 
         init {
-            registerSubcommand(UpgradeList)
             registerSubcommand(UpgradeRemove)
             registerSubcommand(UpgradeAdd)
         }
 
 
-        private object UpgradeAdd : Command(CommandLabel("add", "collector.command.debug.modify.upgrade.add")) {
+        private object UpgradeAdd : Command(CommandLabel("add", COLLECTOR_COMMAND_DEBUG_MODIFY_UPGRADE_ADD)) {
 
             override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
                 if (sender !is Player) {
@@ -101,7 +114,7 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", "col
                     return true
                 }
 
-                val upgradeAction = when (val action = CollectorUpgradeActionRegistry.get(NamespacedKey.fromString("pineapple-collect:${args[0]}")!!)) {
+                val upgrade = when (val action = Registries.UPGRADE.get(NamespacedKey.fromString("pineapple-collect:${args[0]}")!!)) {
                     is Some -> {
                         action.some()
                     }
@@ -113,14 +126,18 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", "col
 
                 val upgradeLevel = args[1].toInt()
 
-                if (upgradeAction.maxLevel < upgradeLevel) {
+                if (upgrade.level.size < upgradeLevel) {
                     sender.spigot().sendMessage(PineappleChat.parse("<red>Invalid level, use one specified in tab complete"))
                     return true
                 }
 
                 val collector = CollectorDebugUtil.getTargetedCollector(sender) ?: return true
-                collector.upgrades[upgradeAction] = upgradeLevel
-                sender.spigot().sendMessage(PineappleChat.parse("<green>Added upgrade <white>\'${upgradeAction.key}: $upgradeLevel\'"))
+                var enabled = 1
+                if (collector.upgrades.containsKey(upgrade)) {
+                    enabled = collector.upgrades[upgrade]!!.second
+                }
+                collector.upgrades[upgrade] = Pair(upgradeLevel, enabled)
+                sender.spigot().sendMessage(PineappleChat.parse("<green>Added upgrade <white>\'${upgrade.key}: $upgradeLevel\'"))
                 return true
             }
 
@@ -131,9 +148,9 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", "col
                 }
 
                 if (args.size == 1)
-                    return StringUtil.copyPartialMatches(args[0], CollectorUpgradeActionRegistry.keys().map { it.key }, mutableListOf())
+                    return StringUtil.copyPartialMatches(args[0], Registries.UPGRADE.keys().map { it.key }, mutableListOf())
                 else if (args.size == 2)
-                    return StringUtil.copyPartialMatches(args[1], getIntToZero(CollectorUpgradeActionRegistry.get(NamespacedKey.fromString("pineapple-collect:${args[0]}")!!).orThrow().maxLevel).map { it.toString() }, mutableListOf())
+                    return StringUtil.copyPartialMatches(args[1], getIntToZero(Registries.UPGRADE.get(NamespacedKey.fromString("pineapple-collect:${args[0]}")!!).orThrow().level.size).map { it.toString() }, mutableListOf())
 
 
                 return super.complete(sender, args)
@@ -147,7 +164,7 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", "col
                 return toReturn
             }
         }
-        private object UpgradeRemove : Command(CommandLabel("remove", "collector.command.debug.modify.upgrade.remove")) {
+        private object UpgradeRemove : Command(CommandLabel("remove", COLLECTOR_COMMAND_DEBUG_MODIFY_UPGRADE_REMOVE)) {
 
             override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
                 if (sender !is Player) {
@@ -161,7 +178,7 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", "col
                 }
 
                 val collector = CollectorDebugUtil.getTargetedCollector(sender) ?: return true
-                val upgradeAction = when (val action = CollectorUpgradeActionRegistry.get(NamespacedKey.fromString("pineapple-collect:${args[0]}")!!)) {
+                val upgrade = when (val action = Registries.UPGRADE.get(NamespacedKey.fromString("pineapple-collect:${args[0]}")!!)) {
                     is Some -> {
                         action.some()
                     }
@@ -171,7 +188,7 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", "col
                     }
                 }
 
-                val level = collector.upgrades.remove(upgradeAction)
+                val level = collector.upgrades.remove(upgrade)
                 if (level == null) {
                     sender.spigot().sendMessage(PineappleChat.parse("<red>This collector did not have that upgrade"))
                     return true
@@ -193,32 +210,16 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", "col
             }
 
         }
-        private object UpgradeList : Command(CommandLabel("list", "collector.command.debug.modify.upgrade.list")) {
-
-
-            override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
-                if (sender !is Player) {
-                    sender.sendMessage("Only players can send this command")
-                    return true
-                }
-
-                val collector = CollectorDebugUtil.getTargetedCollector(sender) ?: return true
-                sender.spigot().sendMessage(PineappleChat.parse(
-                    "<green>Collector Upgrades: <white>${collector.upgrades}"
-                ))
-                return true
-            }
-        }
     }
 }
 
-private object CollectorDebugDeleteCommand : Command(CommandLabel("delete", "collector.command.debug.delete")) {
+private object CollectorDebugDeleteCommand : Command(CommandLabel("delete", COLLECTOR_COMMAND_DEBUG_DELETE)) {
     init {
         registerSubcommand(CollectorDebugChunk)
         registerSubcommand(CollectorDebugTargeted)
     }
 
-    private object CollectorDebugChunk : Command(CommandLabel("chunk", "collector.command.debug.delete.chunk")) {
+    private object CollectorDebugChunk : Command(CommandLabel("chunk", COLLECTOR_COMMAND_DEBUG_DELETE_CHUNK)) {
         override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
             if (sender !is Player) {
                 sender.sendMessage("Only players can send this command")
@@ -232,7 +233,7 @@ private object CollectorDebugDeleteCommand : Command(CommandLabel("delete", "col
     }
 
     private object CollectorDebugTargeted :
-        Command(CommandLabel("targeted", "collector.command.debug.delete.targeted")) {
+        Command(CommandLabel("targeted", COLLECTOR_COMMAND_DEBUG_DELETE_TARGETED)) {
         override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
             if (sender !is Player) {
                 sender.sendMessage("Only players can send this command")
@@ -252,13 +253,13 @@ private object CollectorDebugDeleteCommand : Command(CommandLabel("delete", "col
     }
 }
 
-private object CollectorDebugGetCommand : Command(CommandLabel("get", "collector.command.debug.get")) {
+private object CollectorDebugGetCommand : Command(CommandLabel("get", COLLECTOR_COMMAND_DEBUG_GET)) {
     init {
         registerSubcommand(CollectorDebugChunk)
         registerSubcommand(CollectorDebugTargeted)
     }
 
-    private object CollectorDebugChunk : Command(CommandLabel("chunk", "collector.command.debug.get.chunk")) {
+    private object CollectorDebugChunk : Command(CommandLabel("chunk", COLLECTOR_COMMAND_DEBUG_GET_CHUNK)) {
         override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
             if (sender !is Player) {
                 sender.sendMessage("Only players can send this command")
@@ -271,7 +272,7 @@ private object CollectorDebugGetCommand : Command(CommandLabel("get", "collector
     }
 
     private object CollectorDebugTargeted :
-        Command(CommandLabel("targeted", "collector.command.debug.get.targeted")) {
+        Command(CommandLabel("targeted", COLLECTOR_COMMAND_DEBUG_GET_TARGETED)) {
         override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
             if (sender !is Player) {
                 sender.sendMessage("Only players can send this command")
