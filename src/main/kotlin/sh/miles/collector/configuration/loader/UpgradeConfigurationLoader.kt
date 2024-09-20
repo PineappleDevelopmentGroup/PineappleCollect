@@ -13,7 +13,8 @@ class UpgradeConfigurationLoader(private val jsonHelper: JsonHelper, private val
     override val activationFile: String = "upgrade-configurations.json"
     override val activationDir: String = "upgrades"
     override val examples: List<String> = listOf(
-        "autosell-configuration.json"
+        "autosell-configuration.json",
+        "sell-multiplier-configuration.json"
     )
     override val createExamples: Boolean = GlobalConfig.CREATE_EXAMPLES
     override fun loadFile(path: Path) {

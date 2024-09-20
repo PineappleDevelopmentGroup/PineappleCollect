@@ -6,7 +6,7 @@ import sh.miles.collector.configuration.loader.MenuConfigurationLoader
 import sh.miles.collector.configuration.loader.SellMenuConfigurationLoader
 import sh.miles.collector.configuration.loader.UpgradeConfigurationLoader
 import sh.miles.collector.configuration.registry.CollectorConfigurationRegistry
-import sh.miles.collector.configuration.registry.MenuActionRegistry
+import sh.miles.collector.configuration.registry.GeneralMenuActionRegistry
 import sh.miles.collector.configuration.registry.MenuConfigurationRegistry
 import sh.miles.collector.configuration.registry.SellMenuConfigurationRegistry
 import sh.miles.collector.configuration.registry.UpgradeConfigurationRegistry
@@ -19,7 +19,7 @@ object Registries {
     val UPGRADE = UpgradeConfigurationRegistry
     val SELL_MENU = SellMenuConfigurationRegistry
     val UPGRADE_ACTION = UpgradeActionRegistry
-    val MENU_ACTION = MenuActionRegistry
+    val GENERAL_MENU_ACTION = GeneralMenuActionRegistry
 
     fun load(plugin: Plugin, jsonHelper: JsonHelper) {
         CollectorConfigurationLoader(jsonHelper, plugin).load()

@@ -1,6 +1,7 @@
 {
   "activate-all": false,
   "active": [
-    "upgrades/autosell-configuration.json"
+    "upgrades/autosell-configuration.json",
+    "upgrades/sell-multiplier-configuration.json"
   ]
 }

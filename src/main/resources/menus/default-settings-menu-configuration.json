@@ -21,7 +21,9 @@
     {
       "slot": 10,
       "action": "show_accessors",
-      "link": "<dark_green><italic:!><$name>",
+      "args": [
+        "<dark_green><italic:!><$name>"
+      ],
       "click_sound": {
         "sound": "ui.button.click",
         "category": "AMBIENT",
@@ -29,14 +31,14 @@
         "volume": 1.0
       },
       "item_type": "WHITE_BANNER",
-      "name": "<white><italic:!>Whitelisted Users",
-      "lore": [
-        "<gray><italic:!>Click to see whitelisted users"
-      ]
+      "name": "<white><italic:!>Whitelisted Users"
     },
     {
       "slot": 19,
       "action": "remove_accessor",
+      "args": [
+        "<dark_green><italic:!><$name>"
+      ],
       "click_sound": {
         "sound": "ui.button.click",
         "category": "AMBIENT",
@@ -51,19 +53,31 @@
     },
     {
       "slot": 2,
-      "action": "add_autosell",
-      "link": "900.0",
+      "action": "upgrade",
+      "args": [
+        "auto_sell"
+      ],
       "click_sound": {
         "sound": "ui.button.click",
         "category": "AMBIENT",
         "pitch": 0.5,
         "volume": 1.0
       },
-      "item_type": "ANVIL",
-      "name": "<green><italic:!>Buy Autosell",
-      "lore": [
-        "<gray><italic:!>Click to purchase autosell for 900"
-      ]
+      "item_type": "BARRIER"
+    },
+    {
+      "slot": 11,
+      "action": "upgrade",
+      "args": [
+        "sell_multiplier"
+      ],
+      "click_sound": {
+        "sound": "ui.button.click",
+        "category": "AMBIENT",
+        "pitch": 0.5,
+        "volume": 1.0
+      },
+      "item_type": "BARRIER"
     }
   ],
   "background_item": {

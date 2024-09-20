@@ -26,7 +26,7 @@ class CollectorTile : Tile {
     var textDisplayUUID: UUID? = null
     var accessWhitelist = ConcurrentSkipListSet<UUID>()
         private set
-    var upgrades = mutableMapOf<UpgradeConfiguration, Int>()
+    var upgrades = mutableMapOf<UpgradeConfiguration, Pair<Int, Int>>()
     lateinit var stackContainer: InfStackContainer
 
     var tickCount: Int = 0
@@ -67,9 +67,9 @@ class CollectorTile : Tile {
             COLLECTOR_UPGRADES, PersistentDataType.TAG_CONTAINER, container, excludeFields
         ) {
             val upgradeContainer = it.newPersistentDataContainer()
-            upgrades.forEach { (upgrade, level) ->
+            upgrades.forEach { (upgrade, status) ->
                 upgradeContainer.set(
-                    upgrade.key, PersistentDataType.INTEGER, level
+                    upgrade.key, PersistentDataType.LIST.integers(), listOf(status.first, status.second)
                 )
             }
             return@setIfIncludes upgradeContainer
@@ -125,10 +125,12 @@ class CollectorTile : Tile {
             COLLECTOR_UPGRADES, PersistentDataType.TAG_CONTAINER, container
         ) {
             if (it == null || it.isEmpty) return@getOrNull null
-            val map = mutableMapOf<UpgradeConfiguration, Int>()
+            val map = mutableMapOf<UpgradeConfiguration, Pair<Int, Int>>()
             for (key in it.keys) {
-                map[Registries.UPGRADE.get(key).orThrow("Can not find upgrade with key $key")] =
-                    container.get(key, PersistentDataType.INTEGER)!!
+                val status = it.get(key, PersistentDataType.LIST.integers())!!
+                map[Registries.UPGRADE.get(key).orThrow("Can not find upgrade with key $key")] = Pair(
+                    status[0], status[1]
+                )
             }
             return@getOrNull map
         } ?: mutableMapOf()
@@ -144,6 +146,16 @@ class CollectorTile : Tile {
     fun addItem(stack: ItemStack): Boolean {
         // Call CollectorGainItemAction
         return this.stackContainer.add(stack)
+    }
+
+    fun getUpgradeStatus(upgrade: UpgradeConfiguration?): Pair<Int, Boolean> {
+        if (upgrade == null) return Pair(0, false)
+        val status = this.upgrades[upgrade]
+        return if (status == null) Pair(0, false) else Pair(status.first, status.second == 1)
+    }
+
+    fun setUpgradeStatus(upgrade: UpgradeConfiguration, status: Pair<Int, Boolean>) {
+        this.upgrades[upgrade] = Pair(status.first, if (status.second) 1 else 0)
     }
 
     override fun getTileType(): CollectorTileType {

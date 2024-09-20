@@ -12,6 +12,7 @@ object UpgradeConfigurationAdapter : SerializedAdapter<UpgradeConfiguration> {
 
     private const val ID = "id"
     private const val ICON = "icon"
+    private const val DISABLED_ICON = "disabled_icon"
     private const val MAXED_ICON = "maxed_icon"
     private const val LEVELS = "levels"
 
@@ -21,6 +22,9 @@ object UpgradeConfigurationAdapter : SerializedAdapter<UpgradeConfiguration> {
         val icon = context.deserialize(
             parent.get(ICON).orThrow("Can not find required field $ICON for id $id"), ItemSpec::class.java
         )
+        val disabledIcon = context.deserialize(
+            parent.get(DISABLED_ICON).orThrow("Can not find required field for $ICON for id $id"), ItemSpec::class.java
+        )
         val maxedIcon = context.deserialize(
             parent.get(MAXED_ICON).orThrow("Can not find required field $MAXED_ICON for id $id"), ItemSpec::class.java
         )
@@ -29,7 +33,7 @@ object UpgradeConfigurationAdapter : SerializedAdapter<UpgradeConfiguration> {
         val levels = parent.getArray(LEVELS).orThrow("Can not find required levels array $LEVELS for id $id").stream()
             .map { upgradeAction.createLevel(it.asObject) }.toList()
 
-        return UpgradeConfiguration(upgradeAction, levels, icon, maxedIcon)
+        return UpgradeConfiguration(upgradeAction, levels, icon, disabledIcon, maxedIcon)
     }
 
     override fun serialize(obj: UpgradeConfiguration, context: SerializedSerializeContext): SerializedElement {

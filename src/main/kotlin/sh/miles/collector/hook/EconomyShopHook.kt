@@ -23,7 +23,8 @@ object EconomyShopHook {
         return EconomyShopGUIHook.getShopItem(stack)
     }
 
-    fun canSell(stack: ItemStack, player: Player): Boolean {
+    fun canSell(stack: ItemStack, player: Player?): Boolean {
+        if (player == null) return canSell(stack)
         val item = getShopItem(stack, player)
         return item != null && EconomyShopGUIHook.isSellAble(item)
     }
@@ -45,7 +46,8 @@ object EconomyShopHook {
     /**
      * @return false 0 if unable to sell true and amount to give the player
      */
-    fun sellItem(stack: ItemStack, player: Player, amount: Int): Pair<Boolean, Double> {
+    fun sellItem(stack: ItemStack, player: Player?, amount: Int): Pair<Boolean, Double> {
+        if (player == null) return sellItem(stack, amount)
         if (!canSell(stack, player)) return Pair(false, 0.0)
         EconomyShopGUIHook.sellItem(getShopItem(stack, player), amount)
         return Pair(true, EconomyShopGUIHook.getItemSellPrice(getShopItem(stack, player), stack, player, amount, 0))

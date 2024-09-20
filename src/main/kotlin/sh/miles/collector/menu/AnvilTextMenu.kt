@@ -16,6 +16,7 @@ import sh.miles.pineapple.nms.api.menu.scene.AnvilScene
 
 class AnvilTextMenu(
     player: Player,
+    private val viewItem: ItemStack,
     private val lastOpenMenu: PlayerGui<*>?,
     private val closeCallback: (String) -> Unit
 ) :
@@ -26,7 +27,7 @@ class AnvilTextMenu(
 
     override fun decorate() {
         slot(0) { inventory ->
-            GuiSlotBuilder().inventory(inventory).index(0).item(ItemBuilder.of(Material.PAPER).build())
+            GuiSlotBuilder().inventory(inventory).index(0).item(viewItem)
                 .drag { it.isCancelled = true }.click { it.isCancelled = true }.build()
         }
         slot(1) { inventory ->
