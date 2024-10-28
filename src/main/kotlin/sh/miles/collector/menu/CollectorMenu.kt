@@ -35,7 +35,7 @@ class CollectorMenu(
                             Registries.GENERAL_MENU_ACTION.get(guiItem.actionId)
                                 .orThrow("No such action id found ${guiItem.actionId}")
                                 .click(MenuAction.ActionData(guiItem.args, slot, tile, this, viewer()), it)
-                            guiItem.clickSound.playSound(player)
+                            guiItem.clickSound.play(player)
                         }.build()
 
                     Registries.GENERAL_MENU_ACTION.get(guiItem.actionId)

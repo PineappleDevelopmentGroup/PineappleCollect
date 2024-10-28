@@ -15,7 +15,7 @@
     }
   },
   "item": {
-    "item_type": "oak_log",
+    "item_type": "chest",
     "name": "<yellow><italic:!>Collector",
     "lore": [
       "<gray><italics:!>Place the collector to start earning"

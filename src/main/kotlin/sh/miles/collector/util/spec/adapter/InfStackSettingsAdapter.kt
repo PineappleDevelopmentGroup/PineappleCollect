@@ -1,7 +1,7 @@
 package sh.miles.collector.util.spec.adapter
 
 import net.md_5.bungee.api.chat.BaseComponent
-import sh.miles.collector.hook.EconomyShopHook
+import sh.miles.collector.hook.Plugins
 import sh.miles.crown.infstacks.InfStackSettings
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.chat.PineappleChat
@@ -37,10 +37,10 @@ object InfStackSettingsAdapter : SerializedAdapter<InfStackSettings> {
             for (component in components) {
 
                 // Check an item can be sold, if it cannot show [UNSELLABLE] to avoid needing a message send in the menu if its attempted to be sold
-                val sellPrice: String = if (!EconomyShopHook.canSell(comparator)) {
+                val sellPrice: String = if (!Plugins.shopOrThrow().canSell(comparator)) {
                     "[UNSELLABLE]"
                 } else {
-                    DECIMAL_FORMAT.format((EconomyShopHook.getItemPrice(comparator) * currentAmount))
+                    DECIMAL_FORMAT.format((Plugins.shopOrThrow().getItemPrice(comparator) * currentAmount))
                 }
 
                 baseLore.add(

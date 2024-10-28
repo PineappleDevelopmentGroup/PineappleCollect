@@ -1,9 +1,9 @@
 package sh.miles.collector.configuration
 
-import sh.miles.collector.util.spec.SoundSpec
 import sh.miles.pineapple.chat.PineappleComponent
 import sh.miles.pineapple.collection.registry.RegistryKey
 import sh.miles.pineapple.item.ItemSpec
+import sh.miles.pineapple.util.spec.SoundSpec
 
 data class SellMenuConfiguration(
     val id: String,

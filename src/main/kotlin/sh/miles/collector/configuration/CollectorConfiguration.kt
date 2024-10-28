@@ -1,10 +1,10 @@
 package sh.miles.collector.configuration
 
-import sh.miles.collector.util.spec.HologramSpec
-import sh.miles.collector.util.spec.SoundSpec
 import sh.miles.crown.infstacks.InfStackFactory
 import sh.miles.pineapple.collection.registry.RegistryKey
 import sh.miles.pineapple.item.ItemSpec
+import sh.miles.pineapple.util.spec.HologramSpec
+import sh.miles.pineapple.util.spec.SoundSpec
 
 data class CollectorConfiguration(
     val id: String,

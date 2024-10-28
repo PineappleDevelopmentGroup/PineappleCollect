@@ -7,15 +7,11 @@ import sh.miles.collector.configuration.adapter.CollectorConfigurationAdapter
 import sh.miles.collector.configuration.adapter.MenuConfigurationAdapter
 import sh.miles.collector.configuration.adapter.SellMenuConfigurationAdapter
 import sh.miles.collector.configuration.adapter.UpgradeConfigurationAdapter
-import sh.miles.collector.hook.EconomyShopHook
-import sh.miles.collector.hook.VaultHook
+import sh.miles.collector.hook.Plugins
 import sh.miles.collector.listener.EntityDeathListener
 import sh.miles.collector.tile.CollectorTileType
 import sh.miles.collector.util.spec.adapter.GuiItemSpecAdapter
-import sh.miles.collector.util.spec.adapter.HologramSpecAdapter
 import sh.miles.collector.util.spec.adapter.InfStackSettingsAdapter
-import sh.miles.collector.util.spec.adapter.SoundSpecAdapter
-import sh.miles.collector.util.spec.adapter.VectorSpecAdapter
 import sh.miles.pineapple.PineappleLib
 import sh.miles.pineapple.json.JsonHelper
 import sh.miles.pineapple.tiles.api.Tiles
@@ -43,8 +39,7 @@ class CollectorPlugin : JavaPlugin() {
 
         PineappleLib.getCommandRegistry().register(CollectorCommand)
 
-        VaultHook
-        EconomyShopHook
+        Plugins
         server.pluginManager.registerEvents(EntityDeathListener(), this)
         Tiles.getInstance().loadSpawnChunks() // We need this since we load PostWorld
     }
@@ -63,9 +58,6 @@ class CollectorPlugin : JavaPlugin() {
         registry.register(UpgradeConfigurationAdapter)
         // spec
         registry.register(GuiItemSpecAdapter)
-        registry.register(SoundSpecAdapter)
-        registry.register(VectorSpecAdapter)
-        registry.register(HologramSpecAdapter)
         registry.register(InfStackSettingsAdapter)
 
         jsonHelper = JsonHelper {

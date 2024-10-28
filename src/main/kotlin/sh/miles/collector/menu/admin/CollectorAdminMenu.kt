@@ -6,7 +6,6 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
-import org.bukkit.event.player.PlayerTeleportEvent
 import org.bukkit.inventory.ItemStack
 import sh.miles.collector.Registries
 import sh.miles.collector.menu.CollectorMenu
@@ -31,6 +30,7 @@ class CollectorAdminMenu(viewer: Player) : PagedPlayerGui<MenuScene>(
         }
 
         deployPage(0)
+
     }
 
     private fun decorate(page: Int, maxPage: Int) {

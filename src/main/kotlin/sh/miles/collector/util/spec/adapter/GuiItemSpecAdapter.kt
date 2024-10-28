@@ -1,12 +1,12 @@
 package sh.miles.collector.util.spec.adapter
 
 import sh.miles.collector.util.spec.GuiItemSpec
-import sh.miles.collector.util.spec.SoundSpec
 import sh.miles.pineapple.item.ItemSpec
 import sh.miles.pineapple.util.serialization.SerializedDeserializeContext
 import sh.miles.pineapple.util.serialization.SerializedElement
 import sh.miles.pineapple.util.serialization.SerializedSerializeContext
 import sh.miles.pineapple.util.serialization.adapter.SerializedAdapter
+import sh.miles.pineapple.util.spec.SoundSpec
 
 object GuiItemSpecAdapter : SerializedAdapter<GuiItemSpec> {
 

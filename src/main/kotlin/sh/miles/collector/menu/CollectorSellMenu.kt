@@ -4,12 +4,11 @@ import com.google.common.collect.HashBiMap
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
+import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import sh.miles.collector.CollectorPlugin
 import sh.miles.collector.Registries
 import sh.miles.collector.configuration.SellMenuConfiguration
-import sh.miles.collector.hook.EconomyShopHook
-import sh.miles.collector.hook.VaultHook
 import sh.miles.collector.tile.CollectorTile
 import sh.miles.collector.upgrade.level.SellMultiplierLevel
 import sh.miles.pineapple.chat.PineappleChat
@@ -51,14 +50,14 @@ class CollectorSellMenu(
                             it.isCancelled = true
                             if (it.click == ClickType.LEFT) {
                                 tile.tileType.sellSlot(tile, index, viewer()) {
-                                    config.sellSound.playSound(viewer())
+                                    config.sellSound.play(viewer())
                                 }
                             } else if (it.click == ClickType.RIGHT) {
                                 stackContainer.modify(index) { stack ->
                                     if (!player.itemOnCursor.type.isAir) return@modify
                                     val extracted = stack.extract(64)
                                     player.setItemOnCursor(extracted)
-                                    config.extractSound.playSound(viewer())
+                                    config.extractSound.play(viewer())
                                 }
                             }
                         }.build()
@@ -84,7 +83,7 @@ class CollectorSellMenu(
                         .drag { it.isCancelled = true }.click {
                             it.isCancelled = true
                             tile.tileType.sellAllContents(tile, player)
-                            config.sellSound.playSound(player)
+                            config.sellSound.play(player)
                             val spec = ItemSpec(config.sellAllItem)
                             spec.setLoreMutator {
                                 PineappleChat.parse(
@@ -105,6 +104,13 @@ class CollectorSellMenu(
                 }
             }
         }
+    }
+
+    override fun handleClick(event: InventoryClickEvent) {
+        if ((event.click == ClickType.SHIFT_LEFT || event.click == ClickType.SHIFT_LEFT) && event.view.topInventory.firstEmpty() != -1) {
+            event.isCancelled = true
+        }
+        super.handleClick(event)
     }
 
     override fun handleClose(event: InventoryCloseEvent) {

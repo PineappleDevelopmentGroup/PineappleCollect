@@ -1,13 +1,13 @@
 package sh.miles.collector.configuration.adapter
 
 import sh.miles.collector.configuration.SellMenuConfiguration
-import sh.miles.collector.util.spec.SoundSpec
 import sh.miles.pineapple.chat.PineappleChat
 import sh.miles.pineapple.item.ItemSpec
 import sh.miles.pineapple.util.serialization.SerializedDeserializeContext
 import sh.miles.pineapple.util.serialization.SerializedElement
 import sh.miles.pineapple.util.serialization.SerializedSerializeContext
 import sh.miles.pineapple.util.serialization.adapter.SerializedAdapter
+import sh.miles.pineapple.util.spec.SoundSpec
 
 object SellMenuConfigurationAdapter : SerializedAdapter<SellMenuConfiguration> {
 

@@ -1,8 +1,6 @@
 package sh.miles.collector.configuration.adapter
 
 import sh.miles.collector.configuration.CollectorConfiguration
-import sh.miles.collector.util.spec.HologramSpec
-import sh.miles.collector.util.spec.SoundSpec
 import sh.miles.crown.infstacks.InfStackFactory
 import sh.miles.crown.infstacks.InfStackSettings
 import sh.miles.pineapple.chat.PineappleChat
@@ -11,6 +9,8 @@ import sh.miles.pineapple.util.serialization.SerializedDeserializeContext
 import sh.miles.pineapple.util.serialization.SerializedElement
 import sh.miles.pineapple.util.serialization.SerializedSerializeContext
 import sh.miles.pineapple.util.serialization.adapter.SerializedAdapter
+import sh.miles.pineapple.util.spec.HologramSpec
+import sh.miles.pineapple.util.spec.SoundSpec
 
 object CollectorConfigurationAdapter : SerializedAdapter<CollectorConfiguration> {
 

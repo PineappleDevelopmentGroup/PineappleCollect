@@ -9,7 +9,7 @@ import org.bukkit.event.inventory.ClickType
 import org.bukkit.inventory.ItemStack
 import sh.miles.collector.GlobalConfig
 import sh.miles.collector.Registries
-import sh.miles.collector.hook.VaultHook
+import sh.miles.collector.hook.Plugins
 import sh.miles.collector.menu.AnvilTextMenu
 import sh.miles.collector.menu.CollectorMenu
 import sh.miles.collector.menu.CollectorSellMenu
@@ -56,12 +56,12 @@ object GeneralMenuActionRegistry : FrozenRegistry<MenuAction, String>({
             }
 
             val cost = upgrade.level[currentLevel].price
-            if (!VaultHook.hasBalance(data.viewer, cost)) {
+            if (!Plugins.economyOrThrow().hasBalance(data.viewer, cost)) {
                 data.viewer.spigot().sendMessage(
                     GlobalConfig.NOT_ENOUGH_MONEY.component(
                         mutableMapOf<String, Any>(
                             "upgrade" to upgrade.action.internalName,
-                            "player_balance" to VaultHook.getBalannce(data.viewer),
+                            "player_balance" to Plugins.economyOrThrow().getBalance(data.viewer),
                             "upgrade_cost" to cost
                         )
                     )
@@ -73,7 +73,7 @@ object GeneralMenuActionRegistry : FrozenRegistry<MenuAction, String>({
                 enabled = true
             }
 
-            VaultHook.removeBalance(data.viewer, cost)
+            Plugins.economyOrThrow().removeBalance(data.viewer, cost)
             data.viewer.spigot().sendMessage(
                 GlobalConfig.UPGRADE_PURCHASED.component(
                     mutableMapOf<String, Any>(

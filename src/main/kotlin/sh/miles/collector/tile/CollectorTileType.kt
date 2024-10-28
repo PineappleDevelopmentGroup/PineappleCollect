@@ -5,6 +5,7 @@ import org.bukkit.NamespacedKey
 import org.bukkit.entity.Display
 import org.bukkit.entity.Player
 import org.bukkit.entity.TextDisplay
+import org.bukkit.event.Event
 import org.bukkit.event.block.Action
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.block.BlockPlaceEvent
@@ -16,8 +17,7 @@ import sh.miles.collector.GlobalConfig
 import sh.miles.collector.Registries
 import sh.miles.collector.configuration.CollectorConfiguration
 import sh.miles.collector.configuration.UpgradeConfiguration
-import sh.miles.collector.hook.EconomyShopHook
-import sh.miles.collector.hook.VaultHook
+import sh.miles.collector.hook.Plugins
 import sh.miles.collector.menu.CollectorMenu
 import sh.miles.collector.tile.event.SellActionEvent
 import sh.miles.collector.upgrade.level.SellMultiplierLevel
@@ -88,7 +88,7 @@ object CollectorTileType : TileType<CollectorTile>(true) {
         }
 
         tile.textDisplayUUID = tile.configuration.hologram.spawn(
-            location, mutableMapOf(
+            location, mutableMapOf<String, Any>(
                 "sell_price" to "$0.00"
             )
         ) {
@@ -98,7 +98,7 @@ object CollectorTileType : TileType<CollectorTile>(true) {
         this.tickDisplay(tile)
         tile.location = location
 
-        tile.configuration.placeSound.playSound(player.location)
+        tile.configuration.placeSound.play(player.location)
     }
 
     override fun onBreak(event: BlockBreakEvent, tile: CollectorTile) {
@@ -115,7 +115,7 @@ object CollectorTileType : TileType<CollectorTile>(true) {
             textDisplay.remove()
         }
         tile.location = null
-        tile.configuration.breakSound.playSound(event.block.location)
+        tile.configuration.breakSound.play(event.block.location)
     }
 
     override fun onInteract(event: PlayerInteractEvent, tile: CollectorTile) {
@@ -123,6 +123,7 @@ object CollectorTileType : TileType<CollectorTile>(true) {
         val player = event.player
 
         if (event.action == Action.RIGHT_CLICK_BLOCK) {
+            event.setUseInteractedBlock(Event.Result.DENY)
             if ((tile.owner != player.uniqueId && !tile.accessWhitelist.contains(player.uniqueId)) && !player.hasPermission(COLLECTOR_ACCESS_BYPASS) && !player.isOp) {
                 event.isCancelled = true
                 player.spigot().sendMessage(GlobalConfig.NOT_WHITELISTED.component())
@@ -179,23 +180,23 @@ object CollectorTileType : TileType<CollectorTile>(true) {
 
         tile.stackContainer.clearContents()
         tile.tileType.tickDisplay(tile)
-        VaultHook.giveBalance(profiteer, sellPrice)
+        Plugins.economyOrThrow().giveBalance(profiteer, sellPrice)
     }
 
     fun sellSlot(tile: CollectorTile, slot: Int, seller: Player?, onSell: () -> Unit) {
         val profiteer = seller ?: Bukkit.getOfflinePlayer(tile.owner!!)
         tile.stackContainer.modify(slot) { stack ->
-            if (!EconomyShopHook.canSell(stack.comparator, profiteer.player)) {
+            if (!Plugins.shopOrThrow().canSell(stack.comparator, profiteer.player)) {
                 stack.shrink(stack.stackSize)
                 return@modify
             }
-            val sellItem = EconomyShopHook.sellItem(stack.comparator, profiteer.player, stack.stackSize.toInt())
+            val sellItem = Plugins.shopOrThrow().sellItem(stack.comparator, profiteer.player, stack.stackSize.toInt())
             if (sellItem.first) {
                 var sellPrice = sellItem.second
                 val action = SellActionEvent(sellPrice, profiteer, tile)
                 action.call()
                 sellPrice = action.sellPrice
-                VaultHook.giveBalance(profiteer, sellPrice)
+                Plugins.economyOrThrow().giveBalance(profiteer, sellPrice)
                 stack.shrink(stack.stackSize)
                 onSell.invoke()
             }

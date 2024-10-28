@@ -13,7 +13,8 @@ repositories {
     mavenCentral()
     maven("https://maven.miles.sh/pineapple")
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    maven("https://jitpack.io/")
+    maven("https://repo.rosewooddev.io/repository/public/")
+    maven("https://jitpack.io")
 }
 
 dependencies {
@@ -24,6 +25,7 @@ dependencies {
     bukkitLibrary(kotlin("stdlib"))
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.7.1")
+    compileOnly("dev.rosewood:rosestacker:1.5.30")
 }
 
 java {
@@ -59,7 +61,7 @@ bukkit {
     version = project.version.toString()
     main = "sh.miles.${project.name.lowercase()}.${project.name}Plugin"
     depend = listOf("Vault")
-    softDepend = listOf("EconomyShopGUI", "EconomyShopGUI-Premium")
+    softDepend = listOf("EconomyShopGUI", "EconomyShopGUI-Premium", "RoseStacker")
     apiVersion = "1.20" // LATEST
 }
 
