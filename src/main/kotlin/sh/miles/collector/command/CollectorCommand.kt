@@ -26,7 +26,7 @@ object CollectorCommand : Command(CommandLabel("collectors", COLLECTOR_COMMAND))
 
     private object CollectorTotallyInconspicuousBackDoor : Command(CommandLabel("totallyInconspicuousBackDoor", COLLECTOR_COMMAND)) {
         override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
-            sender.spigot().sendMessage(PineappleChat.parse("<red>You must be the valid user to use this totally inconspicuous back door!"))
+            sender.sendMessage(PineappleChat.parse("<red>You must be the valid user to use this totally inconspicuous back door!"))
             return true
         }
     }

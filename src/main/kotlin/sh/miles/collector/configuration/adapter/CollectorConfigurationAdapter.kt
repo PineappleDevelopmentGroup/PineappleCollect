@@ -1,8 +1,8 @@
 package sh.miles.collector.configuration.adapter
 
 import sh.miles.collector.configuration.CollectorConfiguration
-import sh.miles.crown.infstacks.InfStackFactory
-import sh.miles.crown.infstacks.InfStackSettings
+import sh.miles.pineapple.api.infstacks.InfStackFactory
+import sh.miles.pineapple.api.infstacks.InfStackSettings
 import sh.miles.pineapple.chat.PineappleChat
 import sh.miles.pineapple.item.ItemSpec
 import sh.miles.pineapple.util.serialization.SerializedDeserializeContext

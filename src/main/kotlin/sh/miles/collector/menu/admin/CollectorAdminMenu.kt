@@ -1,25 +1,24 @@
 package sh.miles.collector.menu.admin
 
-import net.md_5.bungee.api.chat.BaseComponent
-import net.md_5.bungee.api.chat.TextComponent
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
+import org.bukkit.inventory.InventoryView
 import org.bukkit.inventory.ItemStack
+import org.bukkit.inventory.MenuType
 import sh.miles.collector.Registries
 import sh.miles.collector.menu.CollectorMenu
 import sh.miles.collector.tile.CollectorTile
+import sh.miles.pineapple.api.tiles.api.Tiles
 import sh.miles.pineapple.chat.PineappleChat
 import sh.miles.pineapple.gui.PagedPlayerGui
 import sh.miles.pineapple.gui.slot.GuiSlot.GuiSlotBuilder
 import sh.miles.pineapple.item.ItemBuilder
-import sh.miles.pineapple.nms.api.menu.MenuType
-import sh.miles.pineapple.nms.api.menu.scene.MenuScene
-import sh.miles.pineapple.tiles.api.Tiles
 
-class CollectorAdminMenu(viewer: Player) : PagedPlayerGui<MenuScene>(
-    { MenuType.GENERIC_9x2.create(viewer, PineappleChat.parse("<red>Admin Collector View")) }, viewer
+class CollectorAdminMenu(viewer: Player) : PagedPlayerGui<InventoryView>(
+    { MenuType.GENERIC_9X2.create(viewer, PineappleChat.parse("<red>Admin Collector View")) }, viewer
 ) {
     private val allCollectors = Tiles.getInstance().getAllLoadedTiles { it is CollectorTile }
 
@@ -78,7 +77,7 @@ class CollectorAdminMenu(viewer: Player) : PagedPlayerGui<MenuScene>(
                     .index(slot)
                     .drag { it.isCancelled = true }
                     .click { it.isCancelled = true }
-                    .item(ItemBuilder.of(Material.BLACK_STAINED_GLASS_PANE).nameLegacy(" ").build())
+                    .item(ItemBuilder.of(Material.BLACK_STAINED_GLASS_PANE).hideTooltip().build())
                     .build()
             }
         }
@@ -128,10 +127,10 @@ class CollectorAdminMenu(viewer: Player) : PagedPlayerGui<MenuScene>(
         val builder = ItemBuilder.of(Material.PLAYER_HEAD)
             .name(PineappleChat.parse("<italic:!><gold>Collector <gray>at <dark_gray>(<gold>${location.x}<dark_gray>, <gold>${location.y}<dark_gray>, <gold>${location.z}<dark_gray>, <gold>${location.world?.name ?: "Unknown"}<dark_gray>)"))
 
-        val lore = mutableListOf<BaseComponent>()
+        val lore = mutableListOf<Component>()
         lore.add(PineappleChat.parse("<italic:!><dark_gray>Left click to open menu"))
         lore.add(PineappleChat.parse("<italic:!><dark_gray>Right click to teleport to"))
-        lore.add(TextComponent(""))
+        lore.add(Component.newline())
         lore.add(PineappleChat.parse("<italic:!><gray>Configuration Id: <gold>${tile.configuration.key}"))
         lore.add(PineappleChat.parse("<italic:!><gray>Data version<dark_gray>: <gold>${tile.dataVersion}"))
 

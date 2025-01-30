@@ -13,11 +13,11 @@ import sh.miles.collector.configuration.UpgradeConfiguration
 import sh.miles.collector.menu.InfStackContainer
 import sh.miles.collector.tile.loader.CollectorFixing
 import sh.miles.pineapple.PineappleLib
-import sh.miles.pineapple.tiles.api.Tile
+import sh.miles.pineapple.api.tiles.api.Tile
 import java.util.UUID
 import java.util.concurrent.ConcurrentSkipListSet
 
-class CollectorTile : Tile {
+class CollectorTile: Tile {
 
     var dataVersion: Long = Long.MIN_VALUE
     var owner: UUID? = null
@@ -35,33 +35,17 @@ class CollectorTile : Tile {
         setIfIncludes(COLLECTOR_DATA_VERSION, PersistentDataType.LONG, dataVersion, container, excludeFields)
         setIfIncludes(COLLECTOR_OWNER, PersistentDataType.STRING, owner.toString(), container, excludeFields)
         setIfIncludes(
-            COLLECTOR_LOCATION,
-            PersistentDataType.STRING,
-            "${location?.world?.uid}=${location?.x}=${location?.y}=${location?.z}",
-            container,
-            excludeFields
+            COLLECTOR_LOCATION, PersistentDataType.STRING, "${location?.world?.uid}=${location?.x}=${location?.y}=${location?.z}", container, excludeFields
         )
         setIfIncludes(COLLECTOR_CONFIGURATION, PersistentDataType.STRING, configuration.id, container, excludeFields)
         setIfIncludes(
-            COLLECTOR_DISPLAY_MSB,
-            PersistentDataType.LONG,
-            textDisplayUUID?.mostSignificantBits,
-            container,
-            excludeFields
+            COLLECTOR_DISPLAY_MSB, PersistentDataType.LONG, textDisplayUUID?.mostSignificantBits, container, excludeFields
         )
         setIfIncludes(
-            COLLECTOR_DISPLAY_LSB,
-            PersistentDataType.LONG,
-            textDisplayUUID?.leastSignificantBits,
-            container,
-            excludeFields
+            COLLECTOR_DISPLAY_LSB, PersistentDataType.LONG, textDisplayUUID?.leastSignificantBits, container, excludeFields
         )
         setIfIncludes(
-            COLLECTOR_ACCESSORS,
-            PersistentDataType.LIST.strings(),
-            accessWhitelist.map { it.toString() }.toList(),
-            container,
-            excludeFields
+            COLLECTOR_ACCESSORS, PersistentDataType.LIST.strings(), accessWhitelist.map { it.toString() }.toList(), container, excludeFields
         )
         setIfIncludes(
             COLLECTOR_UPGRADES, PersistentDataType.TAG_CONTAINER, container, excludeFields
@@ -75,17 +59,12 @@ class CollectorTile : Tile {
             return@setIfIncludes upgradeContainer
         }
         setIfIncludes(
-            COLLECTOR_ITEMS,
-            PersistentDataType.BYTE_ARRAY,
-            PineappleLib.getNmsProvider().itemsToBytes(stackContainer.getContents()),
-            container,
-            excludeFields
+            COLLECTOR_ITEMS, PersistentDataType.BYTE_ARRAY, ItemStack.serializeItemsAsBytes(stackContainer.getContents()), container, excludeFields
         )
     }
 
     override fun load(container: PersistentDataContainer) {
-        this.dataVersion = getOrNull(COLLECTOR_DATA_VERSION, PersistentDataType.LONG, container) { it }
-            ?: CollectorFixing.NO_DATA_VERSION
+        this.dataVersion = getOrNull(COLLECTOR_DATA_VERSION, PersistentDataType.LONG, container) { it } ?: CollectorFixing.NO_DATA_VERSION
         if (this.dataVersion < CollectorFixing.CURRENT_DATA_VERSION) {
             CollectorFixing.applyFixes(container, this.dataVersion)
             this.dataVersion = CollectorFixing.CURRENT_DATA_VERSION
@@ -99,10 +78,7 @@ class CollectorTile : Tile {
             val split = it?.split("=") ?: return@getOrNull null
 
             return@getOrNull Location(
-                Bukkit.getWorld(UUID.fromString(split[0])),
-                split[1].toDouble(),
-                split[2].toDouble(),
-                split[3].toDouble()
+                Bukkit.getWorld(UUID.fromString(split[0])), split[1].toDouble(), split[2].toDouble(), split[3].toDouble()
             )
         }
         this.configuration = getOrThrow(COLLECTOR_CONFIGURATION, PersistentDataType.STRING, container, {
@@ -119,8 +95,7 @@ class CollectorTile : Tile {
         }
         this.accessWhitelist = getOrNull(
             COLLECTOR_ACCESSORS, PersistentDataType.LIST.strings(), container
-        ) { it?.map { entry -> UUID.fromString(entry) }?.toCollection(ConcurrentSkipListSet()) }
-            ?: ConcurrentSkipListSet()
+        ) { it?.map { entry -> UUID.fromString(entry) }?.toCollection(ConcurrentSkipListSet()) } ?: ConcurrentSkipListSet()
         this.upgrades = getOrNull(
             COLLECTOR_UPGRADES, PersistentDataType.TAG_CONTAINER, container
         ) {
@@ -138,13 +113,12 @@ class CollectorTile : Tile {
         this.stackContainer = getOrNull(COLLECTOR_ITEMS, PersistentDataType.BYTE_ARRAY, container) {
             if (it == null) return@getOrNull null
             return@getOrNull InfStackContainer(
-                configuration, PineappleLib.getNmsProvider().itemsFromBytes(it, configuration.storageSlots).toList()
+                configuration, ItemStack.deserializeItemsFromBytes(it).toList()
             )
         } ?: InfStackContainer(configuration)
     }
 
-    fun addItem(stack: ItemStack): Boolean {
-        // Call CollectorGainItemAction
+    fun addItem(stack: ItemStack): Boolean { // Call CollectorGainItemAction
         return this.stackContainer.add(stack)
     }
 
@@ -175,22 +149,14 @@ class CollectorTile : Tile {
     }
 
     private fun <T, R> getOrThrow(
-        key: NamespacedKey,
-        type: PersistentDataType<*, T>,
-        container: PersistentDataContainer,
-        mapper: (T) -> R,
-        thrower: () -> Exception
+        key: NamespacedKey, type: PersistentDataType<*, T>, container: PersistentDataContainer, mapper: (T) -> R, thrower: () -> Exception
     ): R {
         val output = container.get(key, type) ?: throw thrower.invoke()
         return mapper.invoke(output)
     }
 
     private fun <T> setIfIncludes(
-        key: NamespacedKey,
-        type: PersistentDataType<*, T>,
-        value: T?,
-        container: PersistentDataContainer,
-        excludeFields: MutableSet<String>?
+        key: NamespacedKey, type: PersistentDataType<*, T>, value: T?, container: PersistentDataContainer, excludeFields: MutableSet<String>?
     ) {
         return setIfIncludes(key, type, container, excludeFields) { value }
     }

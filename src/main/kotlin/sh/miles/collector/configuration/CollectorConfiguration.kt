@@ -1,6 +1,6 @@
 package sh.miles.collector.configuration
 
-import sh.miles.crown.infstacks.InfStackFactory
+import sh.miles.pineapple.api.infstacks.InfStackFactory
 import sh.miles.pineapple.collection.registry.RegistryKey
 import sh.miles.pineapple.item.ItemSpec
 import sh.miles.pineapple.util.spec.HologramSpec

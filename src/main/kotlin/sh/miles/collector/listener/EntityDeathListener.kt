@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack
 import sh.miles.collector.GlobalConfig
 import sh.miles.collector.hook.Plugins
 import sh.miles.collector.tile.CollectorTile
-import sh.miles.pineapple.tiles.api.Tiles
+import sh.miles.pineapple.api.tiles.api.Tiles
 
 class EntityDeathListener : Listener {
 

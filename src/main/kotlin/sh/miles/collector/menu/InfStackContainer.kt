@@ -1,13 +1,11 @@
 package sh.miles.collector.menu
 
-import org.bukkit.Bukkit
-import org.bukkit.OfflinePlayer
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
 import sh.miles.collector.configuration.CollectorConfiguration
 import sh.miles.collector.hook.Plugins
-import sh.miles.crown.infstacks.InfStack
-import sh.miles.crown.infstacks.InfStackFactory
+import sh.miles.pineapple.api.infstacks.InfStack
+import sh.miles.pineapple.api.infstacks.InfStackFactory
 import sh.miles.pineapple.collection.NonNullArray
 import java.util.UUID
 

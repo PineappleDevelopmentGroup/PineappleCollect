@@ -10,18 +10,28 @@ version = "2.0.0-SNAPSHOT"
 val debugLibraries = true
 
 repositories {
+    mavenLocal()
     mavenCentral()
     maven("https://maven.miles.sh/pineapple")
     maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.rosewooddev.io/repository/public/")
     maven("https://jitpack.io")
 }
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT") { isChanging = true }
-    implementation("sh.miles:pineapple-bundle:1.0.0-SNAPSHOT") { isChanging = true }
+    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+    implementation("sh.miles:Pineapple:1.0.0") { isChanging = true }
+//    implementation("sh.miles:pineapple-core:1.0.0") { isChanging = true }
+//    implementation("sh.miles:pineapple-common:1.0.0") { isChanging = true }
+//    implementation("sh.miles:pineapple-nms-api:1.0.0") { isChanging = true }
     implementation("sh.miles:pineapple-infstack:1.0.0-SNAPSHOT") { isChanging = true }
     implementation("sh.miles:pineapple-tiles:1.0.0-SNAPSHOT") { isChanging = true }
+
+    //    compileOnly("org.spigotmc:spigot-api:1.20.4-R0.1-SNAPSHOT") { isChanging = true }
+    //    implementation("sh.miles:pineapple-bundle:1.0.0-SNAPSHOT") { isChanging = true }
+    //    implementation("sh.miles:pineapple-infstack:1.0.0-SNAPSHOT") { isChanging = true }
+    //    implementation("sh.miles:pineapple-tiles:1.0.0-SNAPSHOT") { isChanging = true }
     bukkitLibrary(kotlin("stdlib"))
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("com.github.Gypopo:EconomyShopGUI-API:1.7.1")
@@ -29,7 +39,7 @@ dependencies {
 }
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(17)
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
 }
 
 idea {
@@ -66,7 +76,7 @@ bukkit {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
 }
 
 if (debugLibraries) {

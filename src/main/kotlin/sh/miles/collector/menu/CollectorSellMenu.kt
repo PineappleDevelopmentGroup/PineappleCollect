@@ -6,17 +6,17 @@ import org.bukkit.entity.Player
 import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.inventory.InventoryView
 import sh.miles.collector.CollectorPlugin
 import sh.miles.collector.Registries
 import sh.miles.collector.configuration.SellMenuConfiguration
 import sh.miles.collector.tile.CollectorTile
 import sh.miles.collector.upgrade.level.SellMultiplierLevel
+import sh.miles.collector.util.rowsToMenuType
 import sh.miles.pineapple.chat.PineappleChat
 import sh.miles.pineapple.gui.PlayerGui
 import sh.miles.pineapple.gui.slot.GuiSlot.GuiSlotBuilder
 import sh.miles.pineapple.item.ItemSpec
-import sh.miles.pineapple.nms.api.menu.MenuType
-import sh.miles.pineapple.nms.api.menu.scene.MenuScene
 import java.text.DecimalFormat
 import java.util.Locale
 
@@ -25,8 +25,8 @@ class CollectorSellMenu(
     private val lastOpenMenu: PlayerGui<*>?,
     private val tile: CollectorTile,
     private val config: SellMenuConfiguration
-) : PlayerGui<MenuScene>(
-    { MenuType.fromRows(config.viewRows).create(it, config.title.component()) }, player
+) : PlayerGui<InventoryView>(
+    { rowsToMenuType(config.viewRows).create(it, config.title.component()) }, player
 ) {
 
     override fun decorate() {

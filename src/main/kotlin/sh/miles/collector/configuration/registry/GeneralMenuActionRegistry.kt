@@ -1,6 +1,6 @@
 package sh.miles.collector.configuration.registry
 
-import net.md_5.bungee.api.chat.BaseComponent
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
@@ -45,7 +45,7 @@ object GeneralMenuActionRegistry : FrozenRegistry<MenuAction, String>({
 
         if (event.click == ClickType.LEFT && (currentLevel == 0 || enabled)) {
             if (currentLevel >= upgrade.maxLevel) {
-                data.viewer.spigot().sendMessage(
+                data.viewer.sendMessage(
                     GlobalConfig.ALREADY_HAVE_UPGRADE.component(
                         mutableMapOf<String, Any>(
                             "upgrade" to upgrade.action.internalName, "level" to currentLevel + 1
@@ -57,7 +57,7 @@ object GeneralMenuActionRegistry : FrozenRegistry<MenuAction, String>({
 
             val cost = upgrade.level[currentLevel].price
             if (!Plugins.economyOrThrow().hasBalance(data.viewer, cost)) {
-                data.viewer.spigot().sendMessage(
+                data.viewer.sendMessage(
                     GlobalConfig.NOT_ENOUGH_MONEY.component(
                         mutableMapOf<String, Any>(
                             "upgrade" to upgrade.action.internalName,
@@ -74,7 +74,7 @@ object GeneralMenuActionRegistry : FrozenRegistry<MenuAction, String>({
             }
 
             Plugins.economyOrThrow().removeBalance(data.viewer, cost)
-            data.viewer.spigot().sendMessage(
+            data.viewer.sendMessage(
                 GlobalConfig.UPGRADE_PURCHASED.component(
                     mutableMapOf<String, Any>(
                         "upgrade" to upgrade.action.internalName, "price" to cost
@@ -149,7 +149,7 @@ object GeneralMenuActionRegistry : FrozenRegistry<MenuAction, String>({
                 data.tile.accessWhitelist.add(maybePlayer.uniqueId)
             }.whenComplete { _, exception ->
                 if (exception != null) {
-                    data.viewer.spigot().sendMessage(
+                    data.viewer.sendMessage(
                         GlobalConfig.OFFLINE_PLAYER_WEB_REQUEST_FAILED.component(
                             mutableMapOf<String, Any>(
                                 "name" to it
@@ -164,7 +164,7 @@ object GeneralMenuActionRegistry : FrozenRegistry<MenuAction, String>({
         if (data.providedArgs.isEmpty()) throw IllegalStateException("When using action \"remove_accessor\" a args field must be provided")
         val format = data.providedArgs[0]
         val item = ItemBuilder.of(Material.PAPER)
-        val lore = mutableListOf<BaseComponent>()
+        val lore = mutableListOf<Component>()
         for (uuid in data.tile.accessWhitelist) {
             val player = Bukkit.getOfflinePlayer(uuid)
             lore.add(PineappleChat.parse(format, mutableMapOf<String, Any>("name" to (player.name ?: "Unknown"))))
@@ -175,7 +175,7 @@ object GeneralMenuActionRegistry : FrozenRegistry<MenuAction, String>({
                 data.tile.accessWhitelist.remove(maybePlayer.uniqueId)
             }.whenComplete { _, exception ->
                 if (exception != null) {
-                    data.viewer.spigot().sendMessage(
+                    data.viewer.sendMessage(
                         GlobalConfig.OFFLINE_PLAYER_WEB_REQUEST_FAILED.component(
                             mutableMapOf<String, Any>(
                                 "name" to it
@@ -190,7 +190,8 @@ object GeneralMenuActionRegistry : FrozenRegistry<MenuAction, String>({
     }, { _, _ -> }, { _, _ -> }, { data, inventory ->
         if (data.providedArgs.isEmpty()) throw IllegalStateException("When using action \"show_accessors\" a args field must be provided")
         val item = inventory.getItem(data.slot)!!
-        val lore = PineappleLib.getNmsProvider().getItemLore(item)
+        val meta = item.itemMeta
+        val lore = meta.lore() ?: mutableListOf()
         for (uuid in data.tile.accessWhitelist) {
             lore.add(
                 PineappleChat.parse(
@@ -200,7 +201,8 @@ object GeneralMenuActionRegistry : FrozenRegistry<MenuAction, String>({
                 )
             )
         }
-        inventory.setItem(data.slot, PineappleLib.getNmsProvider().setItemLore(item, lore))
+        item.itemMeta = meta
+        inventory.setItem(data.slot, item)
     })
     ).associateBy { it.id }
 })

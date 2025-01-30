@@ -1,5 +1,7 @@
 package sh.miles.collector
 
+import org.bukkit.Registry
+import org.bukkit.Sound
 import org.bukkit.plugin.Plugin
 import org.bukkit.plugin.java.JavaPlugin
 import sh.miles.collector.command.CollectorCommand
@@ -13,8 +15,8 @@ import sh.miles.collector.tile.CollectorTileType
 import sh.miles.collector.util.spec.adapter.GuiItemSpecAdapter
 import sh.miles.collector.util.spec.adapter.InfStackSettingsAdapter
 import sh.miles.pineapple.PineappleLib
+import sh.miles.pineapple.api.tiles.api.Tiles
 import sh.miles.pineapple.json.JsonHelper
-import sh.miles.pineapple.tiles.api.Tiles
 import sh.miles.pineapple.util.serialization.adapter.SerializedAdapterRegistry
 import sh.miles.pineapple.util.serialization.bridges.gson.GsonSerializedBridge
 import java.io.File
@@ -29,13 +31,19 @@ class CollectorPlugin : JavaPlugin() {
     }
 
     override fun onEnable() {
-        plugin = this;
+        plugin = this
         PineappleLib.initialize(this)
+
+        // TEST
+        println("block.lantern.place ${Registry.SOUND_EVENT.getKeyOrThrow(Sound.BLOCK_LANTERN_PLACE).asMinimalString()}")
+        println("block.lantern.break ${Registry.SOUND_EVENT.getKeyOrThrow(Sound.BLOCK_LANTERN_BREAK).asMinimalString()}")
+
         Tiles.setup(this)
         Tiles.getInstance().registerTileType(CollectorTileType)
         setupSerializer()
         Registries.load(this, jsonHelper)
-        PineappleLib.getConfigurationManager().createDefault(File(dataFolder, "config.yml"), GlobalConfig::class.java)
+        val config = PineappleLib.getConfigurationManager().createConfiguration(File(dataFolder, "config.yml"), GlobalConfig::class.java)
+        config.save(false).load()
 
         PineappleLib.getCommandRegistry().register(CollectorCommand)
 

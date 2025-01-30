@@ -21,12 +21,12 @@ import sh.miles.collector.util.COLLECTOR_COMMAND_DEBUG_MODIFY_UPGRADE
 import sh.miles.collector.util.COLLECTOR_COMMAND_DEBUG_MODIFY_UPGRADE_ADD
 import sh.miles.collector.util.COLLECTOR_COMMAND_DEBUG_MODIFY_UPGRADE_REMOVE
 import sh.miles.collector.util.CollectorDebugUtil
+import sh.miles.pineapple.api.tiles.api.Tiles
 import sh.miles.pineapple.chat.PineappleChat
 import sh.miles.pineapple.command.Command
 import sh.miles.pineapple.command.CommandLabel
 import sh.miles.pineapple.function.Option.None
 import sh.miles.pineapple.function.Option.Some
-import sh.miles.pineapple.tiles.api.Tiles
 
 object CollectorDebugCommand : Command(CommandLabel("debug", COLLECTOR_COMMAND_DEBUG)) {
 
@@ -59,7 +59,7 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", COLL
 
                 val collector = CollectorDebugUtil.getTargetedCollector(sender) ?: return true
                 collector.stackContainer.clearContents()
-                sender.spigot().sendMessage(
+                sender.sendMessage(
                     PineappleChat.parse(
                         "<green>Successfully cleared container"
                     )
@@ -83,7 +83,7 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", COLL
                     return true
                 }
                 collector.addItem(item)
-                sender.spigot().sendMessage(
+                sender.sendMessage(
                     PineappleChat.parse(
                         "<green>Successfully added ${item.type} to container"
                     )
@@ -110,7 +110,7 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", COLL
                 }
 
                 if (args.size < 2) {
-                    sender.spigot().sendMessage(PineappleChat.parse("<red>Invalid arg amount, requires 2"))
+                    sender.sendMessage(PineappleChat.parse("<red>Invalid arg amount, requires 2"))
                     return true
                 }
 
@@ -119,7 +119,7 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", COLL
                         action.some()
                     }
                     is None -> {
-                        sender.spigot().sendMessage(PineappleChat.parse("<red>Unknown upgrade key"))
+                        sender.sendMessage(PineappleChat.parse("<red>Unknown upgrade key"))
                         return true
                     }
                 }
@@ -127,7 +127,7 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", COLL
                 val upgradeLevel = args[1].toInt()
 
                 if (upgrade.level.size < upgradeLevel) {
-                    sender.spigot().sendMessage(PineappleChat.parse("<red>Invalid level, use one specified in tab complete"))
+                    sender.sendMessage(PineappleChat.parse("<red>Invalid level, use one specified in tab complete"))
                     return true
                 }
 
@@ -137,7 +137,7 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", COLL
                     enabled = collector.upgrades[upgrade]!!.second
                 }
                 collector.upgrades[upgrade] = Pair(upgradeLevel, enabled)
-                sender.spigot().sendMessage(PineappleChat.parse("<green>Added upgrade <white>\'${upgrade.key}: $upgradeLevel\'"))
+                sender.sendMessage(PineappleChat.parse("<green>Added upgrade <white>\'${upgrade.key}: $upgradeLevel\'"))
                 return true
             }
 
@@ -173,7 +173,7 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", COLL
                 }
 
                 if (args.isEmpty()) {
-                    sender.spigot().sendMessage(PineappleChat.parse("<red>Invalid amount of args, requires 1"))
+                    sender.sendMessage(PineappleChat.parse("<red>Invalid amount of args, requires 1"))
                     return true
                 }
 
@@ -183,18 +183,18 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", COLL
                         action.some()
                     }
                     is None -> {
-                        sender.spigot().sendMessage(PineappleChat.parse("<red>Invalid upgrade key"))
+                        sender.sendMessage(PineappleChat.parse("<red>Invalid upgrade key"))
                         return true
                     }
                 }
 
                 val level = collector.upgrades.remove(upgrade)
                 if (level == null) {
-                    sender.spigot().sendMessage(PineappleChat.parse("<red>This collector did not have that upgrade"))
+                    sender.sendMessage(PineappleChat.parse("<red>This collector did not have that upgrade"))
                     return true
                 }
 
-                sender.spigot().sendMessage(PineappleChat.parse("<green>Successfully removed upgrade."))
+                sender.sendMessage(PineappleChat.parse("<green>Successfully removed upgrade."))
                 return true
             }
 

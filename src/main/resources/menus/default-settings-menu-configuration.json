@@ -22,7 +22,7 @@
       "slot": 10,
       "action": "show_accessors",
       "args": [
-        "<dark_green><italic:!><$name>"
+        "<dark_green><italic:!><name>"
       ],
       "click_sound": {
         "sound": "ui.button.click",
@@ -37,7 +37,7 @@
       "slot": 19,
       "action": "remove_accessor",
       "args": [
-        "<dark_green><italic:!><$name>"
+        "<dark_green><italic:!><name>"
       ],
       "click_sound": {
         "sound": "ui.button.click",

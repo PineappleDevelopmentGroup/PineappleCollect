@@ -12,7 +12,7 @@ import org.bukkit.plugin.Plugin
 import sh.miles.collector.GlobalConfig
 import sh.miles.collector.hook.Plugins
 import sh.miles.collector.tile.CollectorTile
-import sh.miles.pineapple.tiles.api.Tiles
+import sh.miles.pineapple.api.tiles.api.Tiles
 import java.util.function.Supplier
 
 object RoseStackerPluginSupport : StackingSupportedPlugin {

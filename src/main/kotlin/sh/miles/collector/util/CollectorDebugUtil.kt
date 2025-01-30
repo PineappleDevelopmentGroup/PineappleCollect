@@ -1,13 +1,14 @@
 package sh.miles.collector.util
 
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Chunk
 import org.bukkit.Location
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import sh.miles.collector.tile.CollectorTile
+import sh.miles.pineapple.api.tiles.api.Tiles
 import sh.miles.pineapple.chat.PineappleChat
-import sh.miles.pineapple.tiles.api.Tiles
 
 object CollectorDebugUtil {
 
@@ -21,7 +22,7 @@ object CollectorDebugUtil {
         val targetLocation = target.location
         val possibleTile = Tiles.getInstance().getTile(targetLocation) { it is CollectorTile }
         if (possibleTile == null) {
-            player.spigot().sendMessage(
+            player.sendMessage(
                 PineappleChat.parse(
                     "<red>No collector found at location (${targetLocation.x}, ${targetLocation.y}, ${targetLocation.z})"
                 )
@@ -46,13 +47,13 @@ object CollectorDebugUtil {
         if (messageBuilder.endsWith("\n")) {
             messageBuilder.setLength(messageBuilder.length - 1)
         }
-        sender.spigot().sendMessage(PineappleChat.parse(messageBuilder.toString()))
+        sender.sendMessage(PineappleChat.parse(messageBuilder.toString()))
     }
 
     fun printDebug(sender: CommandSender, location: Location) {
         val possibleTile = Tiles.getInstance().getTile(location) { it is CollectorTile }
         if (possibleTile == null) {
-            sender.spigot().sendMessage(
+            sender.sendMessage(
                 PineappleChat.parse(
                     "<red>No collector found at location (${location.x},${location.y},${location.z})"
                 )
@@ -66,9 +67,9 @@ object CollectorDebugUtil {
         val configurationId = tile.configuration.id
         val items = tile.stackContainer.getContents().map {
             if (it.type.isAir) return@map "Air"
-            return@map it.itemMeta!!.displayName + " X" + it.amount
+            return@map it.itemMeta!!.displayName()!!.append(Component.text(" X" + it.amount))
         }
-        sender.spigot().sendMessage(
+        sender.sendMessage(
             PineappleChat.parse(
                 """
                         <gold>Data Version<gray>:<dark_gray> $dataVersion

@@ -22,17 +22,17 @@ object GlobalConfig {
     @ConfigPath("messages.already-have-upgrade")
     @Comment("Sent if the player already has an upgrade")
     var ALREADY_HAVE_UPGRADE: PineappleComponent =
-        PineappleChat.component("<red>You already have <\$upgrade> maxed out at level <\$level>")
+        PineappleChat.component("<red>You already have <upgrade> maxed out at level <level>")
 
     @ConfigPath("messages.not-enough-money")
     @Comment("Sent if the player doesn't have enough money for the upgrade")
     var NOT_ENOUGH_MONEY: PineappleComponent =
-        PineappleChat.component("<red>You do not have enough money to buy <\$upgrade> you have <\$player_balance> you need <\$upgrade_cost>")
+        PineappleChat.component("<red>You do not have enough money to buy <upgrade> you have <player_balance> you need <upgrade_cost>")
 
     @ConfigPath("messages.upgrade-purchased")
     @Comment("Sent if a player purchases an upgrade for a specific price")
     var UPGRADE_PURCHASED: PineappleComponent =
-        PineappleChat.component("<green>You successfully purchased <\$upgrade> for <\$price>")
+        PineappleChat.component("<green>You successfully purchased <upgrade> for <price>")
 
     @ConfigPath("anvil-title")
     @Comment("The name of the text collecting anvil title")
@@ -41,7 +41,7 @@ object GlobalConfig {
     @ConfigPath("messages.offline-player-web-request-failed")
     @Comment("Shown to a player if a web request for information regarding a certain offline player isn't found")
     var OFFLINE_PLAYER_WEB_REQUEST_FAILED: PineappleComponent =
-        PineappleChat.component("<red>An issue occurred when retrieving information for the player with the name <\$name>")
+        PineappleChat.component("<red>An issue occurred when retrieving information for the player with the name <name>")
 
     @ConfigPath("messages.not-whitelisted")
     @Comment("Shown to a player if they are not whitelisted on a collector")

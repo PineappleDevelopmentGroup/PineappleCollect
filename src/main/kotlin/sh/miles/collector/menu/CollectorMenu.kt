@@ -6,23 +6,24 @@ import org.bukkit.entity.Player
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryOpenEvent
 import org.bukkit.event.inventory.InventoryType
+import org.bukkit.inventory.InventoryView
+import org.bukkit.inventory.MenuType
 import sh.miles.collector.CollectorPlugin
 import sh.miles.collector.Registries
 import sh.miles.collector.configuration.MenuConfiguration
 import sh.miles.collector.tile.CollectorTile
 import sh.miles.collector.util.MenuAction
+import sh.miles.collector.util.rowsToMenuType
 import sh.miles.pineapple.gui.PlayerGui
 import sh.miles.pineapple.gui.slot.GuiSlot.GuiSlotBuilder
-import sh.miles.pineapple.nms.api.menu.MenuType
-import sh.miles.pineapple.nms.api.menu.scene.MenuScene
 
 class CollectorMenu(
     private val player: Player,
     private val lastOpenMenu: PlayerGui<*>?,
     private val tile: CollectorTile,
     private val config: MenuConfiguration
-) : PlayerGui<MenuScene>(
-    { MenuType.fromRows(config.viewRows).create(it, config.title.component()) }, player
+) : PlayerGui<InventoryView>(
+    { rowsToMenuType(config.viewRows).create(it, config.title.component()) }, player
 ) {
     override fun decorate() {
         val map = config.itemMap

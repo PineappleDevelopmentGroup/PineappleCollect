@@ -25,7 +25,7 @@
     "lore": [
       "<gray><italic:!>Sells all items in the collector",
       "",
-      "<gray><italic:!>Total Worth: <gold><$sell_price>"
+      "<gray><italic:!>Total Worth: <gold><sell_price>"
     ]
   },
   "sell_sound": {

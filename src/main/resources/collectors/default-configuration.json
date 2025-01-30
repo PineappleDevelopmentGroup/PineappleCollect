@@ -6,7 +6,7 @@
     "text": [
       "<gray>↠↠<yellow>Collector<gray>↞↞",
       "<white>Collects items from dead mobs",
-      "<gray>Total Worth: <gold><$sell_price>"
+      "<gray>Total Worth: <gold><sell_price>"
     ],
     "relative_position": {
       "x": 0.5,
@@ -35,10 +35,10 @@
   },
   "stacking_settings": {
     "lore": [
-      "<gold><italic:!>Stack Size<dark_gray>: <green><$amount> <dark_gray>/ <red><$max_amount>",
-      "",
-      "<gray><italic:!>Sell all for <dark_green><$sell_price>",
-      "<gray><italic:!>Right click to withdraw <gold><$withdraw_amount>"
+      "<gold><italic:!>Stack Size<dark_gray>: <green><amount> <dark_gray>/ <red><max_amount>",
+      " ",
+      "<gray><italic:!>Sell all for <dark_green><sell_price>",
+      "<gray><italic:!>Right click to withdraw <gold><withdraw_amount>"
     ]
   }
 }

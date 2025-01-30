@@ -16,17 +16,16 @@ import org.bukkit.persistence.PersistentDataType
 import sh.miles.collector.GlobalConfig
 import sh.miles.collector.Registries
 import sh.miles.collector.configuration.CollectorConfiguration
-import sh.miles.collector.configuration.UpgradeConfiguration
 import sh.miles.collector.hook.Plugins
 import sh.miles.collector.menu.CollectorMenu
 import sh.miles.collector.tile.event.SellActionEvent
 import sh.miles.collector.upgrade.level.SellMultiplierLevel
 import sh.miles.collector.util.COLLECTOR_ACCESS_BYPASS
+import sh.miles.pineapple.api.tiles.api.TileType
+import sh.miles.pineapple.api.tiles.api.Tiles
+import sh.miles.pineapple.api.tiles.internal.util.TileKeys
 import sh.miles.pineapple.chat.PineappleChat
 import sh.miles.pineapple.item.ItemBuilder
-import sh.miles.pineapple.tiles.api.TileType
-import sh.miles.pineapple.tiles.api.Tiles
-import sh.miles.pineapple.tiles.internal.util.TileKeys
 import java.text.DecimalFormat
 import java.util.Locale
 
@@ -83,7 +82,7 @@ object CollectorTileType : TileType<CollectorTile>(true) {
         val currentCollectors = Tiles.getInstance().getTiles(location.chunk)
         if (currentCollectors.isNotEmpty()) {
             event.isCancelled = true
-            player.spigot().sendMessage(GlobalConfig.COLLECTOR_ALREADY_PLACED.component())
+            player.sendMessage(GlobalConfig.COLLECTOR_ALREADY_PLACED.component())
             return
         }
 
@@ -105,7 +104,7 @@ object CollectorTileType : TileType<CollectorTile>(true) {
         val player = event.player
         if (tile.owner != player.uniqueId && !tile.accessWhitelist.contains(player.uniqueId)) {
             event.isCancelled = true
-            player.spigot().sendMessage(GlobalConfig.NOT_WHITELISTED.component())
+            player.sendMessage(GlobalConfig.NOT_WHITELISTED.component())
             return
         }
 
@@ -126,7 +125,7 @@ object CollectorTileType : TileType<CollectorTile>(true) {
             event.setUseInteractedBlock(Event.Result.DENY)
             if ((tile.owner != player.uniqueId && !tile.accessWhitelist.contains(player.uniqueId)) && !player.hasPermission(COLLECTOR_ACCESS_BYPASS) && !player.isOp) {
                 event.isCancelled = true
-                player.spigot().sendMessage(GlobalConfig.NOT_WHITELISTED.component())
+                player.sendMessage(GlobalConfig.NOT_WHITELISTED.component())
                 return
             }
             val menuConfiguration = Registries.MENU.get(tile.configuration.menuId).orThrow()
@@ -163,11 +162,11 @@ object CollectorTileType : TileType<CollectorTile>(true) {
                 tile.getUpgradeStatus(upgrade).first, 1.0
             ) { level -> (level as SellMultiplierLevel).multiplier }
         }.orElse(1.0)
-        textDisplay.text = PineappleChat.parseLegacy(
+        textDisplay.text(PineappleChat.parse(
             tile.configuration.hologram.hologramText.source, mutableMapOf<String, Any>(
                 "sell_price" to (DECIMAL_FORMAT.format(tile.stackContainer.getTotalSellPrice() * multiplier) ?: "$0.00")
             )
-        )
+        ))
     }
 
     fun sellAllContents(tile: CollectorTile, seller: Player?) {

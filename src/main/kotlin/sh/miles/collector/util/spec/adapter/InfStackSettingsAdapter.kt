@@ -1,11 +1,11 @@
 package sh.miles.collector.util.spec.adapter
 
-import net.md_5.bungee.api.chat.BaseComponent
+import net.kyori.adventure.text.Component
 import sh.miles.collector.hook.Plugins
-import sh.miles.crown.infstacks.InfStackSettings
-import sh.miles.pineapple.PineappleLib
+import sh.miles.pineapple.api.infstacks.InfStackSettings
 import sh.miles.pineapple.chat.PineappleChat
 import sh.miles.pineapple.chat.PineappleComponent
+import sh.miles.pineapple.item.ItemBuilder
 import sh.miles.pineapple.util.serialization.SerializedDeserializeContext
 import sh.miles.pineapple.util.serialization.SerializedElement
 import sh.miles.pineapple.util.serialization.SerializedSerializeContext
@@ -32,8 +32,7 @@ object InfStackSettingsAdapter : SerializedAdapter<InfStackSettings> {
         }.orThrow()
 
         return InfStackSettings(lore, maxStackSize) { components, currentAmount, display, comparator, _ ->
-            val baseLore: MutableList<BaseComponent> =
-                PineappleLib.getNmsProvider().getItemLore(comparator).toMutableList()
+            val baseLore: MutableList<Component> = comparator.lore() ?: mutableListOf()
             for (component in components) {
 
                 // Check an item can be sold, if it cannot show [UNSELLABLE] to avoid needing a message send in the menu if its attempted to be sold
@@ -54,7 +53,7 @@ object InfStackSettingsAdapter : SerializedAdapter<InfStackSettings> {
                     )
                 )
             }
-            val modifiedDisplay = PineappleLib.getNmsProvider().setItemLore(display, baseLore)
+            val modifiedDisplay = ItemBuilder.modifyStack(display).lore(baseLore).build()
             return@InfStackSettings modifiedDisplay
         }
     }
