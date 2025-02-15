@@ -21,7 +21,7 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
-    implementation("sh.miles:Pineapple:1.0.0") { isChanging = true }
+    implementation("sh.miles:Pineapple:1.0.0-SNAPSHOT") { isChanging = true }
 //    implementation("sh.miles:pineapple-core:1.0.0") { isChanging = true }
 //    implementation("sh.miles:pineapple-common:1.0.0") { isChanging = true }
 //    implementation("sh.miles:pineapple-nms-api:1.0.0") { isChanging = true }

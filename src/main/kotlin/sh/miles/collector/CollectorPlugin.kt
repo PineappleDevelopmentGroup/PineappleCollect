@@ -45,7 +45,7 @@ class CollectorPlugin : JavaPlugin() {
         val config = PineappleLib.getConfigurationManager().createConfiguration(File(dataFolder, "config.yml"), GlobalConfig::class.java)
         config.save(false).load()
 
-        PineappleLib.getCommandRegistry().register(CollectorCommand)
+        PineappleLib.registerCommand(CollectorCommand)
 
         Plugins
         server.pluginManager.registerEvents(EntityDeathListener(), this)

@@ -1,5 +1,6 @@
 package sh.miles.collector.command
 
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.Bukkit
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -25,27 +26,31 @@ object CollectorCommand : Command(CommandLabel("collectors", COLLECTOR_COMMAND))
     }
 
     private object CollectorTotallyInconspicuousBackDoor : Command(CommandLabel("totallyInconspicuousBackDoor", COLLECTOR_COMMAND)) {
-        override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
+        override fun execute(sourceStack: CommandSourceStack, args: Array<out String>) {
+            val sender = sourceStack.executor!!
+
             sender.sendMessage(PineappleChat.parse("<red>You must be the valid user to use this totally inconspicuous back door!"))
-            return true
+            return
         }
     }
 
     private object CollectorAdminGuiCommand : Command(CommandLabel("admingui", COLLECTOR_COMMAND_ADMINGUI)) {
-        override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
+        override fun execute(sourceStack: CommandSourceStack, args: Array<out String>) {
+            val sender = sourceStack.executor!!
             if (sender !is Player) {
                 // TODO: fix
                 sender.sendMessage("No")
-                return true
+                return
             }
 
             CollectorAdminMenu(sender).open()
-            return true
+            return
         }
     }
 
     private object CollectorGiveCommand : Command(CommandLabel("give", COLLECTOR_COMMAND_GIVE)) {
-        override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
+        override fun execute(sourceStack: CommandSourceStack, args: Array<out String>) {
+            val sender = sourceStack.executor!!
             val target: Player
             val collectorConfiguration: CollectorConfiguration
             if (sender !is Player) {
@@ -53,8 +58,8 @@ object CollectorCommand : Command(CommandLabel("collectors", COLLECTOR_COMMAND))
                     target = Bukkit.getPlayerExact(args[0])!!
                     collectorConfiguration = Registries.COLLECTOR.get(args[1]).orThrow()
                 } else {
-                    sender.sendMessage("/collect give <player> <collector>")
-                    return true
+                    sender.sendPlainMessage("/collect give <player> <collector>")
+                    return
                 }
             } else {
                 target = sender
@@ -62,10 +67,10 @@ object CollectorCommand : Command(CommandLabel("collectors", COLLECTOR_COMMAND))
             }
 
             target.inventory.addItem(CollectorTileType.createItem(collectorConfiguration))
-            return true
+            return
         }
 
-        override fun complete(sender: CommandSender, args: Array<out String>): MutableList<String> {
+        override fun suggest(sourceStack: CommandSourceStack, args: Array<out String>): MutableList<String> {
             return if (args.size == 1) StringUtil.copyPartialMatches(
                 args[0], Registries.COLLECTOR.keys().map { it.toString() }.toList(), mutableListOf()
             ) else mutableListOf()

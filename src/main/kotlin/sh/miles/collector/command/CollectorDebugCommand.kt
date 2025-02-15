@@ -1,5 +1,6 @@
 package sh.miles.collector.command
 
+import io.papermc.paper.command.brigadier.CommandSourceStack
 import org.bukkit.NamespacedKey
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
@@ -51,36 +52,40 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", COLL
 
         private object ContainerClear :
             Command(CommandLabel("clear", COLLECTOR_COMMAND_DEBUG_MODIFY_CONTAINER_CLEAR)) {
-            override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
+            override fun execute(sourceStack: CommandSourceStack, args: Array<out String>) {
+                val sender = sourceStack.executor!!
+
                 if (sender !is Player) {
                     sender.sendMessage("Only players can send this command")
-                    return true
+                    return
                 }
 
-                val collector = CollectorDebugUtil.getTargetedCollector(sender) ?: return true
+                val collector = CollectorDebugUtil.getTargetedCollector(sender) ?: return
                 collector.stackContainer.clearContents()
                 sender.sendMessage(
                     PineappleChat.parse(
                         "<green>Successfully cleared container"
                     )
                 )
-                return true
+                return
             }
         }
 
         private object ContainerInsert :
             Command(CommandLabel("insert", COLLECTOR_COMMAND_DEBUG_MODIFY_CONTAINER_INSERT)) {
-            override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
+            override fun execute(sourceStack: CommandSourceStack, args: Array<out String>) {
+                val sender = sourceStack.executor!!
+
                 if (sender !is Player) {
                     sender.sendMessage("Only players can send this command")
-                    return true
+                    return
                 }
 
-                val collector = CollectorDebugUtil.getTargetedCollector(sender) ?: return true
+                val collector = CollectorDebugUtil.getTargetedCollector(sender) ?: return
                 val item = sender.inventory.itemInMainHand
                 if (item.type.isAir) {
                     sender.sendMessage("Item in hand must not be air")
-                    return true
+                    return
                 }
                 collector.addItem(item)
                 sender.sendMessage(
@@ -88,7 +93,7 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", COLL
                         "<green>Successfully added ${item.type} to container"
                     )
                 )
-                return true
+                return
             }
         }
     }
@@ -103,15 +108,17 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", COLL
 
         private object UpgradeAdd : Command(CommandLabel("add", COLLECTOR_COMMAND_DEBUG_MODIFY_UPGRADE_ADD)) {
 
-            override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
+            override fun execute(sourceStack: CommandSourceStack, args: Array<out String>) {
+                val sender = sourceStack.executor!!
+
                 if (sender !is Player) {
                     sender.sendMessage("Only players can send this command")
-                    return true
+                    return
                 }
 
                 if (args.size < 2) {
                     sender.sendMessage(PineappleChat.parse("<red>Invalid arg amount, requires 2"))
-                    return true
+                    return
                 }
 
                 val upgrade = when (val action = Registries.UPGRADE.get(NamespacedKey.fromString("pineapple-collect:${args[0]}")!!)) {
@@ -120,7 +127,7 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", COLL
                     }
                     is None -> {
                         sender.sendMessage(PineappleChat.parse("<red>Unknown upgrade key"))
-                        return true
+                        return
                     }
                 }
 
@@ -128,23 +135,25 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", COLL
 
                 if (upgrade.level.size < upgradeLevel) {
                     sender.sendMessage(PineappleChat.parse("<red>Invalid level, use one specified in tab complete"))
-                    return true
+                    return
                 }
 
-                val collector = CollectorDebugUtil.getTargetedCollector(sender) ?: return true
+                val collector = CollectorDebugUtil.getTargetedCollector(sender) ?: return
                 var enabled = 1
                 if (collector.upgrades.containsKey(upgrade)) {
                     enabled = collector.upgrades[upgrade]!!.second
                 }
                 collector.upgrades[upgrade] = Pair(upgradeLevel, enabled)
                 sender.sendMessage(PineappleChat.parse("<green>Added upgrade <white>\'${upgrade.key}: $upgradeLevel\'"))
-                return true
+                return
             }
 
-            override fun complete(sender: CommandSender, args: Array<out String>): MutableList<String> {
+            override fun suggest(sourceStack: CommandSourceStack, args: Array<out String>): Collection<String> {
+                val sender = sourceStack.executor!!
+
                 if (sender !is Player) {
                     sender.sendMessage("Only players can send this command")
-                    return super.complete(sender, args)
+                    return super.suggest(sourceStack, args)
                 }
 
                 if (args.size == 1)
@@ -153,7 +162,7 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", COLL
                     return StringUtil.copyPartialMatches(args[1], getIntToZero(Registries.UPGRADE.get(NamespacedKey.fromString("pineapple-collect:${args[0]}")!!).orThrow().level.size).map { it.toString() }, mutableListOf())
 
 
-                return super.complete(sender, args)
+                return super.suggest(sourceStack, args)
             }
 
             private fun getIntToZero(high: Int) : List<Int> {
@@ -166,39 +175,43 @@ private object CollectorDebugModifyCommand : Command(CommandLabel("modify", COLL
         }
         private object UpgradeRemove : Command(CommandLabel("remove", COLLECTOR_COMMAND_DEBUG_MODIFY_UPGRADE_REMOVE)) {
 
-            override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
+            override fun execute(sourceStack: CommandSourceStack, args: Array<out String>) {
+                val sender = sourceStack.executor!!
+
                 if (sender !is Player) {
                     sender.sendMessage("Only players can send this command")
-                    return true
+                    return
                 }
 
                 if (args.isEmpty()) {
                     sender.sendMessage(PineappleChat.parse("<red>Invalid amount of args, requires 1"))
-                    return true
+                    return
                 }
 
-                val collector = CollectorDebugUtil.getTargetedCollector(sender) ?: return true
+                val collector = CollectorDebugUtil.getTargetedCollector(sender) ?: return
                 val upgrade = when (val action = Registries.UPGRADE.get(NamespacedKey.fromString("pineapple-collect:${args[0]}")!!)) {
                     is Some -> {
                         action.some()
                     }
                     is None -> {
                         sender.sendMessage(PineappleChat.parse("<red>Invalid upgrade key"))
-                        return true
+                        return
                     }
                 }
 
                 val level = collector.upgrades.remove(upgrade)
                 if (level == null) {
                     sender.sendMessage(PineappleChat.parse("<red>This collector did not have that upgrade"))
-                    return true
+                    return
                 }
 
                 sender.sendMessage(PineappleChat.parse("<green>Successfully removed upgrade."))
-                return true
+                return
             }
 
-            override fun complete(sender: CommandSender, args: Array<out String>): MutableList<String> {
+            override fun suggest(sourceStack: CommandSourceStack, args: Array<out String>): MutableList<String> {
+                val sender = sourceStack.executor!!
+
                 if (sender !is Player) {
                     sender.sendMessage("Only players can send this command")
                     return mutableListOf()
@@ -220,35 +233,39 @@ private object CollectorDebugDeleteCommand : Command(CommandLabel("delete", COLL
     }
 
     private object CollectorDebugChunk : Command(CommandLabel("chunk", COLLECTOR_COMMAND_DEBUG_DELETE_CHUNK)) {
-        override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
+        override fun execute(sourceStack: CommandSourceStack, args: Array<out String>) {
+            val sender = sourceStack.executor!!
+
             if (sender !is Player) {
                 sender.sendMessage("Only players can send this command")
-                return true
+                return
             }
 
             CollectorDebugUtil.printAllInChunk(sender, sender.location.chunk)
             Tiles.getInstance().deleteTiles(sender.location.chunk) { it is CollectorTile }
-            return true
+            return
         }
     }
 
     private object CollectorDebugTargeted :
         Command(CommandLabel("targeted", COLLECTOR_COMMAND_DEBUG_DELETE_TARGETED)) {
-        override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
+        override fun execute(sourceStack: CommandSourceStack, args: Array<out String>) {
+            val sender = sourceStack.executor!!
+
             if (sender !is Player) {
                 sender.sendMessage("Only players can send this command")
-                return true
+                return
             }
 
             val target = sender.getTargetBlockExact(10)
             if (target == null) {
                 sender.sendMessage("You must target a block to use this command")
-                return true
+                return
             }
 
             CollectorDebugUtil.printDebug(sender, target.location)
             Tiles.getInstance().deleteTile(target.location) { it is CollectorTile }
-            return true
+            return
         }
     }
 }
@@ -260,33 +277,37 @@ private object CollectorDebugGetCommand : Command(CommandLabel("get", COLLECTOR_
     }
 
     private object CollectorDebugChunk : Command(CommandLabel("chunk", COLLECTOR_COMMAND_DEBUG_GET_CHUNK)) {
-        override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
+        override fun execute(sourceStack: CommandSourceStack, args: Array<out String>) {
+            val sender = sourceStack.executor!!
+
             if (sender !is Player) {
                 sender.sendMessage("Only players can send this command")
-                return true
+                return
             }
 
             CollectorDebugUtil.printAllInChunk(sender, sender.location.chunk)
-            return true
+            return
         }
     }
 
     private object CollectorDebugTargeted :
         Command(CommandLabel("targeted", COLLECTOR_COMMAND_DEBUG_GET_TARGETED)) {
-        override fun execute(sender: CommandSender, args: Array<out String>): Boolean {
+        override fun execute(sourceStack: CommandSourceStack, args: Array<out String>) {
+            val sender = sourceStack.executor!!
+
             if (sender !is Player) {
                 sender.sendMessage("Only players can send this command")
-                return true
+                return
             }
 
             val target = sender.getTargetBlockExact(10)
             if (target == null) {
                 sender.sendMessage("You must target a block to use this command")
-                return true
+                return
             }
 
             CollectorDebugUtil.printDebug(sender, target.location)
-            return true
+            return
         }
     }
 }
